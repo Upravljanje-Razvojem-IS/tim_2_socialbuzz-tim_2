@@ -5,11 +5,31 @@ using System.Threading.Tasks;
 
 namespace UserService.Dtos
 {
+    /// <summary>
+    /// DTO class which models users and their accounts in the system
+    /// </summary>
     public class CorporationDto: UserDto
     {
+        /// <summary>
+        /// Coropration name
+        /// </summary>
         public String CorporationName { get; set; }
+
+        /// <summary>
+        /// Copropration PIB
+        /// </summary>
         public String Pib { get; set; }
+
+        /// <summary>
+        /// City in which headquarters of corporation
+        /// is located
+        /// </summary>
         public String HeadquartersCity { get; set; }
+
+        /// <summary>
+        /// Address of the location in which headquarters of the corporation
+        /// is located
+        /// </summary>
         public String HeadquartersAddress { get; set; }
     }
 }

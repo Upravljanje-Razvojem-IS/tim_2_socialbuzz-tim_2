@@ -7,14 +7,23 @@ using System.Threading.Tasks;
 
 namespace UserService.Entities
 {
+    /// <summary>
+    /// Entity class which models roles in the system,
+    /// which are used for authorization 
+    /// </summary>
     public class Role
     {
+        /// <summary>
+        /// Unique identifier for the role
+        /// </summary>
         [Column("RoleId")]
         [Key]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Required]
         public Guid RoleId { get; set; }
 
+        /// <summary>
+        /// Role name
+        /// </summary>
         [Column("RoleName")]
         [StringLength(50)]
         [Required]

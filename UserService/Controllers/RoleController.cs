@@ -8,6 +8,9 @@ using UserService.Dtos;
 
 namespace UserService.Controllers
 {
+    /// <summary>
+    /// Controller with endpoints for fetching, creating and deleting roles
+    /// </summary>
     [ApiController]
     [Route("api/roles")]
     public class RoleController : ControllerBase

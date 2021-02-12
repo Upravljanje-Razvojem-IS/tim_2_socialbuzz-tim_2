@@ -8,6 +8,10 @@ using UserService.Dtos;
 
 namespace UserService.Controllers
 {
+    /// <summary>
+    /// Contoller with endopoints for fetching, creating, updating
+    /// and deleting user accounts
+    /// </summary>
     [ApiController]
     [Route("api/users")]
     public class UserController : ControllerBase
