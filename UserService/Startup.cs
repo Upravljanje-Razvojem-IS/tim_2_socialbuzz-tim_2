@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,6 +32,27 @@ namespace UserService
                 setup.ReturnHttpNotAcceptable = true
             ).AddXmlDataContractSerializerFormatters();
             services.AddDbContext<UserDbContext>();
+
+            services.AddSwaggerGen(setupAction =>
+            {
+                setupAction.SwaggerDoc("ExamRegistrationOpenApiSpecification",
+                    new Microsoft.OpenApi.Models.OpenApiInfo()
+                    {
+                        Title = "User Service API",
+                        Version = "1",
+                        Description = "API for creating, updating and fetcing users, roles and cities",
+                        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+                        {
+                            Name = "Natalija Gajić",
+                            Email = "nat.gaj98@mail.com",
+                        },
+                        License = new Microsoft.OpenApi.Models.OpenApiLicense
+                        {
+                            Name = "FTN licence"
+                        }
+                    });
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +64,14 @@ namespace UserService
             }
 
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(setupAction =>
+            {
+                setupAction.SwaggerEndpoint("/swagger/ExamRegistrationOpenApiSpecification/swagger.json", "Student Exam Registration API");
+                setupAction.RoutePrefix = ""; //No /swagger in url
+            });
 
             app.UseRouting();
 
