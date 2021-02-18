@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using AuthService.Options;
+using AuthService.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,10 +14,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using UserService.Data;
-using UserService.Entities;
+using Microsoft.IdentityModel.Tokens;
 
-namespace UserService
+namespace AuthService
 {
     public class Startup
     {
@@ -27,15 +30,28 @@ namespace UserService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
 
-            services.AddControllers(setup =>
-            //Content negotiation in Accept header of users request
-                setup.ReturnHttpNotAcceptable = true
-            ).AddXmlDataContractSerializerFormatters();
-            services.AddDbContext<UserDbContext>();
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            var jwtSettings = new JwtSettings();
+            Configuration.Bind(nameof(jwtSettings), jwtSettings);
+            services.AddSingleton(jwtSettings);
+            services.AddScoped<IAuthenticationService, IAuthenticationService>();
 
-            services.AddScoped<IPersonalUserRepository, PersonalUserRepository>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration[jwtSettings.Issuer],
+                    ValidAudience = Configuration[jwtSettings.Issuer],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret))
+                };
+            });
+
+
             services.AddSwaggerGen(setupAction =>
             {
                 setupAction.SwaggerDoc("ExamRegistrationOpenApiSpecification",
@@ -65,6 +81,7 @@ namespace UserService
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
 
