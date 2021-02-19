@@ -37,6 +37,8 @@ namespace UserService
 
             services.AddScoped<IPersonalUserRepository, PersonalUserRepository>();
             services.AddScoped<ICorporationUserRepository, CorporationUserRepository>();
+            services.AddScoped<ICityRepository, CityRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
 
             services.AddSwaggerGen(setupAction =>
             {

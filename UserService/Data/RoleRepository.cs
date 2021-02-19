@@ -15,7 +15,7 @@ namespace UserService.Data
             this.context = context;
         }
 
-        public RoleCreatedConfirmation CreateUser(Role role)
+        public RoleCreatedConfirmation CreateRole(Role role)
         {
             throw new NotImplementedException();
         }

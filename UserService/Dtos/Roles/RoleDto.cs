@@ -9,7 +9,7 @@ namespace UserService.Dtos
     /// DTO class which models roles in the system,
     /// which are used for authorization 
     /// </summary>
-    public class CityDto
+    public class RoleDto
     {
         /// <summary>
         /// Unique identifier for the role
