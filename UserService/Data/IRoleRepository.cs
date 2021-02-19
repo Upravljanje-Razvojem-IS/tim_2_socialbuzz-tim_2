@@ -6,11 +6,11 @@ using UserService.Entities;
 
 namespace UserService.Data
 {
-    interface IRoleRepository
+    public interface IRoleRepository
     {
         List<Role> GetRoles();
         Role GetRoleByRoleId(Guid roleId);
-        RoleCreatedConfirmation CreateUser(Role role);
+        RoleCreatedConfirmation CreateRole(Role role);
         void UpdateRole(Role role);
         void DeleteRole(Guid roleId);
         bool SaveChanges();
