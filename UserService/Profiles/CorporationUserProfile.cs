@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using UserService.Dtos;
+using UserService.Dtos.Users;
 using UserService.Entities;
 
 namespace UserService.Profiles
@@ -19,6 +20,16 @@ namespace UserService.Profiles
                dest => dest.Role,
                opt => opt.MapFrom(src => $"{src.Role.RoleName}")
                );
+
+            CreateMap<Corporation, UserInfoDto>().ForMember(
+                dest => dest.AccountType,
+                opt => opt.MapFrom(src => "corporationUser")).ForMember(
+                dest => dest.City,
+                opt => opt.MapFrom(src => $"{src.City.CityName}"))
+                .ForMember(
+                dest => dest.Role,
+                opt => opt.MapFrom(src => $"{src.Role.RoleName}")
+                );
         }
        
     }

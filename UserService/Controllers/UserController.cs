@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Data;
 using UserService.Dtos;
+using UserService.Dtos.Users;
 using UserService.Entities;
 
 namespace UserService.Controllers
 {
+    /// <summary>
+    /// Contoller with endopoints for fetching user accounts
+    /// </summary>
     [ApiController]
     [Route("api/users")]
     public class UserController : ControllerBase
@@ -25,36 +30,84 @@ namespace UserService.Controllers
             this.mapper = mapper;
         }
 
+        /// <summary>
+        /// Returns list of all user accounts in the system
+        /// </summary>
+        /// <param name="city">Name of the city</param>
+        /// <param name="userType">Name of the account type 
+        /// (personalUser or corporatitionUser)</param>
+        /// <returns>List of user accounts</returns>
+        /// <response code="200">Returns the list</response>
+        /// <response code="204">No user accounts are found</response>
         [HttpGet]
-        public ActionResult<List<UserDto>> GetUsers(string userType, string city)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public ActionResult<List<UserInfoDto>> GetUsers(string userType, string city)
         {
             if (string.IsNullOrEmpty(userType))
             {
                 List<Corporation> corporations = corporationUserRepository.GetUsers(city);
-                List<PersonalUser> personalUsers = personalUserRepository.GetUsers(city); 
-                List<UserDto> users = new List<UserDto>();
-                users.AddRange(mapper.Map<List<PersonalUserDto>>(personalUsers));
-                users.AddRange(mapper.Map<List<CorporationDto>>(corporations));
+                List<PersonalUser> personalUsers = personalUserRepository.GetUsers(city);
+                List<UserInfoDto> users = new List<UserInfoDto>();
+                users.AddRange(mapper.Map<List<UserInfoDto>>(personalUsers));
+                users.AddRange(mapper.Map<List<UserInfoDto>>(corporations));
+                if (users == null || users.Count == 0)
+                {
+                    return NoContent();
+                }
                 return Ok(users);
             }
             else
             {
                 if (string.Equals(userType, "personalUser"))
                 {
-
+                    List<PersonalUser> personalUsers = personalUserRepository.GetUsers(city);
+                    if (personalUsers == null || personalUsers.Count == 0)
+                    {
+                        return NoContent();
+                    }
+                    return Ok(mapper.Map<List<UserInfoDto>>(personalUsers));
                 }
                 else if (string.Equals(userType, "corporationUser"))
                 {
-
+                    List<Corporation> corporations = corporationUserRepository.GetUsers(city);
+                    if (corporations == null || corporations.Count == 0)
+                    {
+                        return NoContent();
+                    }
+                    return Ok(mapper.Map<List<UserInfoDto>>(corporations));
                 }
                 else
                 {
-                    //not found
+                    return NoContent();
                 }
             }
 
-            
-            return Ok(null);
+        }
+
+        /// <summary>
+        /// Returns user with userId
+        /// </summary>
+        /// <param name="userId">User's Id</param>
+        /// <returns> User with userId</returns>
+        ///<response code="200">Returns the user</response>
+        /// <response code="404">User with userId is not found</response>
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet("{userId}")]
+        public ActionResult<UserInfoDto> GetUserById(Guid userId)
+        {
+            var coprporationUser = corporationUserRepository.GetUserByUserId(userId);
+            if(coprporationUser != null)
+            {
+                return Ok(mapper.Map<UserInfoDto>(coprporationUser));
+            }
+            var personalUser = personalUserRepository.GetUserByUserId(userId);
+            if(personalUser != null)
+            {
+                return Ok(mapper.Map<UserInfoDto>(personalUser));
+            }
+            return NotFound();
         }
     }
 }
