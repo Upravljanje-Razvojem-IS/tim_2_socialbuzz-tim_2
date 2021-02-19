@@ -35,7 +35,7 @@ namespace AuthService
             var jwtSettings = new JwtSettings();
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
-            services.AddScoped<IAuthenticationService, IAuthenticationService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {

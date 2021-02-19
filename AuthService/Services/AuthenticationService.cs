@@ -10,7 +10,7 @@ namespace AuthService.Services
     {
         public Task<AuthenticationRespose> LoginAsync(string email, string password)
         {
-            throw new NotImplementedException();
+            return new Task<AuthenticationRespose>(null);
         }
     }
 }

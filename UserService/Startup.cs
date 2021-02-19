@@ -36,6 +36,8 @@ namespace UserService
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<IPersonalUserRepository, PersonalUserRepository>();
+            services.AddScoped<ICorporationUserRepository, CorporationUserRepository>();
+
             services.AddSwaggerGen(setupAction =>
             {
                 setupAction.SwaggerDoc("ExamRegistrationOpenApiSpecification",

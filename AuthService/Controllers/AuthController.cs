@@ -21,7 +21,7 @@ namespace AuthService.Controllers
         [HttpGet("api/register")]
         public async Task<IActionResult> Register([FromBody] Principal principal)
         {
-            var authResponse = await authService.RegisterAsync(principal.Email, principal.Password);
+            var authResponse = await authService.LoginAsync(principal.Email, principal.Password);
             return Ok();
         }
     }

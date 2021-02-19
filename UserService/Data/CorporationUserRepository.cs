@@ -6,16 +6,16 @@ using UserService.Entities;
 
 namespace UserService.Data
 {
-    public class PersonalUserRepository : IPersonalUserRepository
+    public class CorporationUserRepository : ICorporationUserRepository
     {
         private readonly UserDbContext context;
 
-        public PersonalUserRepository(UserDbContext context)
+        public CorporationUserRepository(UserDbContext context)
         {
             this.context = context;
         }
 
-        public UserCreatedConfirmation CreateUser(PersonalUser user)
+        public UserCreatedConfirmation CreateUser(Corporation user)
         {
             throw new NotImplementedException();
         }
@@ -25,14 +25,15 @@ namespace UserService.Data
             throw new NotImplementedException();
         }
 
-        public PersonalUser GetUserByUserId(Guid userId)
+        public Corporation GetUserByUserId(Guid userId)
         {
-            return context.PersonalUser.FirstOrDefault(e => e.UserId == userId);
+            return context.Corporation.FirstOrDefault(e => e.UserId == userId);
+
         }
 
-        public List<PersonalUser> GetUsers(string city = null)
+        public List<Corporation> GetUsers(string city = null)
         {
-            return context.PersonalUser.Where(e => city == null || e.City.CityName == city).ToList();
+            return context.Corporation.Where(e => city == null || e.City.CityName == city).ToList();
         }
 
         public bool SaveChanges()
@@ -40,7 +41,7 @@ namespace UserService.Data
             return context.SaveChanges() > 0;
         }
 
-        public void UpdateUser(PersonalUser user)
+        public void UpdateUser(Corporation user)
         {
             throw new NotImplementedException();
         }
