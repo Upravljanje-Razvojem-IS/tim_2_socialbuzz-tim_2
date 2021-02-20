@@ -15,6 +15,7 @@ namespace UserService.Controllers
     /// and deleting corporate user accounts
     /// </summary>
     [ApiController]
+    [Route("api/corporationUsers")]
     public class CorporationUserController : ControllerBase
     {
         private readonly ICorporationUserRepository corporationUserRepository;

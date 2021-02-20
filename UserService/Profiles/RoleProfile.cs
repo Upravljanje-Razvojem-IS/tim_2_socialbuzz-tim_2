@@ -12,7 +12,7 @@ namespace UserService.Profiles
     {
         public RoleProfile()
         {
-            CreateMap<Role, CityDto>();
+            CreateMap<Role, RoleDto>();
         }
     }
 }

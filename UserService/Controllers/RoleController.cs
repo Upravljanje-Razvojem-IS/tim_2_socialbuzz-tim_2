@@ -36,14 +36,14 @@ namespace UserService.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult<List<CityDto>> GetRoles()
+        public ActionResult<List<RoleDto>> GetRoles()
         {
             var roles = roleRepository.GetRoles();
             if (roles == null || roles.Count == 0)
             {
                 return NoContent();
             }
-            return Ok(mapper.Map<List<CityDto>>(roles));
+            return Ok(mapper.Map<List<RoleDto>>(roles));
         }
 
         /// <summary>
@@ -53,17 +53,17 @@ namespace UserService.Controllers
         /// <returns>Role with roleId</returns>
         ///<response code="200">Returns the role</response>
         /// <response code="404">Role with roleId is not found</response>
-        [HttpGet]
+        [HttpGet("{roleId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<CityDto> GetRoleById(Guid roleId)
+        public ActionResult<RoleDto> GetRoleById(Guid roleId)
         {
             var role = roleRepository.GetRoleByRoleId(roleId);
             if (role == null)
             {
                 return NotFound();
             }
-            return Ok(mapper.Map<CityDto>(role));
+            return Ok(mapper.Map<RoleDto>(role));
         }
     }
 }

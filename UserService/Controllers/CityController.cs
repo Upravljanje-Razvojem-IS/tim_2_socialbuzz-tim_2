@@ -54,7 +54,7 @@ namespace UserService.Controllers
         /// <returns>City with cityId</returns>
         ///<response code="200">Returns the city</response>
         /// <response code="404">City with cityId is not found</response>
-        [HttpGet]
+        [HttpGet("{cityId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<CityDto> GetRoleById(Guid cityId)
