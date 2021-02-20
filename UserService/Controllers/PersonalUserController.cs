@@ -38,9 +38,9 @@ namespace UserService.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult<List<PersonalUserDto>> GetUsers(string city)
+        public ActionResult<List<PersonalUserDto>> GetUsers(string city, string username)
         {
-            var personalUsers = personalUserRepository.GetUsers(city);
+            var personalUsers = personalUserRepository.GetUsers(city, username);
             if (personalUsers == null || personalUsers.Count == 0)
             {
                 return NoContent();

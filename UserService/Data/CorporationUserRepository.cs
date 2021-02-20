@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,13 +28,15 @@ namespace UserService.Data
 
         public Corporation GetUserByUserId(Guid userId)
         {
-            return context.Corporation.FirstOrDefault(e => e.UserId == userId);
+            return context.Corporation.Include(user => user.City).Include(user => user.Role).FirstOrDefault(e => e.UserId == userId);
 
         }
 
-        public List<Corporation> GetUsers(string city = null)
+        public List<Corporation> GetUsers(string city = null, string username = null)
         {
-            return context.Corporation.Where(e => city == null || e.City.CityName == city).ToList();
+            return context.Corporation.Include(user => user.City).Include(user => user.Role).
+                Where(e => city == null || e.City.CityName == city).Where(e => username == null || e.Username.Equals(username)).
+                ToList();
         }
 
         public bool SaveChanges()

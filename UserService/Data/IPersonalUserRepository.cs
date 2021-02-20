@@ -8,7 +8,7 @@ namespace UserService.Data
 {
     public interface IPersonalUserRepository
     {
-        List<PersonalUser> GetUsers(string city = null);
+        List<PersonalUser> GetUsers(string city = null, string username = null);
         PersonalUser GetUserByUserId(Guid userId);
         UserCreatedConfirmation CreateUser(PersonalUser user);
         void UpdateUser(PersonalUser user);

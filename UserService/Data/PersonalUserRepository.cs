@@ -32,9 +32,17 @@ namespace UserService.Data
             return context.PersonalUser.Include(user => user.City).Include(user => user.Role).FirstOrDefault(e => e.UserId == userId);
         }
 
-        public List<PersonalUser> GetUsers(string city = null)
+        public PersonalUser GetUserByUsername(string username)
         {
-            return context.PersonalUser.Include(user => user.City).Include(user => user.Role).Where(e => city == null || e.City.CityName == city).ToList();
+            return context.PersonalUser.Include(user => user.City).Include(user => user.Role).Where(e => e.Username.ToLowerInvariant() == username.ToLowerInvariant()).FirstOrDefault();
+
+        }
+
+        public List<PersonalUser> GetUsers(string city = null, string username = null)
+        {
+            return context.PersonalUser.Include(user => user.City).Include(user => user.Role).
+              Where(e => city == null || e.City.CityName == city).Where(e => username == null || e.Username.Equals(username)).
+              ToList();
         }
 
         public bool SaveChanges()

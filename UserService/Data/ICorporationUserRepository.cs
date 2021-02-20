@@ -8,7 +8,7 @@ namespace UserService.Data
 {
     public interface ICorporationUserRepository
     {
-        List<Corporation> GetUsers(string city = null);
+        List<Corporation> GetUsers(string city = null, string username = null);
         Corporation GetUserByUserId(Guid userId);
         UserCreatedConfirmation CreateUser(Corporation user);
         void UpdateUser(Corporation user);

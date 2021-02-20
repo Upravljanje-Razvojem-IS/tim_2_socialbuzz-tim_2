@@ -42,12 +42,12 @@ namespace UserService.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult<List<UserInfoDto>> GetUsers(string userType, string city)
+        public ActionResult<List<UserInfoDto>> GetUsers(string userType, string city, string username)
         {
             if (string.IsNullOrEmpty(userType))
             {
-                List<Corporation> corporations = corporationUserRepository.GetUsers(city);
-                List<PersonalUser> personalUsers = personalUserRepository.GetUsers(city);
+                List<Corporation> corporations = corporationUserRepository.GetUsers(city, username);
+                List<PersonalUser> personalUsers = personalUserRepository.GetUsers(city, username);
                 List<UserInfoDto> users = new List<UserInfoDto>();
                 users.AddRange(mapper.Map<List<UserInfoDto>>(personalUsers));
                 users.AddRange(mapper.Map<List<UserInfoDto>>(corporations));
@@ -61,7 +61,7 @@ namespace UserService.Controllers
             {
                 if (string.Equals(userType, "personalUser"))
                 {
-                    List<PersonalUser> personalUsers = personalUserRepository.GetUsers(city);
+                    List<PersonalUser> personalUsers = personalUserRepository.GetUsers(city, username);
                     if (personalUsers == null || personalUsers.Count == 0)
                     {
                         return NoContent();
@@ -70,7 +70,7 @@ namespace UserService.Controllers
                 }
                 else if (string.Equals(userType, "corporationUser"))
                 {
-                    List<Corporation> corporations = corporationUserRepository.GetUsers(city);
+                    List<Corporation> corporations = corporationUserRepository.GetUsers(city, username);
                     if (corporations == null || corporations.Count == 0)
                     {
                         return NoContent();

@@ -24,11 +24,6 @@ namespace UserService.Dtos.Users
         public String Email { get; set; }
 
         /// <summary>
-        /// User's password
-        /// </summary>
-        public String Password { get; set; }
-
-        /// <summary>
         /// Boolean value which indicates if user's account
         /// is active
         /// </summary>
