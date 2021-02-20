@@ -67,6 +67,5 @@ namespace UserService.Controllers
             }
             return Ok(mapper.Map<PersonalUserDto>(personalUser));
         }
-
     }
 }

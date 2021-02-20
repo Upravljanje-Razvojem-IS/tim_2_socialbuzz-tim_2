@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace UserService.Data
         public PersonalUserRepository(UserDbContext context)
         {
             this.context = context;
+            this.context.ChangeTracker.LazyLoadingEnabled = false;
         }
 
         public UserCreatedConfirmation CreateUser(PersonalUser user)
@@ -27,12 +29,12 @@ namespace UserService.Data
 
         public PersonalUser GetUserByUserId(Guid userId)
         {
-            return context.PersonalUser.FirstOrDefault(e => e.UserId == userId);
+            return context.PersonalUser.Include(user => user.City).Include(user => user.Role).FirstOrDefault(e => e.UserId == userId);
         }
 
         public List<PersonalUser> GetUsers(string city = null)
         {
-            return context.PersonalUser.Where(e => city == null || e.City.CityName == city).ToList();
+            return context.PersonalUser.Include(user => user.City).Include(user => user.Role).Where(e => city == null || e.City.CityName == city).ToList();
         }
 
         public bool SaveChanges()

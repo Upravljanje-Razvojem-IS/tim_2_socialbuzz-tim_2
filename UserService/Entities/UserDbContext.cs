@@ -19,6 +19,8 @@ namespace UserService.Entities
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("UserDB"));
+           /* optionsBuilder.UseLazyLoadingProxies();
+            base.OnConfiguring(optionsBuilder);*/
         }
 
         public DbSet<PersonalUser> PersonalUser { get; set; }
@@ -28,6 +30,12 @@ namespace UserService.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<PersonalUser>()
+            .HasIndex(b => b.Username)
+            .IsUnique();
+            modelBuilder.Entity<Corporation>()
+            .HasIndex(b => b.Username)
+            .IsUnique();
 
             modelBuilder.Seed();
 

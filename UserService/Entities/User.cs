@@ -59,19 +59,19 @@ namespace UserService.Entities
         [Column("Username")]
         [StringLength(50)]
         [Required]
-        public String Username { get; set;  }
+        public String Username { get; set; }
 
         /// <summary>
         /// User's role in the system 
         /// used for authorization
         /// </summary>
         [ForeignKey("RoleId")]
-        public Role Role { get; set; }
+        public virtual Role Role { get; set; }
 
         /// <summary>
         /// User's city 
         /// </summary>
         [ForeignKey("CityId")]
-        public City City { get; set; }
+        public virtual City City { get; set; }
     }
 }
