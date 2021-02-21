@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,16 +11,15 @@ namespace UserService.Data
     public class PersonalUserRepository : IPersonalUserRepository
     {
         private readonly UserDbContext context;
+        private readonly IMapper mapper;
+        private readonly IRoleRepository roleRepository;
 
-        public PersonalUserRepository(UserDbContext context)
+        public PersonalUserRepository(UserDbContext context, IMapper mapper, IRoleRepository roleRepository)
         {
             this.context = context;
+            this.mapper = mapper;
+            this.roleRepository = roleRepository;
             this.context.ChangeTracker.LazyLoadingEnabled = false;
-        }
-
-        public UserCreatedConfirmation CreateUser(PersonalUser user)
-        {
-            throw new NotImplementedException();
         }
 
         public void DeleteUser(Guid userId)
@@ -32,11 +32,6 @@ namespace UserService.Data
             return context.PersonalUser.Include(user => user.City).Include(user => user.Role).FirstOrDefault(e => e.UserId == userId);
         }
 
-        public PersonalUser GetUserByUsername(string username)
-        {
-            return context.PersonalUser.Include(user => user.City).Include(user => user.Role).Where(e => e.Username.ToLowerInvariant() == username.ToLowerInvariant()).FirstOrDefault();
-
-        }
 
         public List<PersonalUser> GetUsers(string city = null, string username = null)
         {
@@ -53,6 +48,16 @@ namespace UserService.Data
         public void UpdateUser(PersonalUser user)
         {
             throw new NotImplementedException();
+        }
+
+        public PersonalUserCreatedConfirmation CreateUser(PersonalUser user)
+        {
+            //TODO: Role object is null
+            var userRole = roleRepository.GetRoles("Regular user")[0];
+            user.Role = userRole;
+            context.Role.Attach(userRole);
+            var createdUser = context.Add(user);
+            return mapper.Map<PersonalUserCreatedConfirmation>(createdUser.Entity);
         }
     }
 }

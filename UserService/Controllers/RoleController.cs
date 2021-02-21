@@ -30,15 +30,16 @@ namespace UserService.Controllers
         /// <summary>
         /// Returns list of all roles in the system
         /// </summary>
+        /// <param name="roleName"> Name of the role </param>
         /// <returns>List of roles</returns>
         /// <response code="200">Returns the list</response>
         /// <response code="204">No roles  are found</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult<List<RoleDto>> GetRoles()
+        public ActionResult<List<RoleDto>> GetRoles(string roleName)
         {
-            var roles = roleRepository.GetRoles();
+            var roles = roleRepository.GetRoles(roleName);
             if (roles == null || roles.Count == 0)
             {
                 return NoContent();

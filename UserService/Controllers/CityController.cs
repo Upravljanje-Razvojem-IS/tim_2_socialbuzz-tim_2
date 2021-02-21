@@ -31,15 +31,16 @@ namespace UserService.Controllers
         /// <summary>
         /// Returns list of all cities in the system
         /// </summary>
+        /// <param name="cityName">Name of the city</param>
         /// <returns>List of cities</returns>
         /// <response code="200">Returns the list</response>
         /// <response code="204">No cities  are found</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public ActionResult<List<CityDto>> GetCities()
+        public ActionResult<List<CityDto>> GetCities(string cityName)
         {
-            var cities = cityRepository.GetCities();
+            var cities = cityRepository.GetCities(cityName);
             if (cities == null || cities.Count == 0)
             {
                 return NoContent();

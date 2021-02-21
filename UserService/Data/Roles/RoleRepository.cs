@@ -6,34 +6,34 @@ using UserService.Entities;
 
 namespace UserService.Data
 {
-    public class CityRepository : ICityRepository
+    public class RoleRepository : IRoleRepository
     {
         private readonly UserDbContext context;
 
-        public CityRepository(UserDbContext context)
+        public RoleRepository(UserDbContext context)
         {
             this.context = context;
         }
 
-        public CityCreatedConfirmation CreateCity(City city)
+        public RoleCreatedConfirmation CreateRole(Role role)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteCity(Guid cityId)
+        public void DeleteRole(Guid roleId)
         {
             throw new NotImplementedException();
         }
 
-        public List<City> GetCities()
+        public Role GetRoleByRoleId(Guid roleId)
         {
-            return context.City.ToList();
+            return context.Role.FirstOrDefault(e => e.RoleId == roleId);
+
         }
 
-        public City GetCityByCityId(Guid cityId)
+        public List<Role> GetRoles(string roleName)
         {
-            return context.City.FirstOrDefault(e => e.CityId == cityId);
-
+            return context.Role.Where(c => roleName == null || c.RoleName == roleName).ToList();
         }
 
         public bool SaveChanges()
@@ -41,7 +41,7 @@ namespace UserService.Data
             throw new NotImplementedException();
         }
 
-        public void UpdateCity(City cit)
+        public void UpdateRole(Role role)
         {
             throw new NotImplementedException();
         }

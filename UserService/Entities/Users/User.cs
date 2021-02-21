@@ -66,12 +66,14 @@ namespace UserService.Entities
         /// used for authorization
         /// </summary>
         [ForeignKey("RoleId")]
+        public Guid RoleId { get; set; }
         public virtual Role Role { get; set; }
 
         /// <summary>
         /// User's city 
         /// </summary>
         [ForeignKey("CityId")]
+        public Guid CityId { get; set; }
         public virtual City City { get; set; }
     }
 }

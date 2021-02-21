@@ -8,7 +8,7 @@ namespace UserService.Data
 {
     public interface IRoleRepository
     {
-        List<Role> GetRoles();
+        List<Role> GetRoles(string roleName);
         Role GetRoleByRoleId(Guid roleId);
         RoleCreatedConfirmation CreateRole(Role role);
         void UpdateRole(Role role);

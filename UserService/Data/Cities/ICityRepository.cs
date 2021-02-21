@@ -8,7 +8,7 @@ namespace UserService.Data
 {
     public interface ICityRepository
     {
-        List<City> GetCities();
+        List<City> GetCities(string cityName);
         City GetCityByCityId(Guid cityId);
         CityCreatedConfirmation CreateCity(City city);
         void UpdateCity(City cit);

@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using UserService.Data;
 using UserService.Dtos;
+using UserService.Dtos.Users;
+using UserService.Entities;
 
 namespace UserService.Controllers
 {
@@ -21,11 +24,13 @@ namespace UserService.Controllers
     {
         private readonly IPersonalUserRepository personalUserRepository;
         private readonly IMapper mapper;
+        private readonly LinkGenerator linkGenerator;
 
-        public PersonalUserController(IPersonalUserRepository personalUserRepository, IMapper mapper)
+        public PersonalUserController(IPersonalUserRepository personalUserRepository, IMapper mapper, LinkGenerator linkGenerator)
         {
             this.personalUserRepository = personalUserRepository;
             this.mapper = mapper;
+            this.linkGenerator = linkGenerator;
         }
 
         /// <summary>
@@ -67,5 +72,36 @@ namespace UserService.Controllers
             }
             return Ok(mapper.Map<PersonalUserDto>(personalUser));
         }
+
+
+        //TODO: Provide exapmple body
+        /// <summary>
+        /// Creates a new personal user account
+        /// </summary>
+        /// <param name="personalUser">Model of personal user</param>
+        /// <returns>Confirmation of the creation of personal user</returns>
+        /// <response code="200">Returns the created personal user</response>
+        /// <response code="500">There was an error on the server</response>
+        [HttpPost]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<PersonalUserCreatedConfirmationDto> CreateUser([FromBody] PersonalUserCreationDto personalUser)
+        {
+            try
+            {
+                PersonalUser userEntity = mapper.Map<PersonalUser>(personalUser);
+                PersonalUserCreatedConfirmation userCreated = personalUserRepository.CreateUser(userEntity);
+                personalUserRepository.SaveChanges();
+
+                string location = linkGenerator.GetPathByAction("GetUserById", "PersonalUser", new { userId = userCreated.UserId });
+
+                return Created(location, mapper.Map<PersonalUserCreatedConfirmationDto>(userCreated));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        } 
     }
 }

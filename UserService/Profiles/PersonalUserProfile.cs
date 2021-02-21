@@ -34,6 +34,12 @@ namespace UserService.Profiles
                 dest => dest.Role,
                 opt => opt.MapFrom(src => $"{src.Role.RoleName}")
                 );
+
+            CreateMap<PersonalUserCreationDto, PersonalUser>().ForMember(
+                dest => dest.CityId,
+                opt => opt.MapFrom(src => src.CityId));
+            CreateMap<PersonalUser, PersonalUserCreatedConfirmation>();
+            CreateMap<PersonalUserCreatedConfirmation, PersonalUserCreatedConfirmationDto>();
         }
     }
 }
