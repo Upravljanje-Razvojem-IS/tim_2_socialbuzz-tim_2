@@ -10,8 +10,8 @@ using UserService.Entities;
 namespace UserService.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    [Migration("20210208144302_initialseed-migration")]
-    partial class initialseedmigration
+    [Migration("20210222193825_initial-seed")]
+    partial class initialseed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,7 +19,7 @@ namespace UserService.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.2");
+                .HasAnnotation("ProductVersion", "5.0.3");
 
             modelBuilder.Entity("UserService.Entities.City", b =>
                 {
@@ -41,12 +41,12 @@ namespace UserService.Migrations
                     b.HasData(
                         new
                         {
-                            CityId = new Guid("98a5cee0-2a63-405c-887a-5bd623b5b5e3"),
+                            CityId = new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"),
                             CityName = "Novi Sad"
                         },
                         new
                         {
-                            CityId = new Guid("a4e47e1c-3f77-4c0f-abb5-234e74d19e65"),
+                            CityId = new Guid("9346b8c4-1b3b-435f-9c35-35de3a76fcf9"),
                             CityName = "Beograd"
                         });
                 });
@@ -58,7 +58,7 @@ namespace UserService.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("UserId");
 
-                    b.Property<Guid?>("CityId")
+                    b.Property<Guid>("CityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CorporationName")
@@ -101,7 +101,7 @@ namespace UserService.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("Pib");
 
-                    b.Property<Guid?>("RoleId")
+                    b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Telephone")
@@ -122,13 +122,16 @@ namespace UserService.Migrations
 
                     b.HasIndex("RoleId");
 
+                    b.HasIndex("Username")
+                        .IsUnique();
+
                     b.ToTable("Corporation");
 
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("113a283a-f8ff-4f09-9895-ae60b9a0755a"),
-                            CityId = new Guid("98a5cee0-2a63-405c-887a-5bd623b5b5e3"),
+                            UserId = new Guid("33253633-10e4-45c8-9b8e-84020a5c8c58"),
+                            CityId = new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"),
                             CorporationName = "Financial Corporation",
                             Email = "financial_corpo@gmail.com",
                             HeadquartersAddress = "Radnicka 1",
@@ -136,14 +139,14 @@ namespace UserService.Migrations
                             IsActive = true,
                             Password = "pass123",
                             Pib = "187398",
-                            RoleId = new Guid("1dce00e0-00ff-4434-a989-611dad6a08e4"),
+                            RoleId = new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"),
                             Telephone = "+3816228749275",
                             Username = "Financial Corporation"
                         },
                         new
                         {
-                            UserId = new Guid("043bea8a-5b7c-4626-9812-635bdf12e7d7"),
-                            CityId = new Guid("98a5cee0-2a63-405c-887a-5bd623b5b5e3"),
+                            UserId = new Guid("987268e5-f880-4f81-b1bf-5b9704604e26"),
+                            CityId = new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"),
                             CorporationName = "Billing Corporation",
                             Email = "billing_corpo@gmail.com",
                             HeadquartersAddress = "Danila Kisa 15",
@@ -151,7 +154,7 @@ namespace UserService.Migrations
                             IsActive = true,
                             Password = "pass123",
                             Pib = "1844398",
-                            RoleId = new Guid("1dce00e0-00ff-4434-a989-611dad6a08e4"),
+                            RoleId = new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"),
                             Telephone = "+3816228749275",
                             Username = "Billing Corporation"
                         });
@@ -164,7 +167,7 @@ namespace UserService.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("UserId");
 
-                    b.Property<Guid?>("CityId")
+                    b.Property<Guid>("CityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
@@ -195,7 +198,7 @@ namespace UserService.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("Password");
 
-                    b.Property<Guid?>("RoleId")
+                    b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Telephone")
@@ -216,45 +219,48 @@ namespace UserService.Migrations
 
                     b.HasIndex("RoleId");
 
+                    b.HasIndex("Username")
+                        .IsUnique();
+
                     b.ToTable("PersonalUser");
 
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("2106c90f-7f5d-45f9-a8bd-2c459d015eba"),
-                            CityId = new Guid("98a5cee0-2a63-405c-887a-5bd623b5b5e3"),
+                            UserId = new Guid("ce593d02-c615-4af6-a794-c450b79e9b4d"),
+                            CityId = new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"),
                             Email = "nata@gmail.com",
                             FirstName = "Natalija",
                             IsActive = true,
                             LastName = "Gajic",
                             Password = "pass123",
-                            RoleId = new Guid("d8994917-94b0-40c8-91f5-dd0f81570369"),
+                            RoleId = new Guid("194df880-d4ce-4997-96c9-878102eb6e0e"),
                             Telephone = "+3816928749275",
                             Username = "NatalijaG"
                         },
                         new
                         {
-                            UserId = new Guid("aa6c4d37-96cc-4661-a497-5dd9ec03aa25"),
-                            CityId = new Guid("98a5cee0-2a63-405c-887a-5bd623b5b5e3"),
+                            UserId = new Guid("ff0c9396-7c4c-4bf5-a12e-6aa79c272413"),
+                            CityId = new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"),
                             Email = "vladika@gmail.com",
                             FirstName = "Vladimir",
                             IsActive = true,
                             LastName = "Filipovic",
                             Password = "pass123",
-                            RoleId = new Guid("1dce00e0-00ff-4434-a989-611dad6a08e4"),
+                            RoleId = new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"),
                             Telephone = "+3816968749275",
                             Username = "VladikaF"
                         },
                         new
                         {
-                            UserId = new Guid("ae796ebb-9b2a-4e19-be89-44c93d0d792e"),
-                            CityId = new Guid("a4e47e1c-3f77-4c0f-abb5-234e74d19e65"),
+                            UserId = new Guid("8c349e7b-1c97-486d-aa2e-e58205d11577"),
+                            CityId = new Guid("9346b8c4-1b3b-435f-9c35-35de3a76fcf9"),
                             Email = "stefke@gmail.com",
                             FirstName = "Stefan",
                             IsActive = true,
                             LastName = "Ostojic",
                             Password = "pass123",
-                            RoleId = new Guid("1dce00e0-00ff-4434-a989-611dad6a08e4"),
+                            RoleId = new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"),
                             Telephone = "+3816928749275",
                             Username = "StefanO"
                         });
@@ -280,12 +286,12 @@ namespace UserService.Migrations
                     b.HasData(
                         new
                         {
-                            RoleId = new Guid("d8994917-94b0-40c8-91f5-dd0f81570369"),
+                            RoleId = new Guid("194df880-d4ce-4997-96c9-878102eb6e0e"),
                             RoleName = "Admin"
                         },
                         new
                         {
-                            RoleId = new Guid("1dce00e0-00ff-4434-a989-611dad6a08e4"),
+                            RoleId = new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"),
                             RoleName = "Regular user"
                         });
                 });
@@ -294,11 +300,15 @@ namespace UserService.Migrations
                 {
                     b.HasOne("UserService.Entities.City", "City")
                         .WithMany()
-                        .HasForeignKey("CityId");
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("UserService.Entities.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("City");
 
@@ -309,11 +319,15 @@ namespace UserService.Migrations
                 {
                     b.HasOne("UserService.Entities.City", "City")
                         .WithMany()
-                        .HasForeignKey("CityId");
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("UserService.Entities.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("City");
 

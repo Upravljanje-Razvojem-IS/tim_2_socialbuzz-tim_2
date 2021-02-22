@@ -10,10 +10,12 @@ namespace UserService.Entities
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            Guid AdminRoleId = Guid.NewGuid();
-            Guid RegularUserRoleId = Guid.NewGuid();
-            Guid FirstCityId = Guid.NewGuid();
-            Guid SecondCityId = Guid.NewGuid();
+            //TODO: Latest migration doesn't have data, it failed to update with seeding,
+            //also, unique is not working 
+            Guid AdminRoleId = Guid.Parse("194DF880-D4CE-4997-96C9-878102EB6E0E");
+            Guid RegularUserRoleId = Guid.Parse("728569AA-7A1F-45C9-B9D4-94BCC176BD0C");
+            Guid FirstCityId = Guid.Parse("9171F23E-ADF2-4698-B73F-05C6FD7AD1BE");
+            Guid SecondCityId = Guid.Parse("9346B8C4-1B3B-435F-9C35-35DE3A76FCF9");
 
 
             modelBuilder.Entity<Role>().HasData(
@@ -44,7 +46,7 @@ namespace UserService.Entities
             modelBuilder.Entity<PersonalUser>().HasData(
             new
             {
-                UserId = Guid.NewGuid(),
+                UserId = Guid.Parse("CE593D02-C615-4AF6-A794-C450B79E9B4D"),
                 Email = "nata@gmail.com",
                 Password = "pass123",
                 IsActive = true,
@@ -57,7 +59,7 @@ namespace UserService.Entities
             },
             new
             {
-                UserId = Guid.NewGuid(),
+                UserId = Guid.Parse("FF0C9396-7C4C-4BF5-A12E-6AA79C272413"),
                 Email = "vladika@gmail.com",
                 Password = "pass123",
                 IsActive = true,
@@ -70,7 +72,7 @@ namespace UserService.Entities
             },
             new
             {
-                UserId = Guid.NewGuid(),
+                UserId = Guid.Parse("8C349E7B-1C97-486D-AA2E-E58205D11577"),
                 Email = "stefke@gmail.com",
                 Password = "pass123",
                 IsActive = true,
@@ -85,7 +87,7 @@ namespace UserService.Entities
             modelBuilder.Entity<Corporation>().HasData(
             new
             {
-                UserId = Guid.NewGuid(),
+                UserId = Guid.Parse("33253633-10E4-45C8-9B8E-84020A5C8C58"),
                 Email = "financial_corpo@gmail.com",
                 Password = "pass123",
                 IsActive = true,
@@ -100,7 +102,7 @@ namespace UserService.Entities
             },
             new
             {
-                UserId = Guid.NewGuid(),
+                UserId = Guid.Parse("987268E5-F880-4F81-B1BF-5B9704604E26"),
                 Email = "billing_corpo@gmail.com",
                 Password = "pass123",
                 IsActive = true,
