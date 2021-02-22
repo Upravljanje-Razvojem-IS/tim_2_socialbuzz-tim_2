@@ -10,7 +10,7 @@ namespace UserService.Data
     {
         List<Corporation> GetUsers(string city = null, string username = null);
         Corporation GetUserByUserId(Guid userId);
-        UserCreatedConfirmation CreateUser(Corporation user);
+        CorporationUserCreatedConfirmation CreateUser(Corporation user);
         void UpdateUser(Corporation user);
         void DeleteUser(Guid userId);
         bool SaveChanges();

@@ -52,7 +52,6 @@ namespace UserService.Data
 
         public PersonalUserCreatedConfirmation CreateUser(PersonalUser user)
         {
-            //TODO: Role object is null
             var userRole = roleRepository.GetRoles("Regular user")[0];
             user.Role = userRole;
             context.Role.Attach(userRole);

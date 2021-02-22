@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +11,23 @@ namespace UserService.Data
     public class CorporationUserRepository : ICorporationUserRepository
     {
         private readonly UserDbContext context;
+        private readonly IRoleRepository roleRepository;
+        private readonly IMapper mapper;
 
-        public CorporationUserRepository(UserDbContext context)
+        public CorporationUserRepository(UserDbContext context, IRoleRepository roleRepository, IMapper mapper)
         {
             this.context = context;
+            this.roleRepository = roleRepository;
+            this.mapper = mapper;
         }
 
-        public UserCreatedConfirmation CreateUser(Corporation user)
+        public CorporationUserCreatedConfirmation CreateUser(Corporation user)
         {
-            throw new NotImplementedException();
+            var userRole = roleRepository.GetRoles("Regular user")[0];
+            user.Role = userRole;
+            context.Role.Attach(userRole);
+            var createdUser = context.Add(user);
+            return mapper.Map<CorporationUserCreatedConfirmation>(createdUser.Entity);
         }
 
         public void DeleteUser(Guid userId)

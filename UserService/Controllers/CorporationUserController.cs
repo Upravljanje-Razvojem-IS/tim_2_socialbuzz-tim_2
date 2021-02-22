@@ -5,8 +5,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using UserService.Data;
 using UserService.Dtos;
+using UserService.Dtos.Users;
+using UserService.Entities;
 
 namespace UserService.Controllers
 {
@@ -20,11 +23,13 @@ namespace UserService.Controllers
     {
         private readonly ICorporationUserRepository corporationUserRepository;
         private readonly IMapper mapper;
+        private readonly LinkGenerator linkGenerator;
 
-        public CorporationUserController(ICorporationUserRepository corporationUserRepository, IMapper mapper)
+        public CorporationUserController(ICorporationUserRepository corporationUserRepository, IMapper mapper, LinkGenerator linkGenerator)
         {
             this.corporationUserRepository = corporationUserRepository;
             this.mapper = mapper;
+            this.linkGenerator = linkGenerator;
         }
 
         /// <summary>
@@ -65,6 +70,36 @@ namespace UserService.Controllers
                 return NotFound();
             }
             return Ok(mapper.Map<CorporationDto>(croporationUser));
+        }
+
+        //TODO: Provide example body
+        /// <summary>
+        /// Creates a new corporation user account
+        /// </summary>
+        /// <param name="corporationUser">Model of corporation user</param>
+        /// <returns>Confirmation of the creation of corporation user</returns>
+        /// <response code="200">Returns the created corporation user</response>
+        /// <response code="500">There was an error on the server</response>
+        [HttpPost]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<CorporationUserCreatedConfirmationDto> CreateUser([FromBody] CorporationUserCreationDto corporationUser)
+        {
+            try
+            {
+                Corporation userEntity = mapper.Map<Corporation>(corporationUser);
+                CorporationUserCreatedConfirmation userCreated = corporationUserRepository.CreateUser(userEntity);
+                corporationUserRepository.SaveChanges();
+
+                string location = linkGenerator.GetPathByAction("GetUserById", "CorporationUser", new { userId = userCreated.UserId });
+
+                return Created(location, mapper.Map<CorporationUserCreatedConfirmationDto>(userCreated));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }

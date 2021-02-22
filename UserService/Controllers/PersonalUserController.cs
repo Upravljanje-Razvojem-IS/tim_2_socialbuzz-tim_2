@@ -74,7 +74,7 @@ namespace UserService.Controllers
         }
 
 
-        //TODO: Provide exapmple body
+        //TODO: Provide example body
         /// <summary>
         /// Creates a new personal user account
         /// </summary>
