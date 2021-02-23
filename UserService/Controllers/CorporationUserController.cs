@@ -137,6 +137,7 @@ namespace UserService.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Update error");
             }
         }
+
         /// <summary>
         /// Deleting corporation user with userId
         /// </summary>

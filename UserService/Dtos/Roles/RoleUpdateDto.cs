@@ -3,15 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UserService.Entities
+namespace UserService.Dtos.Roles
 {
-    public class RoleCreatedConfirmation
+    public class RoleUpdateDto
     {
-        /// <summary>
-        /// Unique identifier for the role
-        /// </summary>
-        public Guid RoleId { get; set; }
-
         /// <summary>
         /// Role name
         /// </summary>

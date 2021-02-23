@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,20 +10,24 @@ namespace UserService.Data
     public class CityRepository : ICityRepository
     {
         private readonly UserDbContext context;
+        private readonly IMapper mapper;
 
-        public CityRepository(UserDbContext context)
+        public CityRepository(UserDbContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         public CityCreatedConfirmation CreateCity(City city)
         {
-            throw new NotImplementedException();
+            var createdCity = context.Add(city);
+            return mapper.Map<CityCreatedConfirmation>(createdCity.Entity);
         }
 
         public void DeleteCity(Guid cityId)
         {
-            throw new NotImplementedException();
+            var city = GetCityByCityId(cityId);
+            context.Remove(city);
         }
 
         public List<City> GetCities(string cityName)
@@ -38,10 +43,10 @@ namespace UserService.Data
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            return context.SaveChanges() > 0;
         }
 
-        public void UpdateCity(City cit)
+        public void UpdateCity(City city)
         {
             throw new NotImplementedException();
         }

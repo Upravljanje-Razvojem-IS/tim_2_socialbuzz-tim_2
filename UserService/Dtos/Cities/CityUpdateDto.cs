@@ -5,13 +5,8 @@ using System.Threading.Tasks;
 
 namespace UserService.Dtos.Cities
 {
-    public class CityCreatedConfirmationDto
+    public class CityUpdateDto
     {
-        /// <summary>
-        /// Unique identifier for a city
-        /// </summary>
-        public Guid CityId { get; set; }
-
         /// <summary>
         /// City name 
         /// </summary>

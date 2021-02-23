@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,20 +10,24 @@ namespace UserService.Data
     public class RoleRepository : IRoleRepository
     {
         private readonly UserDbContext context;
+        private readonly IMapper mapper;
 
-        public RoleRepository(UserDbContext context)
+        public RoleRepository(UserDbContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         public RoleCreatedConfirmation CreateRole(Role role)
         {
-            throw new NotImplementedException();
+            var createdRole = context.Add(role);
+            return mapper.Map<RoleCreatedConfirmation>(createdRole.Entity);
         }
 
         public void DeleteRole(Guid roleId)
         {
-            throw new NotImplementedException();
+            var role = GetRoleByRoleId(roleId);
+            context.Remove(role);
         }
 
         public Role GetRoleByRoleId(Guid roleId)
@@ -38,7 +43,7 @@ namespace UserService.Data
 
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            return context.SaveChanges() > 0;
         }
 
         public void UpdateRole(Role role)
