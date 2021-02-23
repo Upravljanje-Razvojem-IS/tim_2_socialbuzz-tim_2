@@ -40,6 +40,7 @@ namespace UserService.Profiles
                 opt => opt.MapFrom(src => src.CityId));
             CreateMap<PersonalUser, PersonalUserCreatedConfirmation>();
             CreateMap<PersonalUserCreatedConfirmation, PersonalUserCreatedConfirmationDto>();
+            CreateMap<PersonalUserUpdateDto, PersonalUser>();
         }
     }
 }

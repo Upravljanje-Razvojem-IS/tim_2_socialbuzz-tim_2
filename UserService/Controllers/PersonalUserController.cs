@@ -102,6 +102,73 @@ namespace UserService.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-        } 
+        }
+
+        /// <summary>
+        /// Updates personal user
+        /// </summary>
+        /// <param name="userId">User's Id</param>
+        /// <returns>Confirmation of update</returns>
+        /// <response code="200">Returns updated user</response>
+        /// <response code="400">Personal user with userId is not found</response>
+        /// <response code="500">Error on the server while updating</response>
+        [HttpPut("{userId}")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<PersonalUserDto> UpdateUser([FromBody] PersonalUserUpdateDto personalUser, Guid userId)
+        {
+            try
+            {
+                var userWithId = personalUserRepository.GetUserByUserId(userId);
+                if (userWithId == null)
+                {
+                    return NotFound();
+                }
+                //TODO: Role can be changed only by admin, PATCH 
+                PersonalUser updatedUser = mapper.Map<PersonalUser>(personalUser);
+                updatedUser.RoleId = userWithId.RoleId;
+                updatedUser.UserId = userId;
+                mapper.Map(updatedUser, userWithId);
+                personalUserRepository.SaveChanges();
+                return Ok(mapper.Map<PersonalUserDto>(userWithId));
+            }
+            catch(Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Update error");
+            }
+        }
+
+        /// <summary>
+        /// Deleting personal user with userId
+        /// </summary>
+        /// <param name="userId">User's Id</param>
+        /// <returns>Status 204 (NoContent)</returns>
+        /// <response code="204">User succesfully deleted</response>
+        /// <response code="404">User with userId not found</response>
+        /// <response code="500">Error on the server while deleting</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [HttpDelete("{userId}")]
+        public IActionResult DeleteUser(Guid userId)
+        {
+            try
+            {
+                var user = personalUserRepository.GetUserByUserId(userId);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                personalUserRepository.DeleteUser(userId);
+                personalUserRepository.SaveChanges();
+                return NoContent();
+            }
+            catch(Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Delete error");
+            }
+        }
     }
 }

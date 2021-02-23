@@ -32,7 +32,8 @@ namespace UserService.Data
 
         public void DeleteUser(Guid userId)
         {
-            throw new NotImplementedException();
+            var user = GetUserByUserId(userId);
+            context.Remove(user);
         }
 
         public Corporation GetUserByUserId(Guid userId)

@@ -36,6 +36,7 @@ namespace UserService.Profiles
                 opt => opt.MapFrom(src => src.CityId));
             CreateMap<Corporation, CorporationUserCreatedConfirmation>();
             CreateMap<CorporationUserCreatedConfirmation, CorporationUserCreatedConfirmationDto>();
+            CreateMap<CorporationUserUpdateDto, Corporation>();
         }
        
     }
