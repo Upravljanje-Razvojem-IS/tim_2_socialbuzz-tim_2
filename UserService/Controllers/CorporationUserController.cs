@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Data.SqlClient;
 using UserService.Data;
 using UserService.Dtos;
 using UserService.Dtos.Users;
@@ -102,6 +103,21 @@ namespace UserService.Controllers
             }
             catch (Exception ex)
             {
+                if (ex.GetBaseException().GetType() == typeof(SqlException))
+                {
+                    Int32 ErrorCode = ((SqlException)ex.InnerException).Number;
+                    switch (ErrorCode)
+                    {
+                        case 2627:  // Unique constraint error
+                            break;
+                        case 547:   // Constraint check violation; FK violation
+                            return StatusCode(StatusCodes.Status422UnprocessableEntity);
+                        case 2601:  // Duplicated key row error; Unique violation
+                            return StatusCode(StatusCodes.Status409Conflict);
+                        default:
+                            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                    }
+                }
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
@@ -141,9 +157,24 @@ namespace UserService.Controllers
                 corporationUserRepository.SaveChanges();
                 return Ok(mapper.Map<CorporationDto>(userWithId));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+                if (ex.GetBaseException().GetType() == typeof(SqlException))
+                {
+                    Int32 ErrorCode = ((SqlException)ex.InnerException).Number;
+                    switch (ErrorCode)
+                    {
+                        case 2627:  // Unique constraint error
+                            break;
+                        case 547:   // Constraint check violation; FK violation
+                            return StatusCode(StatusCodes.Status422UnprocessableEntity);
+                        case 2601:  // Duplicated key row error; Unique violation
+                            return StatusCode(StatusCodes.Status409Conflict);
+                        default:
+                            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                    }
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
