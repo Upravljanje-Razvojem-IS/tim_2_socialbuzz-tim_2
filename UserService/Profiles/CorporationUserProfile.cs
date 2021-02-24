@@ -37,6 +37,7 @@ namespace UserService.Profiles
             CreateMap<Corporation, CorporationUserCreatedConfirmation>();
             CreateMap<CorporationUserCreatedConfirmation, CorporationUserCreatedConfirmationDto>();
             CreateMap<CorporationUserUpdateDto, Corporation>();
+            CreateMap<Corporation, Corporation>();
         }
        
     }

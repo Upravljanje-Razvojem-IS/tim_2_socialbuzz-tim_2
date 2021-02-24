@@ -24,12 +24,16 @@ namespace UserService.Controllers
         private readonly ICorporationUserRepository corporationUserRepository;
         private readonly IMapper mapper;
         private readonly LinkGenerator linkGenerator;
+        private readonly IRoleRepository roleRepository;
+        private readonly ICityRepository cityRepository;
 
-        public CorporationUserController(ICorporationUserRepository corporationUserRepository, IMapper mapper, LinkGenerator linkGenerator)
+        public CorporationUserController(ICorporationUserRepository corporationUserRepository, IMapper mapper, LinkGenerator linkGenerator, IRoleRepository roleRepository, ICityRepository cityRepository)
         {
             this.corporationUserRepository = corporationUserRepository;
             this.mapper = mapper;
             this.linkGenerator = linkGenerator;
+            this.roleRepository = roleRepository;
+            this.cityRepository = cityRepository;
         }
 
         /// <summary>
@@ -125,16 +129,21 @@ namespace UserService.Controllers
                     return NotFound();
                 }
                 //TODO: Role can be changed only by admin, PATCH 
+                //TODO: Cleaner code
+                //TODO: Bad foreign keys, unique
+                //TODO: Password change PATCH?
                 Corporation updatedUser = mapper.Map<Corporation>(corporationUser);
                 updatedUser.RoleId = userWithId.RoleId;
+                updatedUser.Role = roleRepository.GetRoleByRoleId(userWithId.RoleId);
+                updatedUser.City = cityRepository.GetCityByCityId(updatedUser.CityId);
                 updatedUser.UserId = userId;
                 mapper.Map(updatedUser, userWithId);
                 corporationUserRepository.SaveChanges();
                 return Ok(mapper.Map<CorporationDto>(userWithId));
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Update error");
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
 
