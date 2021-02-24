@@ -13,6 +13,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using UserService.Data;
 using UserService.Entities;
+using FluentValidation.AspNetCore;
+using UserService.Filters;
 
 namespace UserService
 {
@@ -30,9 +32,12 @@ namespace UserService
         {
 
             services.AddControllers(setup =>
-            //Content negotiation in Accept header of users request
-                setup.ReturnHttpNotAcceptable = true
-            ).AddXmlDataContractSerializerFormatters();
+                //Content negotiation in Accept header of users request
+                //TODO: Uncomment
+                //setup.ReturnHttpNotAcceptable = true,
+                setup.Filters.Add<ValidationFilter>()
+            ).AddXmlDataContractSerializerFormatters()
+            .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddDbContext<UserDbContext>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
