@@ -27,14 +27,17 @@ namespace UserService.Controllers
         private readonly LinkGenerator linkGenerator;
         private readonly IRoleRepository roleRepository;
         private readonly ICityRepository cityRepository;
+        private readonly IPersonalUserRepository personalUserRepository;
 
-        public CorporationUserController(ICorporationUserRepository corporationUserRepository, IMapper mapper, LinkGenerator linkGenerator, IRoleRepository roleRepository, ICityRepository cityRepository)
+        public CorporationUserController(ICorporationUserRepository corporationUserRepository, IMapper mapper, 
+            LinkGenerator linkGenerator, IRoleRepository roleRepository, ICityRepository cityRepository, IPersonalUserRepository personalUserRepository)
         {
             this.corporationUserRepository = corporationUserRepository;
             this.mapper = mapper;
             this.linkGenerator = linkGenerator;
             this.roleRepository = roleRepository;
             this.cityRepository = cityRepository;
+            this.personalUserRepository = personalUserRepository;
         }
 
         /// <summary>
@@ -93,6 +96,12 @@ namespace UserService.Controllers
         {
             try
             {
+                var user = personalUserRepository.GetUsers(null, corporationUser.Username);
+                if (user != null)
+                {
+                    //Unique violation
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
                 Corporation userEntity = mapper.Map<Corporation>(corporationUser);
                 CorporationUserCreatedConfirmation userCreated = corporationUserRepository.CreateUser(userEntity);
                 corporationUserRepository.SaveChanges();
@@ -144,6 +153,12 @@ namespace UserService.Controllers
                 {
                     return NotFound();
                 }
+                var user = personalUserRepository.GetUsers(null, corporationUser.Username);
+                if (user != null)
+                {
+                    //Unique violation
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
                 //TODO: Role can be changed only by admin, PATCH 
                 //TODO: Cleaner code
                 //TODO: Bad foreign keys, unique
@@ -152,6 +167,7 @@ namespace UserService.Controllers
                 updatedUser.RoleId = userWithId.RoleId;
                 updatedUser.Role = roleRepository.GetRoleByRoleId(userWithId.RoleId);
                 updatedUser.City = cityRepository.GetCityByCityId(updatedUser.CityId);
+                //If updated.City is null FK violation
                 updatedUser.UserId = userId;
                 mapper.Map(updatedUser, userWithId);
                 corporationUserRepository.SaveChanges();

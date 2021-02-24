@@ -29,14 +29,17 @@ namespace UserService.Controllers
         private readonly LinkGenerator linkGenerator;
         private readonly IRoleRepository roleRepository;
         private readonly ICityRepository cityRepository;
+        private readonly ICorporationUserRepository corporationUserRepository;
 
-        public PersonalUserController(IPersonalUserRepository personalUserRepository, IMapper mapper, LinkGenerator linkGenerator, IRoleRepository roleRepository, ICityRepository cityRepository)
+        public PersonalUserController(IPersonalUserRepository personalUserRepository, IMapper mapper, 
+            LinkGenerator linkGenerator, IRoleRepository roleRepository, ICityRepository cityRepository, ICorporationUserRepository corporationUserRepository)
         {
             this.personalUserRepository = personalUserRepository;
             this.mapper = mapper;
             this.linkGenerator = linkGenerator;
             this.roleRepository = roleRepository;
             this.cityRepository = cityRepository;
+            this.corporationUserRepository = corporationUserRepository;
         }
 
         /// <summary>
@@ -96,6 +99,12 @@ namespace UserService.Controllers
         {
             try
             {
+                var user = corporationUserRepository.GetUsers(null, personalUser.Username);
+                if (user != null)
+                {
+                    //Unique violation
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
                 PersonalUser userEntity = mapper.Map<PersonalUser>(personalUser);
                 PersonalUserCreatedConfirmation userCreated = personalUserRepository.CreateUser(userEntity);
                 personalUserRepository.SaveChanges();
@@ -152,6 +161,12 @@ namespace UserService.Controllers
                 //TODO: Cleaner code
                 //TODO: Bad foreign keys, unique
                 //TODO: Password change PATCH?
+                var user = corporationUserRepository.GetUsers(null, personalUser.Username);
+                if (user != null)
+                {
+                    //Unique violation
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
                 PersonalUser updatedUser = mapper.Map<PersonalUser>(personalUser);
                 updatedUser.RoleId = userWithId.RoleId;
                 updatedUser.RoleId = userWithId.RoleId;
