@@ -97,7 +97,7 @@ namespace UserService.Controllers
             try
             {
                 var user = personalUserRepository.GetUsers(null, corporationUser.Username);
-                if (user != null)
+                if (user != null && user.Count > 0)
                 {
                     //Unique violation
                     return StatusCode(StatusCodes.Status409Conflict);
@@ -120,9 +120,9 @@ namespace UserService.Controllers
                         case 2627:  // Unique constraint error
                             break;
                         case 547:   // Constraint check violation; FK violation
-                            return StatusCode(StatusCodes.Status422UnprocessableEntity);
+                            return StatusCode(StatusCodes.Status422UnprocessableEntity, ex.Message);
                         case 2601:  // Duplicated key row error; Unique violation
-                            return StatusCode(StatusCodes.Status409Conflict);
+                            return StatusCode(StatusCodes.Status409Conflict, ex.Message);
                         default:
                             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                     }
@@ -154,7 +154,7 @@ namespace UserService.Controllers
                     return NotFound();
                 }
                 var user = personalUserRepository.GetUsers(null, corporationUser.Username);
-                if (user != null)
+                if (user != null && user.Count > 0)
                 {
                     //Unique violation
                     return StatusCode(StatusCodes.Status409Conflict);

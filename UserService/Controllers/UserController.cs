@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Data.SqlClient;
 using UserService.Data;
 using UserService.Dtos;
 using UserService.Dtos.Users;
@@ -22,12 +24,15 @@ namespace UserService.Controllers
         private readonly IPersonalUserRepository personalUserRepository;
         private readonly ICorporationUserRepository corporationUserRepository;
         private readonly IMapper mapper;
+        private readonly LinkGenerator linkGenerator;
 
-        public UserController(IPersonalUserRepository personalUserRepository, ICorporationUserRepository corporationUserRepository, IMapper mapper)
+        public UserController(IPersonalUserRepository personalUserRepository, ICorporationUserRepository corporationUserRepository,
+            IMapper mapper, LinkGenerator linkGenerator)
         {
             this.personalUserRepository = personalUserRepository;
             this.corporationUserRepository = corporationUserRepository;
             this.mapper = mapper;
+            this.linkGenerator = linkGenerator;
         }
 
         /// <summary>
@@ -98,16 +103,18 @@ namespace UserService.Controllers
         public ActionResult<UserInfoDto> GetUserById(Guid userId)
         {
             var coprporationUser = corporationUserRepository.GetUserByUserId(userId);
-            if(coprporationUser != null)
+            if (coprporationUser != null)
             {
                 return Ok(mapper.Map<UserInfoDto>(coprporationUser));
             }
             var personalUser = personalUserRepository.GetUserByUserId(userId);
-            if(personalUser != null)
+            if (personalUser != null)
             {
                 return Ok(mapper.Map<UserInfoDto>(personalUser));
             }
             return NotFound();
         }
+
+ 
     }
 }

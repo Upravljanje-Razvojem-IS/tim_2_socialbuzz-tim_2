@@ -59,5 +59,14 @@ namespace UserService.Data
             var createdUser = context.Add(user);
             return mapper.Map<PersonalUserCreatedConfirmation>(createdUser.Entity);
         }
+
+        public PersonalUserCreatedConfirmation CreateAdmin(PersonalUser user)
+        {
+            var userRole = roleRepository.GetRoles("Admin")[0];
+            user.Role = userRole;
+            context.Role.Attach(userRole);
+            var createdUser = context.Add(user);
+            return mapper.Map<PersonalUserCreatedConfirmation>(createdUser.Entity);
+        }
     }
 }

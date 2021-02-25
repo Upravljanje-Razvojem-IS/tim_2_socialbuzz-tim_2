@@ -100,7 +100,7 @@ namespace UserService.Controllers
             try
             {
                 var user = corporationUserRepository.GetUsers(null, personalUser.Username);
-                if (user != null)
+                if (user != null && user.Count > 0)
                 {
                     //Unique violation
                     return StatusCode(StatusCodes.Status409Conflict);
@@ -123,9 +123,9 @@ namespace UserService.Controllers
                         case 2627:  // Unique constraint error
                             break;
                         case 547:   // Constraint check violation; FK violation
-                            return StatusCode(StatusCodes.Status422UnprocessableEntity);
+                            return StatusCode(StatusCodes.Status422UnprocessableEntity, ex.Message);
                         case 2601:  // Duplicated key row error; Unique violation
-                            return StatusCode(StatusCodes.Status409Conflict);
+                            return StatusCode(StatusCodes.Status409Conflict, ex.Message);
                         default:
                             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                     }
@@ -162,7 +162,7 @@ namespace UserService.Controllers
                 //TODO: Bad foreign keys, unique
                 //TODO: Password change PATCH?
                 var user = corporationUserRepository.GetUsers(null, personalUser.Username);
-                if (user != null)
+                if (user != null && user.Count > 0)
                 {
                     //Unique violation
                     return StatusCode(StatusCodes.Status409Conflict);
@@ -228,5 +228,60 @@ namespace UserService.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Delete error");
             }
         }
+
+        //TODO: Provide example body
+        /// <summary>
+        /// Creates a new personal user account
+        /// </summary>
+        /// <param name="personalUser">Model of personal user</param>
+        /// <returns>Confirmation of the creation of personal user</returns>
+        /// <response code="200">Returns the created personal user</response>
+        /// <response code="500">There was an error on the server</response>
+        [HttpPost("admins")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<PersonalUserCreatedConfirmationDto> CreateAdmin([FromBody] PersonalUserCreationDto personalUser)
+        {
+            try
+            {
+                var user = corporationUserRepository.GetUsers(null, personalUser.Username);
+                if (user != null && user.Count >0)
+                {
+                    //Unique violation
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
+                PersonalUser userEntity = mapper.Map<PersonalUser>(personalUser);
+                PersonalUserCreatedConfirmation userCreated = personalUserRepository.CreateAdmin(userEntity);
+                personalUserRepository.SaveChanges();
+
+                string location = linkGenerator.GetPathByAction("GetUserById", "PersonalUser", new { userId = userCreated.UserId });
+
+                return Created(location, mapper.Map<PersonalUserCreatedConfirmationDto>(userCreated));
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetBaseException().GetType() == typeof(SqlException))
+                {
+                    Int32 ErrorCode = ((SqlException)ex.InnerException).Number;
+                    switch (ErrorCode)
+                    {
+                        case 2627:  // Unique constraint error
+                            break;
+                        case 547:   // Constraint check violation; FK violation
+                            return StatusCode(StatusCodes.Status422UnprocessableEntity, ex.Message);
+                        case 2601:  // Duplicated key row error; Unique violation
+                            return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                        default:
+                            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                    }
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+            }
+
+        }
+
+
     }
 }
