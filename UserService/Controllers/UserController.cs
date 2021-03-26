@@ -24,15 +24,13 @@ namespace UserService.Controllers
         private readonly IPersonalUserRepository personalUserRepository;
         private readonly ICorporationUserRepository corporationUserRepository;
         private readonly IMapper mapper;
-        private readonly LinkGenerator linkGenerator;
 
         public UserController(IPersonalUserRepository personalUserRepository, ICorporationUserRepository corporationUserRepository,
-            IMapper mapper, LinkGenerator linkGenerator)
+            IMapper mapper)
         {
             this.personalUserRepository = personalUserRepository;
             this.corporationUserRepository = corporationUserRepository;
             this.mapper = mapper;
-            this.linkGenerator = linkGenerator;
         }
 
         /// <summary>
@@ -115,6 +113,6 @@ namespace UserService.Controllers
             return NotFound();
         }
 
- 
+        
     }
 }

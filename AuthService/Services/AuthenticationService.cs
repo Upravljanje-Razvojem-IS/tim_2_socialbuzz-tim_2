@@ -8,9 +8,9 @@ namespace AuthService.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
-        public Task<AuthenticationRespose> LoginAsync(string email, string password)
+        public Task<AuthenticationResponse> LoginAsync(string email, string password)
         {
-            return new Task<AuthenticationRespose>(null);
+            return new Task<AuthenticationResponse>(null);
         }
     }
 }

@@ -5,8 +5,12 @@ using System.Threading.Tasks;
 
 namespace AuthService.Models
 {
-    public class AuthenticationRespose
+    public class AuthenticationResponse
     {
+
+        //User Registration and Controller Auth | ASP.NET Core 5 REST API Tutorial 10 15:00
+        //Used in AuthService, AuthFailResponse and AuthSuccessResponse are used in Controller
+
         /// <summary>
         /// A generated token after successful authentication
         /// </summary>

@@ -30,7 +30,6 @@ namespace UserService.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //TODO: Unique dozvoljava da prodje 
 
             modelBuilder.Entity<PersonalUser>()
             .HasIndex(b => b.Username)
