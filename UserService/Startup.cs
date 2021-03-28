@@ -153,6 +153,7 @@ namespace UserService
 
             app.UseAuthorization();
 
+            // Seeding the identity tables 
             IdentityDataInitializer.SeedData(userManager, roleManager);
 
             app.UseEndpoints(endpoints =>

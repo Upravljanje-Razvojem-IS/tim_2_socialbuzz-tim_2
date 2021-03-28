@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Data.SqlClient;
@@ -28,9 +29,11 @@ namespace UserService.Controllers
         private readonly IRoleRepository roleRepository;
         private readonly ICityRepository cityRepository;
         private readonly IPersonalUserRepository personalUserRepository;
+        private readonly UserManager<AccountInfo> userManager;
 
         public CorporationUserController(ICorporationUserRepository corporationUserRepository, IMapper mapper, 
-            LinkGenerator linkGenerator, IRoleRepository roleRepository, ICityRepository cityRepository, IPersonalUserRepository personalUserRepository)
+            LinkGenerator linkGenerator, IRoleRepository roleRepository, ICityRepository cityRepository, 
+            IPersonalUserRepository personalUserRepository, UserManager<AccountInfo> userManager)
         {
             this.corporationUserRepository = corporationUserRepository;
             this.mapper = mapper;
@@ -38,6 +41,7 @@ namespace UserService.Controllers
             this.roleRepository = roleRepository;
             this.cityRepository = cityRepository;
             this.personalUserRepository = personalUserRepository;
+            this.userManager = userManager;
         }
 
         /// <summary>
@@ -92,7 +96,7 @@ namespace UserService.Controllers
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<CorporationUserCreatedConfirmationDto> CreateUser([FromBody] CorporationUserCreationDto corporationUser)
+        public async Task<ActionResult<CorporationUserCreatedConfirmationDto>> CreateUser([FromBody] CorporationUserCreationDto corporationUser)
         {
             try
             {
@@ -103,8 +107,18 @@ namespace UserService.Controllers
                     return StatusCode(StatusCodes.Status409Conflict);
                 }
                 Corporation userEntity = mapper.Map<Corporation>(corporationUser);
+               
+                //Adding to userdbcontext tables
                 CorporationUserCreatedConfirmation userCreated = corporationUserRepository.CreateUser(userEntity);
                 corporationUserRepository.SaveChanges();
+                //Adding to identityuserdbcontext tables
+                string username = string.Join("", corporationUser.Username.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+                var acc = new AccountInfo(username, corporationUser.Email, userCreated.UserId);
+                IdentityResult result = await userManager.CreateAsync(acc, corporationUser.Password);
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(acc, "Regular user").Wait();
+                }
 
                 string location = linkGenerator.GetPathByAction("GetUserById", "CorporationUser", new { userId = userCreated.UserId });
 
@@ -144,7 +158,7 @@ namespace UserService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<CorporationDto> UpdateUser([FromBody] CorporationUserUpdateDto corporationUser, Guid userId)
+        public async Task<ActionResult<CorporationDto>> UpdateUser([FromBody] CorporationUserUpdateDto corporationUser, Guid userId)
         {
             try
             {
@@ -171,6 +185,13 @@ namespace UserService.Controllers
                 updatedUser.UserId = userId;
                 mapper.Map(updatedUser, userWithId);
                 corporationUserRepository.SaveChanges();
+
+                //Updating identity table
+                AccountInfo acc = await userManager.FindByIdAsync(userId.ToString());
+                string username = string.Join("", corporationUser.Username.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+                acc.UserName = username;
+                await userManager.UpdateAsync(acc);
+
                 return Ok(mapper.Map<CorporationDto>(userWithId));
             }
             catch (Exception ex)
@@ -206,7 +227,7 @@ namespace UserService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{userId}")]
-        public IActionResult DeleteUser(Guid userId)
+        public async Task<IActionResult> DeleteUser(Guid userId)
         {
             try
             {
@@ -217,6 +238,11 @@ namespace UserService.Controllers
                 }
                 corporationUserRepository.DeleteUser(userId);
                 corporationUserRepository.SaveChanges();
+
+                //Delete from identity table
+                var acc = await userManager.FindByIdAsync(userId.ToString());
+                await userManager.DeleteAsync(acc);
+
                 return NoContent();
             }
             catch (Exception)
