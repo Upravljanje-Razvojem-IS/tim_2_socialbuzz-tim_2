@@ -90,6 +90,16 @@ namespace UserService
                 };
             });
             services.AddDbContext<UserDbContext>();
+            services.AddDbContext<IdentityUserDbContext>();
+            //Adding Identity
+            services.AddIdentity<AccountInfo, AccountRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireLowercase = false;
+            }).AddEntityFrameworkStores<IdentityUserDbContext>();
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<IPersonalUserRepository, PersonalUserRepository>();
