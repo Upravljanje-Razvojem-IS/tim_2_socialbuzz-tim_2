@@ -11,7 +11,7 @@ namespace UserService.Validators
     {
         public PersonalUserUpdateDtoValidator()
         {
-            RuleFor(x => x.Email).NotNull().EmailAddress();
+            //RuleFor(x => x.Email).NotNull().EmailAddress();
             RuleFor(x => x.FirstName).NotNull().NotEmpty().MaximumLength(50).MinimumLength(3);
             RuleFor(x => x.LastName).NotNull().NotEmpty().MaximumLength(50).MinimumLength(3);
             RuleFor(x => x.Telephone).NotNull().NotEmpty().MaximumLength(30).MinimumLength(7);

@@ -37,7 +37,7 @@ namespace UserService.Entities
             modelBuilder.Entity<Corporation>()
             .HasIndex(b => b.Username)
             .IsUnique();
-
+            //TODO: email unique
             modelBuilder.Seed();
 
           

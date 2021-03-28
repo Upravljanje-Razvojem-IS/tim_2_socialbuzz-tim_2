@@ -7,11 +7,13 @@ namespace UserService.Dtos.Users
 {
     public class UserUpdateDto
     {
-        /// <summary>
+        //TODO: password can't be changed
+        //Email shouldn't be updated
+        /*/// <summary>
         /// User's email
         /// </summary>
-        public String Email { get; set; }
-
+        public String Email { get; set; }*/
+        
         /// <summary>
         /// User's password
         /// </summary>

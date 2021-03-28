@@ -179,6 +179,8 @@ namespace UserService.Controllers
                 //TODO: Password change PATCH?
                 Corporation updatedUser = mapper.Map<Corporation>(corporationUser);
                 updatedUser.RoleId = userWithId.RoleId;
+                //TODO: Send response email can't be changed
+                updatedUser.Email = userWithId.Email;
                 updatedUser.Role = roleRepository.GetRoleByRoleId(userWithId.RoleId);
                 updatedUser.City = cityRepository.GetCityByCityId(updatedUser.CityId);
                 //If updated.City is null FK violation
