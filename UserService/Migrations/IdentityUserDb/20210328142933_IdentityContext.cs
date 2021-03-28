@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace UserService.Migrations.IdentityUserDb
 {
-    public partial class AddIdentityContext : Migration
+    public partial class IdentityContext : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -152,27 +152,6 @@ namespace UserService.Migrations.IdentityUserDb
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { new Guid("194df880-d4ce-4997-96c9-878102eb6e0e"), "84bc39dc-2108-43e6-8ed2-68d054798007", "Admin", "Role that enables root level privileges", null },
-                    { new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"), "1bda4e6a-116b-4654-a5c6-78561b022462", "Regular User", "Role that basic level privileges", null }
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "AccountIsActive", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[,]
-                {
-                    { new Guid("ce593d02-c615-4af6-a794-c450b79e9b4d"), 0, true, "ea47b3a2-5093-47cb-b817-c6e206845ec0", "nata@gmail.com", false, false, null, null, null, null, null, false, null, false, "NatalijaG" },
-                    { new Guid("ff0c9396-7c4c-4bf5-a12e-6aa79c272413"), 0, true, "9d41040b-1aad-4673-ae0c-ef08cdb546ef", "vladika@gmail.com", false, false, null, null, null, null, null, false, null, false, "VladikaF" },
-                    { new Guid("8c349e7b-1c97-486d-aa2e-e58205d11577"), 0, true, "2958d203-06cb-40a0-a281-d9f3e2c82b74", "stefke@gmail.com", false, false, null, null, null, null, null, false, null, false, "StefanO" },
-                    { new Guid("33253633-10e4-45c8-9b8e-84020a5c8c58"), 0, true, "ebfbf0af-dd7b-43c2-8c8f-44c25f7561a9", "financial_corpo@gmail.com", false, false, null, null, null, null, null, false, null, false, "Financial Corporation" },
-                    { new Guid("987268e5-f880-4f81-b1bf-5b9704604e26"), 0, true, "4d82aabe-0072-4b57-838d-843324fe19e3", "billing_corpo@gmail.com", false, false, null, null, null, null, null, false, null, false, "Billing Corporation" }
                 });
 
             migrationBuilder.CreateIndex(

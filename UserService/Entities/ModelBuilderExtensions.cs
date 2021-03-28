@@ -134,6 +134,7 @@ namespace UserService.Entities
             //TODO: updating username in PersonalUser/CorporationUser updates AccountInfo table as well
             // also updating the role makes changes
             //TODO: what happens after update in Auth database with username
+            //TODO: which user has which role
             modelBuilder.Entity<AccountInfo>().HasData(
                 new AccountInfo("NatalijaG", "nata@gmail.com", firstPersonalUserAdminId),
                 new AccountInfo("VladikaF", "vladika@gmail.com", secondPersonalUserRegularUserId),
@@ -145,7 +146,7 @@ namespace UserService.Entities
             //TODO: update of AccountRole
             modelBuilder.Entity<AccountRole>().HasData(
                 new AccountRole(adminRoleId, "Admin", "Role that enables root level privileges"),
-                new AccountRole(regularUserRoleId, "Regular User", "Role that basic level privileges")
+                new AccountRole(regularUserRoleId, "Regular user", "Role that basic level privileges")
          );
         }
     }

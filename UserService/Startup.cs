@@ -18,6 +18,7 @@ using UserService.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Identity;
 
 namespace UserService
 {
@@ -98,6 +99,7 @@ namespace UserService
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredLength = 6;
                 options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
             }).AddEntityFrameworkStores<IdentityUserDbContext>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -130,7 +132,7 @@ namespace UserService
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<AccountInfo> userManager, RoleManager<AccountRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -150,6 +152,8 @@ namespace UserService
             app.UseRouting();
 
             app.UseAuthorization();
+
+            IdentityDataInitializer.SeedData(userManager, roleManager);
 
             app.UseEndpoints(endpoints =>
             {

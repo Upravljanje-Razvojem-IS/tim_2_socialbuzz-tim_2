@@ -24,7 +24,7 @@ namespace UserService.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.SeedIdentity();
+           // modelBuilder.SeedIdentity();
         }
     }
 }

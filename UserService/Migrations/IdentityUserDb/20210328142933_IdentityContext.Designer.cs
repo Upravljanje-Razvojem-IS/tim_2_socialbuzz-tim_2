@@ -10,8 +10,8 @@ using UserService.Entities;
 namespace UserService.Migrations.IdentityUserDb
 {
     [DbContext(typeof(IdentityUserDbContext))]
-    [Migration("20210328124144_AddIdentityContext")]
-    partial class AddIdentityContext
+    [Migration("20210328142933_IdentityContext")]
+    partial class IdentityContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -189,73 +189,6 @@ namespace UserService.Migrations.IdentityUserDb
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("ce593d02-c615-4af6-a794-c450b79e9b4d"),
-                            AccessFailedCount = 0,
-                            AccountIsActive = true,
-                            ConcurrencyStamp = "ea47b3a2-5093-47cb-b817-c6e206845ec0",
-                            Email = "nata@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "NatalijaG"
-                        },
-                        new
-                        {
-                            Id = new Guid("ff0c9396-7c4c-4bf5-a12e-6aa79c272413"),
-                            AccessFailedCount = 0,
-                            AccountIsActive = true,
-                            ConcurrencyStamp = "9d41040b-1aad-4673-ae0c-ef08cdb546ef",
-                            Email = "vladika@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "VladikaF"
-                        },
-                        new
-                        {
-                            Id = new Guid("8c349e7b-1c97-486d-aa2e-e58205d11577"),
-                            AccessFailedCount = 0,
-                            AccountIsActive = true,
-                            ConcurrencyStamp = "2958d203-06cb-40a0-a281-d9f3e2c82b74",
-                            Email = "stefke@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "StefanO"
-                        },
-                        new
-                        {
-                            Id = new Guid("33253633-10e4-45c8-9b8e-84020a5c8c58"),
-                            AccessFailedCount = 0,
-                            AccountIsActive = true,
-                            ConcurrencyStamp = "ebfbf0af-dd7b-43c2-8c8f-44c25f7561a9",
-                            Email = "financial_corpo@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "Financial Corporation"
-                        },
-                        new
-                        {
-                            Id = new Guid("987268e5-f880-4f81-b1bf-5b9704604e26"),
-                            AccessFailedCount = 0,
-                            AccountIsActive = true,
-                            ConcurrencyStamp = "4d82aabe-0072-4b57-838d-843324fe19e3",
-                            Email = "billing_corpo@gmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "Billing Corporation"
-                        });
                 });
 
             modelBuilder.Entity("UserService.Entities.AccountRole", b =>
@@ -288,22 +221,6 @@ namespace UserService.Migrations.IdentityUserDb
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("194df880-d4ce-4997-96c9-878102eb6e0e"),
-                            ConcurrencyStamp = "84bc39dc-2108-43e6-8ed2-68d054798007",
-                            Description = "Admin",
-                            Name = "Role that enables root level privileges"
-                        },
-                        new
-                        {
-                            Id = new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"),
-                            ConcurrencyStamp = "1bda4e6a-116b-4654-a5c6-78561b022462",
-                            Description = "Regular User",
-                            Name = "Role that basic level privileges"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
