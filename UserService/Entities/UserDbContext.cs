@@ -40,7 +40,6 @@ namespace UserService.Entities
             //TODO: email unique
             modelBuilder.Seed();
 
-          
         }
     }
 }

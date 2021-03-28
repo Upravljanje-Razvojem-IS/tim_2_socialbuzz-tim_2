@@ -17,7 +17,7 @@ namespace UserService.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.3");
+                .HasAnnotation("ProductVersion", "5.0.4");
 
             modelBuilder.Entity("UserService.Entities.City", b =>
                 {
@@ -87,12 +87,6 @@ namespace UserService.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("IsActive");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("Password");
-
                     b.Property<string>("Pib")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -135,7 +129,6 @@ namespace UserService.Migrations
                             HeadquartersAddress = "Radnicka 1",
                             HeadquartersCity = "Novi Sad",
                             IsActive = true,
-                            Password = "pass123",
                             Pib = "187398",
                             RoleId = new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"),
                             Telephone = "+3816228749275",
@@ -150,7 +143,6 @@ namespace UserService.Migrations
                             HeadquartersAddress = "Danila Kisa 15",
                             HeadquartersCity = "Novi Sad",
                             IsActive = true,
-                            Password = "pass123",
                             Pib = "1844398",
                             RoleId = new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"),
                             Telephone = "+3816228749275",
@@ -190,12 +182,6 @@ namespace UserService.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("LastName");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasColumnName("Password");
-
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
@@ -231,7 +217,6 @@ namespace UserService.Migrations
                             FirstName = "Natalija",
                             IsActive = true,
                             LastName = "Gajic",
-                            Password = "pass123",
                             RoleId = new Guid("194df880-d4ce-4997-96c9-878102eb6e0e"),
                             Telephone = "+3816928749275",
                             Username = "NatalijaG"
@@ -244,7 +229,6 @@ namespace UserService.Migrations
                             FirstName = "Vladimir",
                             IsActive = true,
                             LastName = "Filipovic",
-                            Password = "pass123",
                             RoleId = new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"),
                             Telephone = "+3816968749275",
                             Username = "VladikaF"
@@ -257,7 +241,6 @@ namespace UserService.Migrations
                             FirstName = "Stefan",
                             IsActive = true,
                             LastName = "Ostojic",
-                            Password = "pass123",
                             RoleId = new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"),
                             Telephone = "+3816928749275",
                             Username = "StefanO"

@@ -21,11 +21,6 @@ namespace UserService.Entities
         public String Email { get; set; }
 
         /// <summary>
-        /// User's password
-        /// </summary>
-        public String Password { get; set; }
-
-        /// <summary>
         /// Users telephone
         /// </summary>
         public String Telephone { get; set; }

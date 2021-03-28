@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace UserService.Migrations
 {
-    public partial class initialseed : Migration
+    public partial class seedUserDbContextTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -41,7 +41,6 @@ namespace UserService.Migrations
                     HeadquartersCity = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     HeadquartersAddress = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     Telephone = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -73,7 +72,6 @@ namespace UserService.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     Telephone = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -117,21 +115,21 @@ namespace UserService.Migrations
 
             migrationBuilder.InsertData(
                 table: "Corporation",
-                columns: new[] { "UserId", "CityId", "CorporationName", "Email", "HeadquartersAddress", "HeadquartersCity", "IsActive", "Password", "Pib", "RoleId", "Telephone", "Username" },
+                columns: new[] { "UserId", "CityId", "CorporationName", "Email", "HeadquartersAddress", "HeadquartersCity", "IsActive", "Pib", "RoleId", "Telephone", "Username" },
                 values: new object[,]
                 {
-                    { new Guid("33253633-10e4-45c8-9b8e-84020a5c8c58"), new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"), "Financial Corporation", "financial_corpo@gmail.com", "Radnicka 1", "Novi Sad", true, "pass123", "187398", new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"), "+3816228749275", "Financial Corporation" },
-                    { new Guid("987268e5-f880-4f81-b1bf-5b9704604e26"), new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"), "Billing Corporation", "billing_corpo@gmail.com", "Danila Kisa 15", "Novi Sad", true, "pass123", "1844398", new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"), "+3816228749275", "Billing Corporation" }
+                    { new Guid("33253633-10e4-45c8-9b8e-84020a5c8c58"), new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"), "Financial Corporation", "financial_corpo@gmail.com", "Radnicka 1", "Novi Sad", true, "187398", new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"), "+3816228749275", "Financial Corporation" },
+                    { new Guid("987268e5-f880-4f81-b1bf-5b9704604e26"), new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"), "Billing Corporation", "billing_corpo@gmail.com", "Danila Kisa 15", "Novi Sad", true, "1844398", new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"), "+3816228749275", "Billing Corporation" }
                 });
 
             migrationBuilder.InsertData(
                 table: "PersonalUser",
-                columns: new[] { "UserId", "CityId", "Email", "FirstName", "IsActive", "LastName", "Password", "RoleId", "Telephone", "Username" },
+                columns: new[] { "UserId", "CityId", "Email", "FirstName", "IsActive", "LastName", "RoleId", "Telephone", "Username" },
                 values: new object[,]
                 {
-                    { new Guid("ce593d02-c615-4af6-a794-c450b79e9b4d"), new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"), "nata@gmail.com", "Natalija", true, "Gajic", "pass123", new Guid("194df880-d4ce-4997-96c9-878102eb6e0e"), "+3816928749275", "NatalijaG" },
-                    { new Guid("ff0c9396-7c4c-4bf5-a12e-6aa79c272413"), new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"), "vladika@gmail.com", "Vladimir", true, "Filipovic", "pass123", new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"), "+3816968749275", "VladikaF" },
-                    { new Guid("8c349e7b-1c97-486d-aa2e-e58205d11577"), new Guid("9346b8c4-1b3b-435f-9c35-35de3a76fcf9"), "stefke@gmail.com", "Stefan", true, "Ostojic", "pass123", new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"), "+3816928749275", "StefanO" }
+                    { new Guid("ce593d02-c615-4af6-a794-c450b79e9b4d"), new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"), "nata@gmail.com", "Natalija", true, "Gajic", new Guid("194df880-d4ce-4997-96c9-878102eb6e0e"), "+3816928749275", "NatalijaG" },
+                    { new Guid("ff0c9396-7c4c-4bf5-a12e-6aa79c272413"), new Guid("9171f23e-adf2-4698-b73f-05c6fd7ad1be"), "vladika@gmail.com", "Vladimir", true, "Filipovic", new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"), "+3816968749275", "VladikaF" },
+                    { new Guid("8c349e7b-1c97-486d-aa2e-e58205d11577"), new Guid("9346b8c4-1b3b-435f-9c35-35de3a76fcf9"), "stefke@gmail.com", "Stefan", true, "Ostojic", new Guid("728569aa-7a1f-45c9-b9d4-94bcc176bd0c"), "+3816928749275", "StefanO" }
                 });
 
             migrationBuilder.CreateIndex(

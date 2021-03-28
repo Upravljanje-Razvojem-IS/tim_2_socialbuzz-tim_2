@@ -184,7 +184,6 @@ namespace UserService.Controllers
                 PersonalUser updatedUser = mapper.Map<PersonalUser>(personalUser);
                 updatedUser.RoleId = userWithId.RoleId;
                 updatedUser.RoleId = userWithId.RoleId;
-                //TODO: Send response email can't be changed
                 updatedUser.Email = userWithId.Email;
                 updatedUser.Role = roleRepository.GetRoleByRoleId(userWithId.RoleId);
                 updatedUser.City = cityRepository.GetCityByCityId(updatedUser.CityId);
