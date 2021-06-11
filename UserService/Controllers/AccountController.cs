@@ -43,15 +43,20 @@ namespace UserService.Controllers
                 if (account == null)
                 {
                     response = new CheckAccountResponse(false, "Email or password are wrong");
+                    return BadRequest(response);
                 }
                 var passwordValid = await userManager.CheckPasswordAsync(account, requestBody.Password);
                 if (!passwordValid)
                 { 
                    response = new CheckAccountResponse(false, "Email or password are wrong");
+                    return BadRequest(response);
+
                 }
                 if (!account.AccountIsActive)
                 {
                     response = new CheckAccountResponse(false, "Account is not activate");
+                    return BadRequest(response);
+
                 }
                 response = new CheckAccountResponse(true, "Successful check");
                 return Ok(response);

@@ -10,7 +10,7 @@ namespace AuthService.Models
         /// <summary>
         /// List of authentication errors 
         /// </summary>
-        public IEnumerable<string> Errors { get; set; }
+        public string Error { get; set; }
 
 
     }

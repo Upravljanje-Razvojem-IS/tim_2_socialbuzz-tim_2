@@ -21,15 +21,20 @@ namespace AuthService.Services
         {
             using (HttpClient client = new HttpClient())
             {
-                Uri url = new Uri($"{ configuration.GetValue("Services","UserService") }api /checkAccount");
+                Uri url = new Uri($"{ configuration["Services:UserService"] }api/checkAccount");
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(principal));
                 content.Headers.ContentType.MediaType = "application/json";
                 HttpResponseMessage response = client.PostAsync(url, content).Result;
                 if (!response.IsSuccessStatusCode)
                 {
-                    return null;
+                    return new AuthenticationResponse { 
+                    Succes = false,
+                    //TODO: get message from HttpResponseMessage
+                    Error = response.RequestMessage.ToString()};
                 }
-                return null;
+                return new AuthenticationResponse {
+                    Succes = true
+                };
             }
 
         }
