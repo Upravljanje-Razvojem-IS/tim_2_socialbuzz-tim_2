@@ -21,7 +21,7 @@ namespace AuthService.Services
         {
             using (HttpClient client = new HttpClient())
             {
-                Uri url = new Uri($"{ configuration["Services:UserService"] }api/checkAccount");
+                Uri url = new Uri($"{ configuration["Services:UserService"] }api/accounts/checkPrincipal");
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(principal));
                 content.Headers.ContentType.MediaType = "application/json";
                 HttpResponseMessage response = client.PostAsync(url, content).Result;

@@ -30,7 +30,7 @@ namespace UserService.Controllers
         /// <returns>Information about username and password being valid</returns>
         /// <response code="200">Object with info</response>
         /// <response code="500">Error checking</response>
-        [HttpPost("ckeckPrincipal")]
+        [HttpPost("checkPrincipal")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
