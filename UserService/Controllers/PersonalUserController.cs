@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using UserService.Data;
 using UserService.Dtos;
 using UserService.Dtos.Users;
@@ -122,7 +120,11 @@ namespace UserService.Controllers
                 {
                     userManager.AddToRoleAsync(acc, "Regular user").Wait();
                 }
-
+                else
+                {
+                    personalUserRepository.DeleteUser(userCreated.UserId);
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Erorr trying to create user");
+                }
                 string location = linkGenerator.GetPathByAction("GetUserById", "PersonalUser", new { userId = userCreated.UserId });
 
                 return Created(location, mapper.Map<PersonalUserCreatedConfirmationDto>(userCreated));
@@ -290,6 +292,12 @@ namespace UserService.Controllers
                 if (result.Succeeded)
                 {
                     userManager.AddToRoleAsync(acc, "Admin").Wait();
+                }
+                else
+                {
+                    personalUserRepository.DeleteUser(userCreated.UserId);
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Erorr trying to create user");
+
                 }
 
                 string location = linkGenerator.GetPathByAction("GetUserById", "PersonalUser", new { userId = userCreated.UserId });

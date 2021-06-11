@@ -8,6 +8,7 @@ using UserService.Entities;
 
 namespace UserService.Entities
 {
+    //TODO: delete role, role is stored only in identity tables
     /// <summary>
     /// Entity class which models user and his account in the system
     /// </summary>

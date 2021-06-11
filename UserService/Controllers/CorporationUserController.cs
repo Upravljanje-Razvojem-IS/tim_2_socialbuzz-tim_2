@@ -119,6 +119,11 @@ namespace UserService.Controllers
                 {
                     userManager.AddToRoleAsync(acc, "Regular user").Wait();
                 }
+                else
+                {
+                    corporationUserRepository.DeleteUser(userCreated.UserId);
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Erorr trying to create user");
+                }
 
                 string location = linkGenerator.GetPathByAction("GetUserById", "CorporationUser", new { userId = userCreated.UserId });
 

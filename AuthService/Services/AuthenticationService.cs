@@ -1,16 +1,37 @@
 ﻿using AuthService.Models;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace AuthService.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
-        public Task<AuthenticationResponse> LoginAsync(string email, string password)
+        private readonly IConfiguration configuration;
+
+        public AuthenticationService(IConfiguration configuration)
         {
-            return new Task<AuthenticationResponse>(null);
+            this.configuration = configuration;
+        }
+        public AuthenticationResponse Login(Principal principal)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                Uri url = new Uri($"{ configuration.GetValue("Services","UserService") }api /checkAccount");
+                HttpContent content = new StringContent(JsonConvert.SerializeObject(principal));
+                content.Headers.ContentType.MediaType = "application/json";
+                HttpResponseMessage response = client.PostAsync(url, content).Result;
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+                return null;
+            }
+
         }
     }
 }

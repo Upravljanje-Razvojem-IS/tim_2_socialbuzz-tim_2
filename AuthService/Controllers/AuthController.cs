@@ -18,10 +18,10 @@ namespace AuthService.Controllers
             this.authService = authService;
         }
 
-        [HttpGet("api/register")]
-        public async Task<IActionResult> Register([FromBody] Principal principal)
+        [HttpPost("api/login")]
+        public IActionResult Register([FromBody] Principal principal)
         {
-            var authResponse = await authService.LoginAsync(principal.Email, principal.Password);
+            var authResponse = authService.Login(principal);
             return Ok();
         }
     }

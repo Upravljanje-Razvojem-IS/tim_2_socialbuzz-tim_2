@@ -12,6 +12,7 @@ using UserService.Dtos;
 using UserService.Dtos.Roles;
 using UserService.Entities;
 
+//TODO: RoleManager 
 namespace UserService.Controllers
 {
     /// <summary>
