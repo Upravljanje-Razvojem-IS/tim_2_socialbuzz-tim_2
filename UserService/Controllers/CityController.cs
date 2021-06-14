@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -20,6 +21,7 @@ namespace UserService.Controllers
     /// </summary>
     [ApiController]
     [Route("api/cities")]
+    [Authorize(Roles="Admin")]
     public class CityController : ControllerBase
     {
         private readonly ICityRepository cityRepository;
@@ -40,17 +42,29 @@ namespace UserService.Controllers
         /// <returns>List of cities</returns>
         /// <response code="200">Returns the list</response>
         /// <response code="204">No cities  are found</response>
+        /// <response code="401">Unauthorized user</response>
+        /// <response code="500">Error on the server</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<List<CityDto>> GetCities(string cityName)
         {
-            var cities = cityRepository.GetCities(cityName);
-            if (cities == null || cities.Count == 0)
+            try
             {
-                return NoContent();
+                var cities = cityRepository.GetCities(cityName);
+                if (cities == null || cities.Count == 0)
+                {
+                    return NoContent();
+                }
+                return Ok(mapper.Map<List<CityDto>>(cities));
             }
-            return Ok(mapper.Map<List<CityDto>>(cities));
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
         }
 
         /// <summary>
@@ -59,18 +73,29 @@ namespace UserService.Controllers
         /// <param name="cityId">City Id</param>
         /// <returns>City with cityId</returns>
         ///<response code="200">Returns the city</response>
+        /// <response code="401">Unauthorized user</response>
         /// <response code="404">City with cityId is not found</response>
+        /// <response code="500">Error on the server while fetching cities</response>
         [HttpGet("{cityId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<CityDto> GetCityById(Guid cityId)
         {
-            var city = cityRepository.GetCityByCityId(cityId);
-            if (city == null)
+            try
             {
-                return NotFound();
+                var city = cityRepository.GetCityByCityId(cityId);
+                if (city == null)
+                {
+                    return NotFound();
+                }
+                return Ok(mapper.Map<CityDto>(city));
             }
-            return Ok(mapper.Map<CityDto>(city));
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
 
@@ -81,10 +106,12 @@ namespace UserService.Controllers
         /// <param name="city">Model of city</param>
         /// <returns>Confirmation of the creation of city</returns>
         /// <response code="200">Returns the created city</response>
+        /// <response code="401">Unauthorized user</response>
         /// <response code="500">There was an error on the server</response>
         [HttpPost]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
         public ActionResult<CityCreatedConfirmationDto> CreateCity([FromBody] CityCreationDto city)
@@ -111,11 +138,13 @@ namespace UserService.Controllers
         /// <returns>Confirmation of update</returns>
         /// <response code="200">Returns updated city</response>
         /// <response code="400">City with cityId is not found</response>
+        /// <response code="401">Unauthorized user</response>
         /// <response code="500">Error on the server while updating</response>
         [HttpPut("{cityId}")]
         [Consumes("application/json")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<CityDto> UpdateCity([FromBody] CityUpdateDto cityUpdate, Guid cityId)
         {
@@ -145,9 +174,11 @@ namespace UserService.Controllers
         /// <param name="cityId">City Id</param>
         /// <returns>Status 204 (NoContent)</returns>
         /// <response code="204">City succesfully deleted</response>
+        /// <response code="401">Unauthorized user</response>
         /// <response code="404">City with cityId not found</response>
         /// <response code="500">Error on the server while deleting</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{cityId}")]

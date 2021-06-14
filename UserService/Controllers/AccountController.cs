@@ -28,10 +28,12 @@ namespace UserService.Controllers
         /// Checks if login info are valid
         /// </summary>
         /// <returns>Information about username and password being valid</returns>
-        /// <response code="200">Object with info</response>
-        /// <response code="500">Error checking</response>
+        /// <response code="200">Information for principal</response>
+        ///<response code="400">Wrong information for principal</response>
+        /// <response code="500">Error on the server while checking principal</response>
         [HttpPost("checkPrincipal")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
         public async Task<ActionResult<CheckAccountResponse>> CheckAccount([FromBody] CheckAccountRequest requestBody)
