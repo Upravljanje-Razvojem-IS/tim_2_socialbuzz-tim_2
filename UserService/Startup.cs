@@ -113,6 +113,8 @@ namespace UserService
             services.AddScoped<ICorporationUserRepository, CorporationUserRepository>();
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<ResourceOwnerFilter>();
+
 
             var jwtSettings = new JwtSettings();
             Configuration.Bind(nameof(jwtSettings), jwtSettings);

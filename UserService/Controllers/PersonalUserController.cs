@@ -13,6 +13,7 @@ using UserService.Data;
 using UserService.Dtos;
 using UserService.Dtos.Users;
 using UserService.Entities;
+using UserService.Filters;
 
 namespace UserService.Controllers
 {
@@ -160,10 +161,14 @@ namespace UserService.Controllers
         /// <param name="userId">User's Id</param>
         /// <returns>Confirmation of update</returns>
         /// <response code="200">Returns updated user</response>
-        /// <response code="400">Personal user with userId is not found</response>
+        /// <response code="404">Personal user with userId is not found</response>
         /// <response code="500">Error on the server while updating</response>
+        /// <response code="400">User doesn't own the resource</response>
+        [Authorize]
+        [ServiceFilter(typeof(ResourceOwnerFilter))]
         [HttpPut("{userId}")]
         [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
