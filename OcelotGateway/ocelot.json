@@ -10,7 +10,14 @@
         }
       ],
       "UpstreamPathTemplate": "/cities",
-      "UpstreamHttpMethod": ["Get"]
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
     }
   ],
   "GlobalConfiguration": {
