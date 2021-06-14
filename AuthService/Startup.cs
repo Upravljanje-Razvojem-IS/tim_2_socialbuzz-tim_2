@@ -40,6 +40,8 @@ namespace AuthService
             services.AddSingleton(jwtSettings);
             services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+            services.AddHttpClient();
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

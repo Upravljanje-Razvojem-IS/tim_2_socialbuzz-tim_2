@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UserService.Entities;
 
 namespace UserService.Dtos
 {
@@ -16,6 +17,7 @@ namespace UserService.Dtos
         ///Message if autentication shouldn't be successful
         /// </summary>
         public string Message { get; set; }
+        public AccountInfoDto AccountInfo { get; set; }
 
 
         public CheckAccountResponse()
@@ -23,10 +25,11 @@ namespace UserService.Dtos
 
         }
 
-        public CheckAccountResponse(bool succes, string message)
+        public CheckAccountResponse(bool succes, string message, AccountInfoDto account)
         {
             this.Succes = succes;
             this.Message = message;
+            this.AccountInfo = account;
         }
     }
 }

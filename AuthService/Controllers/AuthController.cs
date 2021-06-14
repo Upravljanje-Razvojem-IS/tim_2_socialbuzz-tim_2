@@ -22,11 +22,17 @@ namespace AuthService.Controllers
         public IActionResult Register([FromBody] Principal principal)
         {
             var authResponse = authService.Login(principal);
-            if (authResponse.Succes)
+            if (authResponse.Result.Succes)
             {
-                return Ok();
+                return Ok(new AuthSuccesResponse
+                {
+                    Token = authResponse.Result.Token
+                });
             }
-            return BadRequest();
+            return BadRequest(new AuthFailResponse
+            {
+                Error = authResponse.Result.Error
+            });
         }
     }
 }

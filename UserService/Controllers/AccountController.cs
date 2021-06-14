@@ -42,23 +42,25 @@ namespace UserService.Controllers
                 AccountInfo account = await userManager.FindByEmailAsync(requestBody.Email);
                 if (account == null)
                 {
-                    response = new CheckAccountResponse(false, "Email or password are wrong");
+                    response = new CheckAccountResponse(false, "Email or password are wrong", null);
                     return BadRequest(response);
                 }
                 var passwordValid = await userManager.CheckPasswordAsync(account, requestBody.Password);
                 if (!passwordValid)
                 { 
-                   response = new CheckAccountResponse(false, "Email or password are wrong");
+                   response = new CheckAccountResponse(false, "Email or password are wrong", null);
                     return BadRequest(response);
 
                 }
                 if (!account.AccountIsActive)
                 {
-                    response = new CheckAccountResponse(false, "Account is not activate");
+                    response = new CheckAccountResponse(false, "Account is not activate", null);
                     return BadRequest(response);
 
                 }
-                response = new CheckAccountResponse(true, "Successful check");
+                List<string> roles = userManager.GetRolesAsync(account).Result.ToList();
+                AccountInfoDto accountDto = new AccountInfoDto(roles[0], account.Id);
+                response = new CheckAccountResponse(true, "Successful check", accountDto);
                 return Ok(response);
             }
             catch (Exception)

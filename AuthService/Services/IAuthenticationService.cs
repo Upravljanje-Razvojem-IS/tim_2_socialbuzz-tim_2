@@ -8,6 +8,6 @@ namespace AuthService.Services
 {
     public interface IAuthenticationService
     {
-        AuthenticationResponse Login(Principal principal);
+        Task<AuthenticationResponse> Login(Principal principal);
     }
 }
