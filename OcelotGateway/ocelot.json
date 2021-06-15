@@ -11,12 +11,13 @@
       ],
       "UpstreamPathTemplate": "/cities",
       "UpstreamHttpMethod": [ "Get", "Post" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "IdentityApiKey",
+        "AllowedScopes": []
+      },
       "FileCacheOptions": {
         "TltSeconds": 30
-      },
-      "DelegatingHandlers": [
-        "AccessTokenHandler"
-      ]
+      }
     }
   ],
   "GlobalConfiguration": {

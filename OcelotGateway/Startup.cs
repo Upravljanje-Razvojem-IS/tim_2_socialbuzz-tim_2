@@ -10,6 +10,7 @@ using Ocelot.Cache.CacheManager;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using OcelotGateway.Handlers;
+using OcelotGateway.Middlewares;
 using OcelotGateway.Options;
 using OcelotGateway.Services;
 using System;
@@ -35,12 +36,11 @@ namespace OcelotGateway
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOcelot()
-            .AddDelegatingHandler<AccessTokenHandler>(true);
+            services.AddOcelot().AddCacheManager(settings => settings.WithDictionaryHandle());
            
             //TODO: remove copying auth schema and jwt settings from auth service? 
             
-            /*var jwtSettings = new JwtSettings();
+            var jwtSettings = new JwtSettings();
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
             var authenticationProviderKey = "IdentityApiKey";
@@ -62,7 +62,7 @@ namespace OcelotGateway
                       RequireExpirationTime = false,
                       ValidateLifetime = true
                   };
-              });*/
+              });
 
             services.AddScoped<IAuthService, AuthService>();
 
@@ -78,7 +78,6 @@ namespace OcelotGateway
             }
 
             app.UseRouting();
-            app.UseAuthentication();
 
 
             app.UseEndpoints(endpoints =>
@@ -89,7 +88,10 @@ namespace OcelotGateway
                 });
             });
 
-            app.UseOcelot().Wait();
+            app.UseOcelot(new AccessTokenMiddleware()).Wait();
+            app.UseAuthentication();
+
+
 
         }
     }
