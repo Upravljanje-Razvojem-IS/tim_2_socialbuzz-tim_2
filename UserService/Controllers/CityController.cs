@@ -22,6 +22,7 @@ namespace UserService.Controllers
     [ApiController]
     [Route("api/cities")]
     //[Authorize(Roles="Admin")]
+    [Authorize]
     public class CityController : ControllerBase
     {
         private readonly ICityRepository cityRepository;

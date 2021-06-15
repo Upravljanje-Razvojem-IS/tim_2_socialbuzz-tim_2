@@ -34,5 +34,17 @@ namespace AuthService.Controllers
                 Error = authResponse.Result.Error
             });
         }
+
+        [HttpPost("api/auth")]
+        public IActionResult GetPrivateToken([FromBody] string publicToken)
+        {
+            var authResponse = authService.GetAccessToken(publicToken);
+            if (authResponse.Result.Succes)
+            {
+                return Ok(authResponse.Result);
+            }
+            return BadRequest(authResponse.Result);
+        }
+
     }
 }

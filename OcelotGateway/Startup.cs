@@ -9,7 +9,9 @@ using Microsoft.IdentityModel.Tokens;
 using Ocelot.Cache.CacheManager;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using OcelotGateway.Handlers;
 using OcelotGateway.Options;
+using OcelotGateway.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,19 +35,22 @@ namespace OcelotGateway
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOcelot().AddCacheManager(settings => settings.WithDictionaryHandle());
-
-            var jwtSettings = new JwtSettings();
+            services.AddOcelot()
+            .AddDelegatingHandler<AccessTokenHandler>(true);
+           
+            //TODO: remove copying auth schema and jwt settings from auth service? 
+            
+            /*var jwtSettings = new JwtSettings();
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
-
+            var authenticationProviderKey = "IdentityApiKey";
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-              .AddJwtBearer(x =>
+              .AddJwtBearer(authenticationProviderKey, x =>
               {
                   x.SaveToken = true;
                   x.TokenValidationParameters = new TokenValidationParameters
@@ -57,7 +62,11 @@ namespace OcelotGateway
                       RequireExpirationTime = false,
                       ValidateLifetime = true
                   };
-              });
+              });*/
+
+            services.AddScoped<IAuthService, AuthService>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,8 +78,8 @@ namespace OcelotGateway
             }
 
             app.UseRouting();
-
             app.UseAuthentication();
+
 
             app.UseEndpoints(endpoints =>
             {
@@ -81,6 +90,7 @@ namespace OcelotGateway
             });
 
             app.UseOcelot().Wait();
+
         }
     }
 }
