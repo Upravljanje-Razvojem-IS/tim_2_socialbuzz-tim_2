@@ -10,8 +10,8 @@ namespace UserService.Services.Users
     {
         List<Corporation> GetUsers(string city = null, string username = null);
         Corporation GetUserByUserId(Guid userId);
-        CorporationUserCreatedConfirmation CreateUser(Corporation user);
-        void UpdateUser(Corporation user);
+        Task<CorporationUserCreatedConfirmation> CreateUser(Corporation user, string password);
+        void UpdateUser(Corporation user, Corporation userWithId);
         void DeleteUser(Guid userId);
     }
 }

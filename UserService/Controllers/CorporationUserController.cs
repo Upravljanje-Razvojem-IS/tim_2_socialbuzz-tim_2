@@ -13,7 +13,9 @@ using UserService.Data;
 using UserService.Dtos;
 using UserService.Dtos.Users;
 using UserService.Entities;
+using UserService.Exceptions;
 using UserService.Filters;
+using UserService.Services.Users;
 
 namespace UserService.Controllers
 {
@@ -25,25 +27,16 @@ namespace UserService.Controllers
     [Route("api/corporationUsers")]
     public class CorporationUserController : ControllerBase
     {
-        private readonly ICorporationUserRepository corporationUserRepository;
-        private readonly IMapper mapper;
-        private readonly LinkGenerator linkGenerator;
-        private readonly IRoleRepository roleRepository;
-        private readonly ICityRepository cityRepository;
-        private readonly IPersonalUserRepository personalUserRepository;
-        private readonly UserManager<AccountInfo> userManager;
+        private readonly ICorporationUsersService _corporationUsersService;
+        private readonly IMapper _mapper;
+        private readonly LinkGenerator _linkGenerator;
 
-        public CorporationUserController(ICorporationUserRepository corporationUserRepository, IMapper mapper, 
-            LinkGenerator linkGenerator, IRoleRepository roleRepository, ICityRepository cityRepository, 
-            IPersonalUserRepository personalUserRepository, UserManager<AccountInfo> userManager)
+        public CorporationUserController(IMapper mapper, 
+            LinkGenerator linkGenerator, ICorporationUsersService corporationUsersService)
         {
-            this.corporationUserRepository = corporationUserRepository;
-            this.mapper = mapper;
-            this.linkGenerator = linkGenerator;
-            this.roleRepository = roleRepository;
-            this.cityRepository = cityRepository;
-            this.personalUserRepository = personalUserRepository;
-            this.userManager = userManager;
+            _mapper = mapper;
+            _linkGenerator = linkGenerator;
+            _corporationUsersService = corporationUsersService;
         }
 
         /// <summary>
@@ -65,12 +58,12 @@ namespace UserService.Controllers
         public ActionResult<List<CorporationDto>> GetUsers(string city, string username)
         {
             try {
-                var croporationUsers = corporationUserRepository.GetUsers(city, username);
+                var croporationUsers = _corporationUsersService.GetUsers(city, username);
                 if (croporationUsers == null || croporationUsers.Count == 0)
                 {
                     return NoContent();
                 }
-                return Ok(mapper.Map<List<CorporationDto>>(croporationUsers));
+                return Ok(_mapper.Map<List<CorporationDto>>(croporationUsers));
             }
             catch(Exception ex)
             {
@@ -99,12 +92,12 @@ namespace UserService.Controllers
         {
             try
             {
-                var croporationUser = corporationUserRepository.GetUserByUserId(userId);
+                var croporationUser = _corporationUsersService.GetUserByUserId(userId);
                 if (croporationUser == null)
                 {
                     return NotFound();
                 }
-                return Ok(mapper.Map<CorporationDto>(croporationUser));
+                return Ok(_mapper.Map<CorporationDto>(croporationUser));
             }
             catch (Exception ex)
             {
@@ -132,37 +125,25 @@ namespace UserService.Controllers
         {
             try
             {
-                var user = personalUserRepository.GetUsers(null, corporationUser.Username);
-                if (user != null && user.Count > 0)
-                {
-                    //Unique violation
-                    return StatusCode(StatusCodes.Status409Conflict);
-                }
-                Corporation userEntity = mapper.Map<Corporation>(corporationUser);
+                
+                Corporation userEntity = _mapper.Map<Corporation>(corporationUser);
+                CorporationUserCreatedConfirmation userCreated = _corporationUsersService.CreateUser(userEntity, corporationUser.Password).Result;
                
-                //Adding to userdbcontext tables
-                CorporationUserCreatedConfirmation userCreated = corporationUserRepository.CreateUser(userEntity);
-                corporationUserRepository.SaveChanges();
-                //Adding to identityuserdbcontext tables
-                string username = string.Join("", corporationUser.Username.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
-                var acc = new AccountInfo(username, corporationUser.Email, userCreated.UserId);
-                IdentityResult result = await userManager.CreateAsync(acc, corporationUser.Password);
-                if (result.Succeeded)
-                {
-                    userManager.AddToRoleAsync(acc, "Regular user").Wait();
-                }
-                else
-                {
-                    corporationUserRepository.DeleteUser(userCreated.UserId);
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Erorr trying to create user");
-                }
 
-                string location = linkGenerator.GetPathByAction("GetUserById", "CorporationUser", new { userId = userCreated.UserId });
-
-                return Created(location, mapper.Map<CorporationUserCreatedConfirmationDto>(userCreated));
+                string location = _linkGenerator.GetPathByAction("GetUserById", "CorporationUser", new { userId = userCreated.UserId });
+                return Created(location, _mapper.Map<CorporationUserCreatedConfirmationDto>(userCreated));
             }
             catch (Exception ex)
             {
+                if (ex.GetType().IsAssignableFrom(typeof(ForeignKeyConstraintViolationException)))
+                {
+                    return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                }
+                if (ex.GetType().IsAssignableFrom(typeof(UniqueValueViolationException)))
+                {
+                    return StatusCode(StatusCodes.Status422UnprocessableEntity, ex.Message);
+
+                }
                 if (ex.GetBaseException().GetType() == typeof(SqlException))
                 {
                     Int32 ErrorCode = ((SqlException)ex.InnerException).Number;
@@ -205,45 +186,30 @@ namespace UserService.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CorporationDto>> UpdateUser([FromBody] CorporationUserUpdateDto corporationUser, Guid userId)
+        public ActionResult<CorporationDto> UpdateUser([FromBody] CorporationUserUpdateDto corporationUser, Guid userId)
         {
             try
             {
-                var userWithId = corporationUserRepository.GetUserByUserId(userId);
+                var userWithId = _corporationUsersService.GetUserByUserId(userId);
                 if (userWithId == null)
                 {
                     return NotFound();
                 }
-                var user = personalUserRepository.GetUsers(null, corporationUser.Username);
-                if (user != null && user.Count > 0)
-                {
-                    //Unique violation
-                    return StatusCode(StatusCodes.Status409Conflict);
-                }
-                //TODO: Role can be changed only by admin, PATCH 
-                //TODO: Cleaner code
-                //TODO: Bad foreign keys, unique
-                //TODO: Password change PATCH?
-                Corporation updatedUser = mapper.Map<Corporation>(corporationUser);
-                updatedUser.RoleId = userWithId.RoleId;
-                updatedUser.Email = userWithId.Email;
-                updatedUser.Role = roleRepository.GetRoleByRoleId(userWithId.RoleId);
-                updatedUser.City = cityRepository.GetCityByCityId(updatedUser.CityId);
-                //If updated.City is null FK violation
-                updatedUser.UserId = userId;
-                mapper.Map(updatedUser, userWithId);
-                corporationUserRepository.SaveChanges();
+                Corporation corporation = _mapper.Map<Corporation>(corporationUser);
+                _corporationUsersService.UpdateUser(corporation, userWithId);
 
-                //Updating identity table
-                AccountInfo acc = await userManager.FindByIdAsync(userId.ToString());
-                string username = string.Join("", corporationUser.Username.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
-                acc.UserName = username;
-                await userManager.UpdateAsync(acc);
-
-                return Ok(mapper.Map<CorporationDto>(userWithId));
+                return Ok(_mapper.Map<CorporationDto>(userWithId));
             }
             catch (Exception ex)
             {
+                if (ex.GetType().IsAssignableFrom(typeof(ForeignKeyConstraintViolationException)))
+                {
+                    return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                }
+                if (ex.GetType().IsAssignableFrom(typeof(UniqueValueViolationException)))
+                {
+                    return StatusCode(StatusCodes.Status422UnprocessableEntity, ex.Message);
+                }
                 if (ex.GetBaseException().GetType() == typeof(SqlException))
                 {
                     Int32 ErrorCode = ((SqlException)ex.InnerException).Number;
@@ -281,21 +247,16 @@ namespace UserService.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{userId}")]
-        public async Task<IActionResult> DeleteUser(Guid userId)
+        public IActionResult DeleteUser(Guid userId)
         {
             try
             {
-                var user = corporationUserRepository.GetUserByUserId(userId);
+                var user = _corporationUsersService.GetUserByUserId(userId);
                 if (user == null)
                 {
                     return NotFound();
                 }
-                corporationUserRepository.DeleteUser(userId);
-                corporationUserRepository.SaveChanges();
-
-                //Delete from identity table
-                var acc = await userManager.FindByIdAsync(userId.ToString());
-                await userManager.DeleteAsync(acc);
+                _corporationUsersService.DeleteUser(userId);
 
                 return NoContent();
             }

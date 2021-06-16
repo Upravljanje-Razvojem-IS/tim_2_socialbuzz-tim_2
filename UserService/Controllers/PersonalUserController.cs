@@ -28,27 +28,15 @@ namespace UserService.Controllers
     [Route("api/personalUsers")]
     public class PersonalUserController : ControllerBase
     {
-        private readonly IPersonalUserRepository personalUserRepository;
         private readonly IPersonalUsersService _personalUsersService;
-        private readonly IMapper mapper;
-        private readonly LinkGenerator linkGenerator;
-        private readonly IRoleRepository roleRepository;
-        private readonly ICityRepository cityRepository;
-        private readonly ICorporationUserRepository corporationUserRepository;
-        private readonly UserManager<AccountInfo> userManager;
+        private readonly IMapper _mapper;
+        private readonly LinkGenerator _linkGenerator;
 
-        public PersonalUserController(IPersonalUserRepository personalUserRepository, IMapper mapper, 
-            LinkGenerator linkGenerator, IRoleRepository roleRepository, ICityRepository cityRepository, 
-            ICorporationUserRepository corporationUserRepository, UserManager<AccountInfo> userManager
-            , IPersonalUsersService personalUsersService)
+        public PersonalUserController(IMapper mapper, 
+            LinkGenerator linkGenerator, IPersonalUsersService personalUsersService)
         {
-            this.personalUserRepository = personalUserRepository;
-            this.mapper = mapper;
-            this.linkGenerator = linkGenerator;
-            this.roleRepository = roleRepository;
-            this.cityRepository = cityRepository;
-            this.corporationUserRepository = corporationUserRepository;
-            this.userManager = userManager;
+            _mapper = mapper;
+            _linkGenerator = linkGenerator;
             _personalUsersService = personalUsersService;
         }
 
@@ -76,7 +64,7 @@ namespace UserService.Controllers
                 {
                     return NoContent();
                 }
-                return Ok(mapper.Map<List<PersonalUserDto>>(personalUsers));
+                return Ok(_mapper.Map<List<PersonalUserDto>>(personalUsers));
             }
             catch(Exception ex)
             {
@@ -113,7 +101,7 @@ namespace UserService.Controllers
                 {
                     return NotFound();
                 }
-                return Ok(mapper.Map<PersonalUserDto>(personalUser));
+                return Ok(_mapper.Map<PersonalUserDto>(personalUser));
             }
             catch(Exception ex)
             {
@@ -144,13 +132,13 @@ namespace UserService.Controllers
         {
             try
             {
-                PersonalUser userEntity = mapper.Map<PersonalUser>(personalUser);
+                PersonalUser userEntity = _mapper.Map<PersonalUser>(personalUser);
 
                 PersonalUserCreatedConfirmation userCreated = _personalUsersService.CreateUser(userEntity, personalUser.Password).Result;
 
-                string location = linkGenerator.GetPathByAction("GetUserById", "PersonalUser", new { userId = userCreated.UserId });
+                string location = _linkGenerator.GetPathByAction("GetUserById", "PersonalUser", new { userId = userCreated.UserId });
 
-                return Created(location, mapper.Map<PersonalUserCreatedConfirmationDto>(userCreated));
+                return Created(location, _mapper.Map<PersonalUserCreatedConfirmationDto>(userCreated));
             }
             catch (Exception ex)
             {
@@ -158,12 +146,12 @@ namespace UserService.Controllers
                 {
                     return StatusCode(StatusCodes.Status409Conflict, ex.Message);
                 }
-                else if (ex.GetType().IsAssignableFrom(typeof(UniqueValueViolationException)))
+                if (ex.GetType().IsAssignableFrom(typeof(UniqueValueViolationException)))
                 {
                     return StatusCode(StatusCodes.Status422UnprocessableEntity, ex.Message);
 
                 }
-                else if (ex.GetBaseException().GetType() == typeof(SqlException))
+                if (ex.GetBaseException().GetType() == typeof(SqlException))
                 {
                     Int32 ErrorCode = ((SqlException)ex.InnerException).Number;
                     switch (ErrorCode)
@@ -215,10 +203,10 @@ namespace UserService.Controllers
                 {
                     return NotFound();
                 }
-                PersonalUser user = mapper.Map<PersonalUser>(personalUser);
+                PersonalUser user = _mapper.Map<PersonalUser>(personalUser);
                 _personalUsersService.UpdateUser(user, userWithId);
 
-                return Ok(mapper.Map<PersonalUserDto>(userWithId));
+                return Ok(_mapper.Map<PersonalUserDto>(userWithId));
             }
             catch(Exception ex)
             {
@@ -226,7 +214,7 @@ namespace UserService.Controllers
                 {
                     return StatusCode(StatusCodes.Status409Conflict, ex.Message);
                 }
-                else if (ex.GetType().IsAssignableFrom(typeof(UniqueValueViolationException)))
+                if (ex.GetType().IsAssignableFrom(typeof(UniqueValueViolationException)))
                 {
                     return StatusCode(StatusCodes.Status422UnprocessableEntity, ex.Message);
 
@@ -308,13 +296,13 @@ namespace UserService.Controllers
         {
             try
             {
-                PersonalUser userEntity = mapper.Map<PersonalUser>(personalUser);
+                PersonalUser userEntity = _mapper.Map<PersonalUser>(personalUser);
 
                 //Adding to userdbcontext tables
                 PersonalUserCreatedConfirmation userCreated = _personalUsersService.CreateAdmin(userEntity, personalUser.Username).Result;
 
-                string location = linkGenerator.GetPathByAction("GetUserById", "PersonalUser", new { userId = userCreated.UserId });
-                return Created(location, mapper.Map<PersonalUserCreatedConfirmationDto>(userCreated));
+                string location = _linkGenerator.GetPathByAction("GetUserById", "PersonalUser", new { userId = userCreated.UserId });
+                return Created(location, _mapper.Map<PersonalUserCreatedConfirmationDto>(userCreated));
             }
             catch (Exception ex)
             {
@@ -322,7 +310,7 @@ namespace UserService.Controllers
                 {
                     return StatusCode(StatusCodes.Status409Conflict, ex.Message);
                 }
-                else if (ex.GetType().IsAssignableFrom(typeof(UniqueValueViolationException)))
+                if (ex.GetType().IsAssignableFrom(typeof(UniqueValueViolationException)))
                 {
                     return StatusCode(StatusCodes.Status422UnprocessableEntity, ex.Message);
 
