@@ -12,6 +12,8 @@ using UserService.Data;
 using UserService.Dtos;
 using UserService.Dtos.Users;
 using UserService.Entities;
+using UserService.Services;
+using UserService.Services.Users;
 
 namespace UserService.Controllers
 {
@@ -23,16 +25,16 @@ namespace UserService.Controllers
     [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly IPersonalUserRepository personalUserRepository;
-        private readonly ICorporationUserRepository corporationUserRepository;
-        private readonly IMapper mapper;
+        private readonly IPersonalUsersService _personalUsersService;
+        private readonly ICorporationUsersService _coroprationUsersService;
+        private readonly IMapper _mapper;
 
-        public UserController(IPersonalUserRepository personalUserRepository, ICorporationUserRepository corporationUserRepository,
+        public UserController(IPersonalUsersService personalUsersService, ICorporationUsersService coroprationUsersService,
             IMapper mapper)
         {
-            this.personalUserRepository = personalUserRepository;
-            this.corporationUserRepository = corporationUserRepository;
-            this.mapper = mapper;
+            _coroprationUsersService = coroprationUsersService;
+            _personalUsersService = personalUsersService;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -57,11 +59,11 @@ namespace UserService.Controllers
             {
                 if (string.IsNullOrEmpty(userType))
                 {
-                    List<Corporation> corporations = corporationUserRepository.GetUsers(city, username);
-                    List<PersonalUser> personalUsers = personalUserRepository.GetUsers(city, username);
+                    List<Corporation> corporations = _coroprationUsersService.GetUsers(city, username);
+                    List<PersonalUser> personalUsers = _personalUsersService.GetUsers(city, username);
                     List<UserInfoDto> users = new List<UserInfoDto>();
-                    users.AddRange(mapper.Map<List<UserInfoDto>>(personalUsers));
-                    users.AddRange(mapper.Map<List<UserInfoDto>>(corporations));
+                    users.AddRange(_mapper.Map<List<UserInfoDto>>(personalUsers));
+                    users.AddRange(_mapper.Map<List<UserInfoDto>>(corporations));
                     if (users == null || users.Count == 0)
                     {
                         return NoContent();
@@ -72,21 +74,21 @@ namespace UserService.Controllers
                 {
                     if (string.Equals(userType, "personalUser"))
                     {
-                        List<PersonalUser> personalUsers = personalUserRepository.GetUsers(city, username);
+                        List<PersonalUser> personalUsers = _personalUsersService.GetUsers(city, username);
                         if (personalUsers == null || personalUsers.Count == 0)
                         {
                             return NoContent();
                         }
-                        return Ok(mapper.Map<List<UserInfoDto>>(personalUsers));
+                        return Ok(_mapper.Map<List<UserInfoDto>>(personalUsers));
                     }
                     else if (string.Equals(userType, "corporationUser"))
                     {
-                        List<Corporation> corporations = corporationUserRepository.GetUsers(city, username);
+                        List<Corporation> corporations = _coroprationUsersService.GetUsers(city, username);
                         if (corporations == null || corporations.Count == 0)
                         {
                             return NoContent();
                         }
-                        return Ok(mapper.Map<List<UserInfoDto>>(corporations));
+                        return Ok(_mapper.Map<List<UserInfoDto>>(corporations));
                     }
                     else
                     {
@@ -119,15 +121,15 @@ namespace UserService.Controllers
         {
             try
             {
-                var coprporationUser = corporationUserRepository.GetUserByUserId(userId);
+                var coprporationUser = _coroprationUsersService.GetUserByUserId(userId);
                 if (coprporationUser != null)
                 {
-                    return Ok(mapper.Map<UserInfoDto>(coprporationUser));
+                    return Ok(_mapper.Map<UserInfoDto>(coprporationUser));
                 }
-                var personalUser = personalUserRepository.GetUserByUserId(userId);
+                var personalUser = _personalUsersService.GetUserByUserId(userId);
                 if (personalUser != null)
                 {
-                    return Ok(mapper.Map<UserInfoDto>(personalUser));
+                    return Ok(_mapper.Map<UserInfoDto>(personalUser));
                 }
                 return NotFound();
             }
