@@ -24,6 +24,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UserService.Options;
+using UserService.Services;
+using UserService.Services.Cities;
 
 namespace UserService
 {
@@ -113,6 +115,8 @@ namespace UserService
             services.AddScoped<ICorporationUserRepository, CorporationUserRepository>();
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IPersonalUsersService, PersonalUsersService>();
+            services.AddScoped<ICitiesService, CitiesService>();
             services.AddScoped<ResourceOwnerFilter>();
 
 

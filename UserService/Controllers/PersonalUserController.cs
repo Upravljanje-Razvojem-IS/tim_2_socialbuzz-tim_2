@@ -15,6 +15,7 @@ using UserService.Dtos.Users;
 using UserService.Entities;
 using UserService.Extensions;
 using UserService.Filters;
+using UserService.Services;
 
 namespace UserService.Controllers
 {
@@ -27,6 +28,7 @@ namespace UserService.Controllers
     public class PersonalUserController : ControllerBase
     {
         private readonly IPersonalUserRepository personalUserRepository;
+        private readonly IPersonalUsersService _personalUsersService;
         private readonly IMapper mapper;
         private readonly LinkGenerator linkGenerator;
         private readonly IRoleRepository roleRepository;

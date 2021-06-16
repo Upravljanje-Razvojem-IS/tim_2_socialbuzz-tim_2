@@ -78,6 +78,7 @@ namespace OcelotGateway
             }
 
             app.UseRouting();
+            app.UseAuthentication();
 
 
             app.UseEndpoints(endpoints =>
@@ -88,10 +89,7 @@ namespace OcelotGateway
                 });
             });
 
-            app.UseOcelot(new AccessTokenMiddleware()).Wait();
-            app.UseAuthentication();
-
-
+            app.UseOcelot().Wait();
 
         }
     }

@@ -12,6 +12,7 @@ using UserService.Data;
 using UserService.Dtos;
 using UserService.Dtos.Roles;
 using UserService.Entities;
+using UserService.Services.Roles;
 
 //TODO: RoleManager 
 namespace UserService.Controllers
@@ -24,15 +25,17 @@ namespace UserService.Controllers
     [Authorize(Roles="Admin")]
     public class RoleController : ControllerBase
     {
+        private readonly IRolesService _rolesService;
         private readonly IRoleRepository roleRepository;
         private readonly IMapper mapper;
         private readonly LinkGenerator linkGenerator;
 
-        public RoleController(IRoleRepository roleRepository, IMapper mapper, LinkGenerator linkGenerator)
+        public RoleController(IRoleRepository roleRepository, IMapper mapper, LinkGenerator linkGenerator, IRolesService rolesService)
         {
             this.roleRepository = roleRepository;
             this.mapper = mapper;
             this.linkGenerator = linkGenerator;
+            _rolesService = rolesService;
         }
 
         /// <summary>
@@ -53,7 +56,7 @@ namespace UserService.Controllers
         {
             try
             {
-                var roles = roleRepository.GetRoles(roleName);
+                var roles = _rolesService.GetRoles(roleName);
                 if (roles == null || roles.Count == 0)
                 {
                     return NoContent();
@@ -85,7 +88,7 @@ namespace UserService.Controllers
         {
             try
             {
-                var role = roleRepository.GetRoleByRoleId(roleId);
+                var role = _rolesService.GetRoleByRoleId(roleId);
                 if (role == null)
                 {
                     return NotFound();
@@ -119,8 +122,7 @@ namespace UserService.Controllers
             try
             {
                 Role newRole = mapper.Map<Role>(role);
-                RoleCreatedConfirmation createdRole = roleRepository.CreateRole(newRole);
-                roleRepository.SaveChanges();
+                RoleCreatedConfirmation createdRole = _rolesService.CreateRole(newRole);
                 var location = linkGenerator.GetPathByAction("GetRoleById", "Role", new { roleId = createdRole.RoleId });
                 return Created(location, mapper.Map<RoleCreatedConfirmationDto>(createdRole));
             }
@@ -150,7 +152,7 @@ namespace UserService.Controllers
         {
             try
             {
-                Role roleWithId = roleRepository.GetRoleByRoleId(roleId);
+                Role roleWithId = _rolesService.GetRoleByRoleId(roleId);
                 if (roleWithId == null)
                 {
                     return NotFound();
@@ -190,8 +192,7 @@ namespace UserService.Controllers
                 {
                     return NotFound();
                 }
-                roleRepository.DeleteRole(roleId);
-                roleRepository.SaveChanges();
+                _rolesService.DeleteRole(roleId);
                 return NoContent();
             }
             catch (Exception)

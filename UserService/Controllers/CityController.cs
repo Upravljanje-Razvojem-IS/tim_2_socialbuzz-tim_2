@@ -12,6 +12,7 @@ using UserService.Data;
 using UserService.Dtos;
 using UserService.Dtos.Cities;
 using UserService.Entities;
+using UserService.Services.Cities;
 
 namespace UserService.Controllers
 {
@@ -28,12 +29,14 @@ namespace UserService.Controllers
         private readonly ICityRepository cityRepository;
         private readonly IMapper mapper;
         private readonly LinkGenerator linkGenerator;
+        private readonly ICitiesService _citiesService;
 
-        public CityController(ICityRepository cityRepository, IMapper mapper, LinkGenerator linkGenerator)
+        public CityController(ICityRepository cityRepository, IMapper mapper, LinkGenerator linkGenerator, ICitiesService citiesService)
         {
             this.cityRepository = cityRepository;
             this.mapper = mapper;
             this.linkGenerator = linkGenerator;
+            _citiesService = citiesService;
         }
 
         /// <summary>
@@ -54,7 +57,7 @@ namespace UserService.Controllers
         {
             try
             {
-                var cities = cityRepository.GetCities(cityName);
+                var cities = _citiesService.GetCities(cityName);
                 if (cities == null || cities.Count == 0)
                 {
                     return NoContent();
@@ -86,7 +89,7 @@ namespace UserService.Controllers
         {
             try
             {
-                var city = cityRepository.GetCityByCityId(cityId);
+                var city = _citiesService.GetCityByCityId(cityId);
                 if (city == null)
                 {
                     return NotFound();
@@ -120,8 +123,7 @@ namespace UserService.Controllers
             try
             {
                 City newCity = mapper.Map<City>(city);
-                CityCreatedConfirmation createdCity = cityRepository.CreateCity(newCity);
-                cityRepository.SaveChanges();
+                CityCreatedConfirmation createdCity = _citiesService.CreateCity(newCity);
                 var location = linkGenerator.GetPathByAction("GetCityById", "City", new { cityId = createdCity.CityId });
                 return Created(location, mapper.Map<CityCreatedConfirmationDto>(createdCity));
             }
@@ -151,7 +153,7 @@ namespace UserService.Controllers
         {
             try
             {
-                City cityWithId = cityRepository.GetCityByCityId(cityId);
+                City cityWithId = _citiesService.GetCityByCityId(cityId);
                 if (cityWithId == null)
                 {
                     return NotFound();
@@ -187,13 +189,12 @@ namespace UserService.Controllers
         {
             try
             {
-                var city = cityRepository.GetCityByCityId(cityId);
+                var city = _citiesService.GetCityByCityId(cityId);
                 if (city == null)
                 {
                     return NotFound();
                 }
-                cityRepository.DeleteCity(cityId);
-                cityRepository.SaveChanges();
+                _citiesService.DeleteCity(cityId);
                 return NoContent();
             }
             catch(Exception)
