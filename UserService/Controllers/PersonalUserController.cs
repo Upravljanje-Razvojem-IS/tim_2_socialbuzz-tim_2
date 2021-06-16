@@ -13,6 +13,7 @@ using UserService.Data;
 using UserService.Dtos;
 using UserService.Dtos.Users;
 using UserService.Entities;
+using UserService.Exceptions;
 using UserService.Extensions;
 using UserService.Filters;
 using UserService.Services;
@@ -38,7 +39,8 @@ namespace UserService.Controllers
 
         public PersonalUserController(IPersonalUserRepository personalUserRepository, IMapper mapper, 
             LinkGenerator linkGenerator, IRoleRepository roleRepository, ICityRepository cityRepository, 
-            ICorporationUserRepository corporationUserRepository, UserManager<AccountInfo> userManager)
+            ICorporationUserRepository corporationUserRepository, UserManager<AccountInfo> userManager
+            , IPersonalUsersService personalUsersService)
         {
             this.personalUserRepository = personalUserRepository;
             this.mapper = mapper;
@@ -47,6 +49,7 @@ namespace UserService.Controllers
             this.cityRepository = cityRepository;
             this.corporationUserRepository = corporationUserRepository;
             this.userManager = userManager;
+            _personalUsersService = personalUsersService;
         }
 
         /// <summary>
@@ -68,7 +71,7 @@ namespace UserService.Controllers
         public ActionResult<List<PersonalUserDto>> GetUsers(string city, string username)
         {
             try{
-                var personalUsers = personalUserRepository.GetUsers(city, username);
+                var personalUsers = _personalUsersService.GetUsers(city, username);
                 if (personalUsers == null || personalUsers.Count == 0)
                 {
                     return NoContent();
@@ -105,7 +108,7 @@ namespace UserService.Controllers
                 {
                     return StatusCode(StatusCodes.Status400BadRequest, "You do not own the resource, action is restricted to the owner of the resource");
                 }*/
-                var personalUser = personalUserRepository.GetUserByUserId(userId);
+                var personalUser = _personalUsersService.GetUserByUserId(userId);
                 if (personalUser == null)
                 {
                     return NotFound();
@@ -137,41 +140,30 @@ namespace UserService.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<PersonalUserCreatedConfirmationDto>> CreateUser([FromBody] PersonalUserCreationDto personalUser)
+        public ActionResult<PersonalUserCreatedConfirmationDto> CreateUser([FromBody] PersonalUserCreationDto personalUser)
         {
             try
             {
-                var user = corporationUserRepository.GetUsers(null, personalUser.Username);
-                if (user != null && user.Count > 0)
-                {
-                    //Unique violation
-                    return StatusCode(StatusCodes.Status409Conflict);
-                }
                 PersonalUser userEntity = mapper.Map<PersonalUser>(personalUser);
-                
-                ////Adding to userdbcontext tables
-                PersonalUserCreatedConfirmation userCreated = personalUserRepository.CreateUser(userEntity);
-                personalUserRepository.SaveChanges();
-                //Adding to identityuserdbcontext tables
-                string username = string.Join("", personalUser.Username.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
-                var acc = new AccountInfo(username, personalUser.Email, userCreated.UserId);
-                IdentityResult result = await userManager.CreateAsync(acc, personalUser.Password);
-                if (result.Succeeded)
-                {
-                    userManager.AddToRoleAsync(acc, "Regular user").Wait();
-                }
-                else
-                {
-                    personalUserRepository.DeleteUser(userCreated.UserId);
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Erorr trying to create user");
-                }
+
+                PersonalUserCreatedConfirmation userCreated = _personalUsersService.CreateUser(userEntity, personalUser.Password).Result;
+
                 string location = linkGenerator.GetPathByAction("GetUserById", "PersonalUser", new { userId = userCreated.UserId });
 
                 return Created(location, mapper.Map<PersonalUserCreatedConfirmationDto>(userCreated));
             }
             catch (Exception ex)
             {
-                if (ex.GetBaseException().GetType() == typeof(SqlException))
+                if (ex.GetType().IsAssignableFrom(typeof(ForeignKeyConstraintViolationException)))
+                {
+                    return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                }
+                else if (ex.GetType().IsAssignableFrom(typeof(UniqueValueViolationException)))
+                {
+                    return StatusCode(StatusCodes.Status422UnprocessableEntity, ex.Message);
+
+                }
+                else if (ex.GetBaseException().GetType() == typeof(SqlException))
                 {
                     Int32 ErrorCode = ((SqlException)ex.InnerException).Number;
                     switch (ErrorCode)
@@ -218,41 +210,27 @@ namespace UserService.Controllers
         {
             try
             {
-                var userWithId = personalUserRepository.GetUserByUserId(userId);
+                var userWithId = _personalUsersService.GetUserByUserId(userId);
                 if (userWithId == null)
                 {
                     return NotFound();
                 }
-                //TODO: Role can be changed only by admin, PATCH 
-                //TODO: Cleaner code
-                //TODO: Bad foreign keys, unique
-                //TODO: Password change PATCH?
-                var user = corporationUserRepository.GetUsers(null, personalUser.Username);
-                if (user != null && user.Count > 0)
-                {
-                    //Unique violation
-                    return StatusCode(StatusCodes.Status409Conflict);
-                }
-                PersonalUser updatedUser = mapper.Map<PersonalUser>(personalUser);
-                updatedUser.RoleId = userWithId.RoleId;
-                updatedUser.RoleId = userWithId.RoleId;
-                updatedUser.Email = userWithId.Email;
-                updatedUser.Role = roleRepository.GetRoleByRoleId(userWithId.RoleId);
-                updatedUser.City = cityRepository.GetCityByCityId(updatedUser.CityId);
-                updatedUser.UserId = userId;
-                mapper.Map(updatedUser, userWithId);
-                personalUserRepository.SaveChanges();
-
-                //Updating identity table
-                AccountInfo acc = await userManager.FindByIdAsync(userId.ToString());
-                string username = string.Join("", personalUser.Username.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
-                acc.UserName = username;
-                await userManager.UpdateAsync(acc);
+                PersonalUser user = mapper.Map<PersonalUser>(personalUser);
+                _personalUsersService.UpdateUser(user, userWithId);
 
                 return Ok(mapper.Map<PersonalUserDto>(userWithId));
             }
             catch(Exception ex)
             {
+                if (ex.GetType().IsAssignableFrom(typeof(ForeignKeyConstraintViolationException)))
+                {
+                    return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                }
+                else if (ex.GetType().IsAssignableFrom(typeof(UniqueValueViolationException)))
+                {
+                    return StatusCode(StatusCodes.Status422UnprocessableEntity, ex.Message);
+
+                }
                 if (ex.GetBaseException().GetType() == typeof(SqlException))
                 {
                     Int32 ErrorCode = ((SqlException)ex.InnerException).Number;
@@ -289,27 +267,21 @@ namespace UserService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{userId}")]
-        public async Task<IActionResult> DeleteUser(Guid userId)
+        public IActionResult DeleteUser(Guid userId)
         {
             try
             {
-                var user = personalUserRepository.GetUserByUserId(userId);
+                var user = _personalUsersService.GetUserByUserId(userId);
                 if (user == null)
                 {
                     return NotFound();
                 }
-                personalUserRepository.DeleteUser(userId);
-                personalUserRepository.SaveChanges();
-
-                //Delete from identity table
-                var acc = await userManager.FindByIdAsync(userId.ToString());
-                await userManager.DeleteAsync(acc);
-
+                _personalUsersService.DeleteUser(userId);
                 return NoContent();
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Delete error");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
@@ -332,42 +304,29 @@ namespace UserService.Controllers
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<PersonalUserCreatedConfirmationDto>> CreateAdmin([FromBody] PersonalUserCreationDto personalUser)
+        public ActionResult<PersonalUserCreatedConfirmationDto> CreateAdmin([FromBody] PersonalUserCreationDto personalUser)
         {
             try
             {
-                var user = corporationUserRepository.GetUsers(null, personalUser.Username);
-                if (user != null && user.Count >0)
-                {
-                    //Unique violation
-                    return StatusCode(StatusCodes.Status409Conflict);
-                }
                 PersonalUser userEntity = mapper.Map<PersonalUser>(personalUser);
 
                 //Adding to userdbcontext tables
-                PersonalUserCreatedConfirmation userCreated = personalUserRepository.CreateAdmin(userEntity);
-                personalUserRepository.SaveChanges();
-                //Adding to identityuserdbcontext tables
-                string username = string.Join("", personalUser.Username.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
-                var acc = new AccountInfo(username, personalUser.Email, userCreated.UserId);
-                IdentityResult result = await userManager.CreateAsync(acc, personalUser.Password);
-                if (result.Succeeded)
-                {
-                    userManager.AddToRoleAsync(acc, "Admin").Wait();
-                }
-                else
-                {
-                    personalUserRepository.DeleteUser(userCreated.UserId);
-                    return StatusCode(StatusCodes.Status500InternalServerError, "Erorr trying to create user");
-
-                }
+                PersonalUserCreatedConfirmation userCreated = _personalUsersService.CreateAdmin(userEntity, personalUser.Username).Result;
 
                 string location = linkGenerator.GetPathByAction("GetUserById", "PersonalUser", new { userId = userCreated.UserId });
-
                 return Created(location, mapper.Map<PersonalUserCreatedConfirmationDto>(userCreated));
             }
             catch (Exception ex)
             {
+                if (ex.GetType().IsAssignableFrom(typeof(ForeignKeyConstraintViolationException)))
+                {
+                    return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                }
+                else if (ex.GetType().IsAssignableFrom(typeof(UniqueValueViolationException)))
+                {
+                    return StatusCode(StatusCodes.Status422UnprocessableEntity, ex.Message);
+
+                }
                 if (ex.GetBaseException().GetType() == typeof(SqlException))
                 {
                     Int32 ErrorCode = ((SqlException)ex.InnerException).Number;

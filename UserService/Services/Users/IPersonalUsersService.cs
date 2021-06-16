@@ -10,9 +10,9 @@ namespace UserService.Services
     {
         List<PersonalUser> GetUsers(string city = null, string username = null);
         PersonalUser GetUserByUserId(Guid userId);
-        PersonalUserCreatedConfirmation CreateUser(PersonalUser user);
-        PersonalUserCreatedConfirmation CreateAdmin(PersonalUser user);
-        void UpdateUser(PersonalUser user);
+        Task<PersonalUserCreatedConfirmation> CreateUser(PersonalUser user, string password);
+        Task<PersonalUserCreatedConfirmation> CreateAdmin(PersonalUser user, string password);
+        void UpdateUser(PersonalUser updatedUser, PersonalUser userWithId);
         void DeleteUser(Guid userId);
     }
 }
