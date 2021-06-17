@@ -36,9 +36,9 @@ namespace AuthService.Controllers
         }
 
         [HttpPost("api/auth")]
-        public IActionResult GetPrivateToken([FromBody] string publicToken)
+        public IActionResult GetPrivateToken([FromBody] PrivateTokenRequest body)
         {
-            var authResponse = authService.GetAccessToken(publicToken);
+            var authResponse = authService.GetAccessToken(body.PublicToken);
             if (authResponse.Result.Succes)
             {
                 return Ok(authResponse.Result);

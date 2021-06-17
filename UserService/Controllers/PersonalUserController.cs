@@ -194,7 +194,7 @@ namespace UserService.Controllers
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<PersonalUserDto>> UpdateUser([FromBody] PersonalUserUpdateDto personalUser, Guid userId)
+        public ActionResult<PersonalUserDto> UpdateUser([FromBody] PersonalUserUpdateDto personalUser, Guid userId)
         {
             try
             {

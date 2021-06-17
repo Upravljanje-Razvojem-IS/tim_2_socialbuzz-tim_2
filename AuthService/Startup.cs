@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using AuthService.Entites;
 using AuthService.Options;
 using AuthService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -61,6 +62,8 @@ namespace AuthService
                        ValidateLifetime = true
                    };
                });
+
+            services.AddDbContext<AuthDbContext>();
 
 
             services.AddSwaggerGen(setupAction =>

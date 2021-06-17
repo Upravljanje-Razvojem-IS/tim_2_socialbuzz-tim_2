@@ -9,6 +9,6 @@ namespace AuthService.Services
     public interface IAuthenticationService
     {
         Task<AuthenticationResponse> Login(Principal principal);
-        Task<AuthenticationResponse> GetAccessToken(string publicToken);
+        Task<AuthenticationResponse> GetAccessToken(Guid publicToken);
     }
 }

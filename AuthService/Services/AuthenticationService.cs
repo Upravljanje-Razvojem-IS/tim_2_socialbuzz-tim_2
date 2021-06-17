@@ -26,7 +26,7 @@ namespace AuthService.Services
             _jwtSettings = jwtSettings;
         }
 
-        public async Task<AuthenticationResponse> GetAccessToken(string publicToken)
+        public async Task<AuthenticationResponse> GetAccessToken(Guid publicToken)
         {
             using (HttpClient client = new HttpClient())
             {

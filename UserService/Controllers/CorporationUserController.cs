@@ -121,7 +121,7 @@ namespace UserService.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CorporationUserCreatedConfirmationDto>> CreateUser([FromBody] CorporationUserCreationDto corporationUser)
+        public ActionResult<CorporationUserCreatedConfirmationDto> CreateUser([FromBody] CorporationUserCreationDto corporationUser)
         {
             try
             {
