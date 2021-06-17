@@ -1,5 +1,7 @@
-﻿using AuthService.Models;
+﻿using AuthService.Entities;
+using AuthService.Models;
 using AuthService.Options;
+using AuthService.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -19,55 +21,39 @@ namespace AuthService.Services
     {
         private readonly IConfiguration _configuration;
         private readonly JwtSettings _jwtSettings;
+        private readonly IAuthInfoRepository _authInfoRepository;
 
-        public AuthenticationService(IConfiguration configuration, JwtSettings jwtSettings)
+        public AuthenticationService(IConfiguration configuration, JwtSettings jwtSettings, IAuthInfoRepository authInfoRepository)
         {
             _configuration = configuration;
             _jwtSettings = jwtSettings;
+            _authInfoRepository = authInfoRepository;
         }
 
-        public async Task<AuthenticationResponse> GetAccessToken(Guid publicToken)
+        public AuthenticationResponse GetAccessToken(Guid publicToken)
         {
-            using (HttpClient client = new HttpClient())
+            AuthInfo authInfo =_authInfoRepository.GetAuthInfoByPublicToken(publicToken);
+            if(authInfo != null)
             {
-                Principal principal = new Principal
-                {
-                    Email = "ramac@gmail.com",
-                    Password = "pass123"
-                };
-                Uri url = new Uri($"{ _configuration["Services:UserService"] }api/accounts/checkPrincipal");
-                HttpContent content = new StringContent(JsonConvert.SerializeObject(principal));
-                content.Headers.ContentType.MediaType = "application/json";
-                HttpResponseMessage response = client.PostAsync(url, content).Result;
-                CheckPrincipalResponse res = await response.Content.ReadFromJsonAsync<CheckPrincipalResponse>();
-                if (!response.IsSuccessStatusCode)
-                {
-                    return new AuthenticationResponse
-                    {
-                        Succes = false,
-                        //TODO: get message from HttpResponseMessage
-                        Error = res.Message.ToString()
-                    };
-                }
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new[]
-                        {
-                            new Claim("id", res.AccountInfo.Id.ToString()),
-                            new Claim(ClaimTypes.Role, res.AccountInfo.Role)
-                        }),
-                    Expires = DateTime.UtcNow.AddHours(2),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
-                var token = tokenHandler.CreateToken(tokenDescriptor);
+                string privateToken = IssueToken(authInfo.UserId.ToString(), authInfo.Role);
+                authInfo.PrivateToken = privateToken;
+                _authInfoRepository.SaveChanges();
                 return new AuthenticationResponse
                 {
-                    Token = tokenHandler.WriteToken(token),
+                    Token = privateToken,
                     Succes = true
                 };
             }
+            return new AuthenticationResponse
+            {
+                Error = "Public token not found",
+                Succes = false
+            };
+        }
+
+        public AuthInfo GetAuthInfoByUserId(Guid id)
+        {
+            return _authInfoRepository.GetAuthInfoByUserId(id);
         }
 
         public async Task<AuthenticationResponse> Login(Principal principal)
@@ -83,28 +69,61 @@ namespace AuthService.Services
                 {
                     return new AuthenticationResponse {
                         Succes = false,
-                        //TODO: get message from HttpResponseMessage
-                        Error = res.Message.ToString() };
+                        Error = res.Message.ToString() 
+                    };
                 }
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
-                var tokenDescriptor = new SecurityTokenDescriptor
+
+                string publicToken = Guid.NewGuid().ToString();
+                Guid id = res.AccountInfo.Id;
+                string role = res.AccountInfo.Role;
+                DateTime dateIssued = DateTime.UtcNow;
+                AuthInfo user = _authInfoRepository.GetAuthInfoByUserId(id);
+                if(user != null)
                 {
-                    Subject = new ClaimsIdentity(new[]
-                        {
-                            new Claim("id", res.AccountInfo.Id.ToString()),
-                            new Claim(ClaimTypes.Role, res.AccountInfo.Role)
-                        }),
-                    Expires = DateTime.UtcNow.AddHours(2),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                    return new AuthenticationResponse
+                    {
+                        Token = user.PublicToken,
+                        Succes = true
+                    };
+                }
+                AuthInfo authInfo = new AuthInfo
+                {
+                    UserId = id,
+                    Role = role,
+                    PublicToken = publicToken,
+                    TimeOfIssuingPublicToken = dateIssued
                 };
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                return new AuthenticationResponse {
-                    Token = tokenHandler.WriteToken(token),
+                _authInfoRepository.CreateAuthInfo(authInfo);
+                return new AuthenticationResponse
+                {
+                    Token = publicToken,
                     Succes = true
-                };
+                };               
             }
 
+        }
+
+        public void Logout(Guid userId)
+        {
+            _authInfoRepository.DeleteAuthInfo(userId);
+        }
+
+        private string IssueToken(string userId, string role)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                    {
+                            new Claim("id", userId),
+                            new Claim(ClaimTypes.Role, role)
+                        }),
+                Expires = DateTime.UtcNow.AddHours(2),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }

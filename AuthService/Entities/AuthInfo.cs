@@ -15,7 +15,7 @@ namespace AuthService.Entities
         /// <summary>
         /// Unique identifier for a city
         /// </summary>
-        [Column("CityId")]
+        [Column("UserId")]
         [Key]
         public Guid UserId { get; set; }
 

@@ -11,7 +11,7 @@ namespace AuthService.Migrations
                 name: "AuthInfo",
                 columns: table => new
                 {
-                    CityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TimeOfIssuingPublicToken = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PublicToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PrivateToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -19,7 +19,7 @@ namespace AuthService.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AuthInfo", x => x.CityId);
+                    table.PrimaryKey("PK_AuthInfo", x => x.UserId);
                 });
         }
 
