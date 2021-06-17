@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
+using OcelotGateway.Models;
+using OcelotGateway.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +10,17 @@ namespace OcelotGateway.Middlewares
 {
     public class AccessTokenMiddleware : IMiddleware
     {
+        private readonly IAuthService _authService;
+        public AccessTokenMiddleware(IAuthService authService)
+        {
+            _authService = authService;
+        }
+
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            string token = "";
-            context.Request.Headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxYzMwNmExLTJhNWMtNGM5NC1mMzhhLTA4ZDkyY2RmNDhkMiIsInJvbGUiOiJSZWd1bGFyIHVzZXIiLCJuYmYiOjE2MjM4ODgwODYsImV4cCI6MTYyMzg5NTI4NiwiaWF0IjoxNjIzODg4MDg2fQ.P2yw3JSMx-3WYOXZzoj1ABeuQtyWYhD5fcbmli0XgvI";
+            AuthenticationResponse res = _authService.getAccessToken("").Result;
+            string token = res.Token;
+            context.Request.Headers["Authorization"] = "Bearer "+token;
             //return;
             await next(context);
         }
