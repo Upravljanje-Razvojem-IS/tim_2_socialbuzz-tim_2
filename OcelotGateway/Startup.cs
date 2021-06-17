@@ -65,6 +65,7 @@ namespace OcelotGateway
               });
 
             services.AddScoped<IAuthService, AuthService>();
+            services.AddTransient<AccessTokenMiddleware>();
 
 
         }
@@ -78,6 +79,17 @@ namespace OcelotGateway
             }
 
             app.UseRouting();
+
+            app.UseMiddleware<AccessTokenMiddleware>();
+
+           /*app.Use(async (context, next) =>
+            {
+                context.Request.Headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxYzMwNmExLTJhNWMtNGM5NC1mMzhhLTA4ZDkyY2RmNDhkMiIsInJvbGUiOiJSZWd1bGFyIHVzZXIiLCJuYmYiOjE2MjM4ODcwNTUsImV4cCI6MTYyMzg5NDI1NSwiaWF0IjoxNjIzODg3MDU1fQ.FlX08BcT1-M49kJo17x3iVgg82RhXTtkUMErCx8Gdww";
+                // Call the next delegate/middleware in the pipeline
+                await next();
+            });*/
+
+
             app.UseAuthentication();
 
 
