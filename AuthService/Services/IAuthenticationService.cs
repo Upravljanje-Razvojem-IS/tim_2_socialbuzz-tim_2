@@ -13,5 +13,6 @@ namespace AuthService.Services
         AuthenticationResponse GetAccessToken(Guid publicToken);
         void Logout(Guid userId);
         AuthInfo GetAuthInfoByUserId(Guid id);
+        AuthInfo GetAuthInfoByPublicToken(Guid publicToken);
     }
 }

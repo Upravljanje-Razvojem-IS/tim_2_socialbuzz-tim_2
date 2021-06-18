@@ -11,8 +11,8 @@ namespace OcelotGateway.Middlewares
 {
     public class AccessTokenMiddleware : IMiddleware
     {
-        private readonly IAuthService _authService;
-        public AccessTokenMiddleware(IAuthService authService)
+        private readonly IAuthenticationService _authService;
+        public AccessTokenMiddleware(IAuthenticationService authService)
         {
             _authService = authService;
         }
@@ -28,9 +28,17 @@ namespace OcelotGateway.Middlewares
             string path = context.Request.Path.Value.ToString();
             if (protectedPaths.Contains(path))
             {
-                AuthenticationResponse res = _authService.getAccessToken("").Result;
-                string token = res.Token;
-                context.Request.Headers["Authorization"] = "Bearer " + token;
+                string publicToken = context.Request.Headers["Authorization"];
+                if (!String.IsNullOrEmpty(publicToken))
+                {
+                    AuthenticationResponse res = _authService.getAccessToken(new Guid(publicToken)).Result;
+                    if (res.Succes)
+                    {
+                        string token = res.Token;
+                        context.Request.Headers["Authorization"] = "Bearer " + token;
+                    }
+                }
+               
             }
 
             //return;

@@ -17,7 +17,8 @@ namespace AuthService.Repositories
 
         public AuthInfo CreateAuthInfo(AuthInfo authInfo)
         {
-            var createdAuthInfo = _authDbContext.Add(authInfo);
+            var createdAuthInfo = _authDbContext.AuthInfo.Add(authInfo);
+            _authDbContext.SaveChanges();
             return createdAuthInfo.Entity;
         }
 

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace OcelotGateway.Services
 {
-    public interface IAuthService
+    public interface IAuthenticationService
     {
-        public Task<AuthenticationResponse> getAccessToken(string publicToken);
+        public Task<AuthenticationResponse> getAccessToken(Guid publicToken);
     }
 }

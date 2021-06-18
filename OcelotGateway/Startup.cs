@@ -64,7 +64,7 @@ namespace OcelotGateway
                   };
               });
 
-            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddTransient<AccessTokenMiddleware>();
 
 

@@ -150,7 +150,7 @@ namespace UserService
 
             services.AddSwaggerGen(setupAction =>
             {
-                setupAction.SwaggerDoc("ExamRegistrationOpenApiSpecification",
+                setupAction.SwaggerDoc("UserServiceOpenApiSpecification",
                     new Microsoft.OpenApi.Models.OpenApiInfo()
                     {
                         Title = "User Service API",
@@ -208,9 +208,11 @@ namespace UserService
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(setupAction =>
+
+
+           app.UseSwaggerUI(setupAction =>
             {
-                setupAction.SwaggerEndpoint("/swagger/ExamRegistrationOpenApiSpecification/swagger.json", "Student Exam Registration API");
+                setupAction.SwaggerEndpoint("/swagger/UserServiceOpenApiSpecification/swagger.json", "User Service API");
                 setupAction.RoutePrefix = ""; //No /swagger in url
             });
 

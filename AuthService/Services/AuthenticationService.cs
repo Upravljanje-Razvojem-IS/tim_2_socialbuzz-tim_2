@@ -51,6 +51,11 @@ namespace AuthService.Services
             };
         }
 
+        public AuthInfo GetAuthInfoByPublicToken(Guid publicToken)
+        {
+            return _authInfoRepository.GetAuthInfoByPublicToken(publicToken);
+        }
+
         public AuthInfo GetAuthInfoByUserId(Guid id)
         {
             return _authInfoRepository.GetAuthInfoByUserId(id);
@@ -93,7 +98,7 @@ namespace AuthService.Services
                     PublicToken = publicToken,
                     TimeOfIssuingPublicToken = dateIssued
                 };
-                _authInfoRepository.CreateAuthInfo(authInfo);
+                AuthInfo created = _authInfoRepository.CreateAuthInfo(authInfo);
                 return new AuthenticationResponse
                 {
                     Token = publicToken,

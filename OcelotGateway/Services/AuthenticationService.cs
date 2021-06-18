@@ -5,32 +5,33 @@ using System;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Json;
+using AuthService.Models;
 
 namespace OcelotGateway.Services
 {
 
-    public class AuthService : IAuthService
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly IConfiguration _configuration;
 
-        public AuthService(IConfiguration configuration)
+        public AuthenticationService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public async Task<AuthenticationResponse> getAccessToken(string publicToken)
+        public async Task<AuthenticationResponse> getAccessToken(Guid publicToken)
         {
             using (HttpClient client = new HttpClient())
             {
+                PrivateTokenRequest body = new PrivateTokenRequest
+                {
+                    PublicToken = publicToken
+                };
                 Uri url = new Uri($"{ _configuration["Services:AuthService"] }api/auth");
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(publicToken));
                 content.Headers.ContentType.MediaType = "application/json";
                 HttpResponseMessage response = client.PostAsync(url, content).Result;
                 AuthenticationResponse res = await response.Content.ReadFromJsonAsync<AuthenticationResponse>();
-                if (!response.IsSuccessStatusCode)
-                {
-
-                }
                 return res;
             }
 

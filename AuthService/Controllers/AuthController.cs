@@ -22,7 +22,8 @@ namespace AuthService.Controllers
         {
             this.authService = authService;
         }
-
+        
+        
         /// <summary>
         /// User authentication
         /// </summary>
@@ -59,7 +60,7 @@ namespace AuthService.Controllers
             }
         }
 
-
+        
         /// <summary>
         /// Issuing private token
         /// </summary>
@@ -96,7 +97,6 @@ namespace AuthService.Controllers
         /// <response code="200"></response>
         ///<response code="400">Wrong value in request</response>
         /// <response code="500">Error on the server</response>
-        [HttpPost("api/auth")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -105,12 +105,12 @@ namespace AuthService.Controllers
         {
             try
             {
-                AuthInfo authInfo = authService.GetAuthInfoByUserId(body.UserId);
+                AuthInfo authInfo = authService.GetAuthInfoByPublicToken(body.PublicToken);
                 if (authInfo == null)
                 {
                     return BadRequest("User with id not found or already logged out");
                 }
-                authService.Logout(body.UserId);
+                authService.Logout(authInfo.UserId);
                 return Ok();
             }
             catch (Exception ex)

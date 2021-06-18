@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AuthService.Models
 {
-    public class LogoutRequest
+    public class PrivateTokenRequest
     {
         public Guid PublicToken { get; set; }
     }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AuthService.Entites;
 using AuthService.Options;
+using AuthService.Repositories;
 using AuthService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -35,11 +36,15 @@ namespace AuthService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<AuthDbContext>();
+
 
             var jwtSettings = new JwtSettings();
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+            services.AddScoped<IAuthInfoRepository, AuthInfoRepository>();
+           services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             services.AddHttpClient();
 
@@ -63,17 +68,16 @@ namespace AuthService
                    };
                });
 
-            services.AddDbContext<AuthDbContext>();
 
 
             services.AddSwaggerGen(setupAction =>
             {
-                setupAction.SwaggerDoc("ExamRegistrationOpenApiSpecification",
+                setupAction.SwaggerDoc("AuthServiceOpenApiSpecification",
                     new Microsoft.OpenApi.Models.OpenApiInfo()
                     {
-                        Title = "User Service API",
+                        Title = "Authentication Service API",
                         Version = "1",
-                        Description = "API for creating, updating and fetcing users, roles and cities",
+                        Description = "API for authenticating users",
                         Contact = new Microsoft.OpenApi.Models.OpenApiContact
                         {
                             Name = "Natalija Gajić",
@@ -102,9 +106,12 @@ namespace AuthService
 
             app.UseSwagger();
 
+            app.UseDeveloperExceptionPage();
+
+
             app.UseSwaggerUI(setupAction =>
             {
-                setupAction.SwaggerEndpoint("/swagger/ExamRegistrationOpenApiSpecification/swagger.json", "Student Exam Registration API");
+                setupAction.SwaggerEndpoint("/swagger/AuthServiceOpenApiSpecification/swagger.json", "Auth Service API");
                 setupAction.RoutePrefix = ""; //No /swagger in url
             });
 
