@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ using UserService.Data;
 using UserService.Dtos;
 using UserService.Dtos.Roles;
 using UserService.Entities;
+using UserService.Exceptions;
 using UserService.Services.Roles;
 
 //TODO: RoleManager 
@@ -28,16 +30,19 @@ namespace UserService.Controllers
     public class RoleController : ControllerBase
     {
         private readonly IRolesService _rolesService;
-        private readonly IRoleRepository roleRepository;
-        private readonly IMapper mapper;
-        private readonly LinkGenerator linkGenerator;
+        private readonly IRoleRepository _roleRepository;
+        private readonly IMapper _mapper;
+        private readonly LinkGenerator _linkGenerator;
+        private readonly RoleManager<AccountRole> _roleManager;
 
-        public RoleController(IRoleRepository roleRepository, IMapper mapper, LinkGenerator linkGenerator, IRolesService rolesService)
+        public RoleController(IRoleRepository roleRepository, IMapper mapper, LinkGenerator linkGenerator, IRolesService rolesService,
+            RoleManager<AccountRole> roleManager)
         {
-            this.roleRepository = roleRepository;
-            this.mapper = mapper;
-            this.linkGenerator = linkGenerator;
+            _roleRepository = roleRepository;
+            _mapper = mapper;
+            _linkGenerator = linkGenerator;
             _rolesService = rolesService;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -63,7 +68,7 @@ namespace UserService.Controllers
                 {
                     return NoContent();
                 }
-                return Ok(mapper.Map<List<RoleDto>>(roles));
+                return Ok(_mapper.Map<List<RoleDto>>(roles));
             }
             catch (Exception ex)
             {
@@ -95,7 +100,7 @@ namespace UserService.Controllers
                 {
                     return NotFound();
                 }
-                return Ok(mapper.Map<RoleDto>(role));
+                return Ok(_mapper.Map<RoleDto>(role));
             }
             catch (Exception ex)
             {
@@ -112,24 +117,30 @@ namespace UserService.Controllers
         /// <returns>Confirmation of the creation of role</returns>
         /// <response code="200">Returns the created role</response>
         /// <response code="401">Unauthorized user</response>
+        /// <response code="409">Unique value violation</response>
         /// <response code="500">There was an error on the server</response>
         [HttpPost]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [HttpPost]
         public ActionResult<RoleCreatedConfirmationDto> CreateRole([FromBody] RoleCreationDto role)
         {
             try
             {
-                Role newRole = mapper.Map<Role>(role);
+                Role newRole = _mapper.Map<Role>(role);
                 RoleCreatedConfirmation createdRole = _rolesService.CreateRole(newRole);
-                var location = linkGenerator.GetPathByAction("GetRoleById", "Role", new { roleId = createdRole.RoleId });
-                return Created(location, mapper.Map<RoleCreatedConfirmationDto>(createdRole));
+                var location = _linkGenerator.GetPathByAction("GetRoleById", "Role", new { roleId = createdRole.RoleId });
+                return Created(location, _mapper.Map<RoleCreatedConfirmationDto>(createdRole));
             }
             catch (Exception ex)
             {
+                if (ex.GetBaseException().GetType() == typeof(UniqueValueViolationException))
+                {
+                    return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                }
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
 
             }
@@ -143,12 +154,14 @@ namespace UserService.Controllers
         /// <response code="200">Returns updated role</response>
         /// <response code="400">Role with roleId is not found</response>
         /// <response code="401">Unauthorized user</response>
+        /// <response code="409">Unique value violation</response>
         /// <response code="500">Error on the server while updating</response>
         [HttpPut("{roleId}")]
         [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<RoleDto> UpdateRole([FromBody] RoleUpdateDto roleUpdate, Guid roleId)
         {
@@ -159,15 +172,24 @@ namespace UserService.Controllers
                 {
                     return NotFound();
                 }
-                Role updatedRole = mapper.Map<Role>(roleUpdate);
+                if (_roleManager.RoleExistsAsync(roleUpdate.RoleName).Result)
+                {
+                    return StatusCode(StatusCodes.Status409Conflict, "Role name should be unique");
+
+                }
+                var role = _roleManager.Roles.First(r => r.Id == roleId);
+                role.Name = roleUpdate.RoleName;
+                _roleManager.UpdateAsync(role).Wait();
+
+                Role updatedRole = _mapper.Map<Role>(roleUpdate);
                 updatedRole.RoleId = roleId;
-                mapper.Map(updatedRole, roleWithId);
-                roleRepository.SaveChanges();
-                return Ok(mapper.Map<RoleDto>(roleWithId));
+                _mapper.Map(updatedRole, roleWithId);
+                _roleRepository.SaveChanges();
+                return Ok(_mapper.Map<RoleDto>(roleWithId));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Update error");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
 
             }
         }
@@ -179,17 +201,19 @@ namespace UserService.Controllers
         /// <response code="204">Role succesfully deleted</response>
         /// <response code="401">Unauthorized user</response>
         /// <response code="404">Role with roleId not found</response>
+        /// <response code="409">Role reference in another table</response>
         /// <response code="500">Error on the server while deleting</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [HttpDelete("{roleId}")]
         public IActionResult DeleteRole(Guid roleId)
         {
             try
             {
-                var role = roleRepository.GetRoleByRoleId(roleId);
+                var role = _roleRepository.GetRoleByRoleId(roleId);
                 if (role == null)
                 {
                     return NotFound();
@@ -197,9 +221,14 @@ namespace UserService.Controllers
                 _rolesService.DeleteRole(roleId);
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Delete error");
+                if (ex.GetBaseException().GetType() == typeof(ReferentialConstraintViolationException))
+                {
+                    return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                }
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
 
             }
 

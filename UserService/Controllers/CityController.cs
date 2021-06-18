@@ -12,6 +12,7 @@ using UserService.Data;
 using UserService.Dtos;
 using UserService.Dtos.Cities;
 using UserService.Entities;
+using UserService.Exceptions;
 using UserService.Services.Cities;
 
 namespace UserService.Controllers
@@ -24,8 +25,6 @@ namespace UserService.Controllers
     [Produces("application/json")]
     [ApiController]
     [Route("api/cities")]
-    //[Authorize(Roles="Admin")]
-    [Authorize]
     public class CityController : ControllerBase
     {
         private readonly ICityRepository cityRepository;
@@ -50,6 +49,7 @@ namespace UserService.Controllers
         /// <response code="204">No cities  are found</response>
         /// <response code="401">Unauthorized user</response>
         /// <response code="500">Error on the server</response>
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -82,6 +82,7 @@ namespace UserService.Controllers
         /// <response code="401">Unauthorized user</response>
         /// <response code="404">City with cityId is not found</response>
         /// <response code="500">Error on the server while fetching cities</response>
+        [AllowAnonymous]
         [HttpGet("{cityId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -114,8 +115,8 @@ namespace UserService.Controllers
         /// <response code="200">Returns the created city</response>
         /// <response code="401">Unauthorized user</response>
         /// <response code="500">There was an error on the server</response>
+        [Authorize(Roles="Admin")]
         [HttpPost]
-        [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -145,8 +146,8 @@ namespace UserService.Controllers
         /// <response code="400">City with cityId is not found</response>
         /// <response code="401">Unauthorized user</response>
         /// <response code="500">Error on the server while updating</response>
+        [Authorize(Roles="Admin")]
         [HttpPut("{cityId}")]
-        [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -181,11 +182,14 @@ namespace UserService.Controllers
         /// <response code="204">City succesfully deleted</response>
         /// <response code="401">Unauthorized user</response>
         /// <response code="404">City with cityId not found</response>
+        /// <response code="409">City referenced in another table</response>
         /// <response code="500">Error on the server while deleting</response>
+        [Authorize(Roles="Admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [HttpDelete("{cityId}")]
         public IActionResult DeleteCity(Guid cityId)
         {
@@ -199,9 +203,13 @@ namespace UserService.Controllers
                 _citiesService.DeleteCity(cityId);
                 return NoContent();
             }
-            catch(Exception)
+            catch(Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Delete error");
+                if (ex.GetBaseException().GetType() == typeof(ReferentialConstraintViolationException))
+                {
+                    return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                }
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
 
             }
 

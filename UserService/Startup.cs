@@ -27,6 +27,7 @@ using UserService.Options;
 using UserService.Services;
 using UserService.Services.Cities;
 using UserService.Services.Users;
+using UserService.Services.Roles;
 
 namespace UserService
 {
@@ -118,6 +119,7 @@ namespace UserService
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IPersonalUsersService, PersonalUsersService>();
             services.AddScoped<ICitiesService, CitiesService>();
+            services.AddScoped<IRolesService, RolesService>();
             services.AddScoped<ICorporationUsersService, CorporationUsersService>();
             services.AddScoped<ResourceOwnerFilter>();
 

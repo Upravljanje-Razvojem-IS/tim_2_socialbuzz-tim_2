@@ -68,5 +68,17 @@ namespace UserService.Data
             var createdUser = context.Add(user);
             return mapper.Map<PersonalUserCreatedConfirmation>(createdUser.Entity);
         }
+
+        public List<PersonalUser> GetUsersWithRole(Guid id)
+        {
+            return context.PersonalUser.Include(user => user.Role).Where(role => role.RoleId == id).ToList();
+
+        }
+
+        public List<PersonalUser> GetUsersWithCity(Guid id)
+        {
+            return context.PersonalUser.Include(user => user.City).Where(city => city.CityId == id).ToList();
+
+        }
     }
 }

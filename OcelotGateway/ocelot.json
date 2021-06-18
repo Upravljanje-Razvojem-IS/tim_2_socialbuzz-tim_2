@@ -11,6 +11,108 @@
       ],
       "UpstreamPathTemplate": "/cities",
       "UpstreamHttpMethod": [ "Get", "Post" ],
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/cities?cityName={cityName}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/cities?cityName={cityName}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/cities/{cityId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/cities/{cityId}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/cities/{cityId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/cities/{cityId}",
+      "UpstreamHttpMethod": [ "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "IdentityApiKey",
+        "AllowedScopes": []
+      },
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/roles",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/roles",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "IdentityApiKey",
+        "AllowedScopes": []
+      },
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/roles?roleName={roleName}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/roles?roleName={roleName}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "IdentityApiKey",
+        "AllowedScopes": []
+      },
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/roles/{roleId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/roles/{roleId}",
+      "UpstreamHttpMethod": [ "Put", "Delete", "Get" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "IdentityApiKey",
         "AllowedScopes": []

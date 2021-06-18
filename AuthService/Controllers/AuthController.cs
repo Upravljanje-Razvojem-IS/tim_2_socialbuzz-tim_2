@@ -13,7 +13,7 @@ namespace AuthService.Controllers
     /// <summary>
     /// Contoller with endopoints for handling authentication of users 
     /// </summary>
-    ///  [Consumes("application/json")]
+    [Consumes("application/json")]
     [Produces("application/json")]
     [ApiController]
     public class AuthController : ControllerBase

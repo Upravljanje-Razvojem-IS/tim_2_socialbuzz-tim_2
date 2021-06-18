@@ -9,6 +9,9 @@ namespace UserService.Data
     public interface IPersonalUserRepository
     {
         List<PersonalUser> GetUsers(string city = null, string username = null);
+        List<PersonalUser> GetUsersWithRole(Guid id);
+        List<PersonalUser> GetUsersWithCity(Guid id);
+
         PersonalUser GetUserByUserId(Guid userId);
         PersonalUserCreatedConfirmation CreateUser(PersonalUser user);
         PersonalUserCreatedConfirmation CreateAdmin(PersonalUser user);

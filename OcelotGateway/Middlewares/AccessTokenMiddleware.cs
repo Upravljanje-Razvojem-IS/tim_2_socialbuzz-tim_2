@@ -18,15 +18,16 @@ namespace OcelotGateway.Middlewares
         }
 
         //UpstreamPath /cities
-        private static ArrayList protectedPaths = new ArrayList {
-            "/cities"
+        private static string[] protectedPaths = new string[] {
+            "/cities",
+            "/roles"
         };
 
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             string path = context.Request.Path.Value.ToString();
-            if (protectedPaths.Contains(path))
+            if (protectedPaths.Any(s => path.Contains(s)))
             {
                 string publicToken = context.Request.Headers["Authorization"];
                 if (!String.IsNullOrEmpty(publicToken))
