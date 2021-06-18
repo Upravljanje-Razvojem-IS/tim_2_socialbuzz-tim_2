@@ -24,6 +24,8 @@ namespace UserService.Controllers
     /// Contoller with endopoints for fetching, creating, updating
     /// and deleting personal user accounts
     /// </summary>
+    [Consumes("application/json")]
+    [Produces("application/json")]
     [ApiController]
     [Route("api/personalUsers")]
     public class PersonalUserController : ControllerBase

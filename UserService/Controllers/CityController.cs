@@ -20,6 +20,8 @@ namespace UserService.Controllers
     /// Controller with endpoints for fetching, creating, updating
     /// and deleting cities
     /// </summary>
+    [Consumes("application/json")]
+    [Produces("application/json")]
     [ApiController]
     [Route("api/cities")]
     //[Authorize(Roles="Admin")]

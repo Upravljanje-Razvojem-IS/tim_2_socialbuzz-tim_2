@@ -20,6 +20,8 @@ namespace UserService.Controllers
     /// <summary>
     /// Controller with endpoints for fetching, creating and deleting roles
     /// </summary>
+    [Consumes("application/json")]
+    [Produces("application/json")]
     [ApiController]
     [Route("api/roles")]
     [Authorize(Roles="Admin")]

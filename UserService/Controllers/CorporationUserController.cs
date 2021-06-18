@@ -23,6 +23,8 @@ namespace UserService.Controllers
     /// Contoller with endopoints for fetching, creating, updating
     /// and deleting corporate user accounts
     /// </summary>
+    [Consumes("application/json")]
+    [Produces("application/json")]
     [ApiController]
     [Route("api/corporationUsers")]
     public class CorporationUserController : ControllerBase

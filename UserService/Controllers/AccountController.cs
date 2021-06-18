@@ -13,6 +13,8 @@ namespace UserService.Controllers
     /// <summary>
     /// Contoller with endopoints for checking accounts when autenticating users 
     /// </summary>
+    [Consumes("application/json")]
+    [Produces("application/json")]
     [ApiController]
     [Route("api/accounts")]
     public class AccountController : ControllerBase

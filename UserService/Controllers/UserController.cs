@@ -20,6 +20,8 @@ namespace UserService.Controllers
     /// <summary>
     /// Contoller with endopoints for fetching user accounts
     /// </summary>
+    [Consumes("application/json")]
+    [Produces("application/json")]
     [ApiController]
     [Route("api/users")]
     [Authorize]
