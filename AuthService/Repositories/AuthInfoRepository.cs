@@ -26,6 +26,7 @@ namespace AuthService.Repositories
         {
             var authInfo = _authDbContext.AuthInfo.FirstOrDefault(i => i.UserId == userId);
             _authDbContext.Remove(authInfo);
+            _authDbContext.SaveChanges();
         }
 
         public AuthInfo GetAuthInfoByPublicToken(Guid token)

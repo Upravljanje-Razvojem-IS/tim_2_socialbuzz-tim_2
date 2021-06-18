@@ -35,6 +35,7 @@ namespace AuthService.Services
             AuthInfo authInfo =_authInfoRepository.GetAuthInfoByPublicToken(publicToken);
             if(authInfo != null)
             {
+                //TODO: user already has private token
                 string privateToken = IssueToken(authInfo.UserId.ToString(), authInfo.Role);
                 authInfo.PrivateToken = privateToken;
                 _authInfoRepository.SaveChanges();
