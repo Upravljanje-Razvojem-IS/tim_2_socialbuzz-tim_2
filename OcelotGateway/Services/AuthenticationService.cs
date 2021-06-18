@@ -28,7 +28,7 @@ namespace OcelotGateway.Services
                     PublicToken = publicToken
                 };
                 Uri url = new Uri($"{ _configuration["Services:AuthService"] }api/auth");
-                HttpContent content = new StringContent(JsonConvert.SerializeObject(publicToken));
+                HttpContent content = new StringContent(JsonConvert.SerializeObject(body));
                 content.Headers.ContentType.MediaType = "application/json";
                 HttpResponseMessage response = client.PostAsync(url, content).Result;
                 AuthenticationResponse res = await response.Content.ReadFromJsonAsync<AuthenticationResponse>();
