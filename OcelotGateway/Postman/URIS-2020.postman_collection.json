@@ -1,0 +1,1032 @@
+{
+	"info": {
+		"_postman_id": "735ac306-cd7b-4164-a3ac-cbb745a9f75c",
+		"name": "URIS-2020",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "personalUser",
+			"item": [
+				{
+					"name": "getPersonalUserById",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"Email\":\"stefke2@gmail.com\",\r\n\t\"Password\":\"pass123\",\r\n\t\"IsActive\": true,\r\n\t\"Telephone\": \"+38162356478\",\r\n\t\"Username\": \"Milan\",\r\n\t\"FirstName\": \"Stefan\",\r\n\t\"LastName\": \"Ostojic\",\r\n\t\"CityId\": \"9171f23e-adf2-4698-b73f-05c6fd7ad1be\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44332/personalUsers/8c349e7b-1c97-486d-aa2e-e58205d11577",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"personalUsers",
+								"8c349e7b-1c97-486d-aa2e-e58205d11577"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPersonalUsers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/personalUsers",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"personalUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPersonalUsersByCity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/personalUsers?city=Beograd",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"personalUsers"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "Beograd"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPersonalUserByUsername",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/personalUsers?username=NatalijaG",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"personalUsers"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "NatalijaG"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "putPersonalUser",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"IsActive\": true,\r\n\t\"Telephone\": \"+38162356479\",\r\n\t\"Username\": \"PetarAntonic3\",\r\n\t\"FirstName\": \"Petar\",\r\n\t\"LastName\": \"Antonic\",\r\n\t\"CityId\": \"9171f23e-adf2-4698-b73f-05c6fd7ad1be\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44332/personalUsers/86317562-515a-4096-fcfe-08d932bb9ced",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"personalUsers",
+								"86317562-515a-4096-fcfe-08d932bb9ced"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deletePersonalUser",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/personalUsers/86317562-515a-4096-fcfe-08d932bb9ced",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"personalUsers",
+								"86317562-515a-4096-fcfe-08d932bb9ced"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postPersonalUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"Email\":\"petar@gmail.com\",\r\n\t\"Password\":\"pass123\",\r\n\t\"IsActive\": true,\r\n\t\"Telephone\": \"+38162356478\",\r\n\t\"Username\": \"Petar Antonic\",\r\n\t\"FirstName\": \"Petar\",\r\n\t\"LastName\": \"Antonic\",\r\n\t\"CityId\": \"9171f23e-adf2-4698-b73f-05c6fd7ad1be\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44332/personalUsers",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"personalUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postPersonalUserAdmin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"Email\":\"petar@gmail.com\",\r\n\t\"Password\":\"pass123\",\r\n\t\"IsActive\": true,\r\n\t\"Telephone\": \"+38162356478\",\r\n\t\"Username\": \"Petar Antonic\",\r\n\t\"FirstName\": \"Petar\",\r\n\t\"LastName\": \"Antonic\",\r\n\t\"CityId\": \"9171f23e-adf2-4698-b73f-05c6fd7ad1be\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44332/personalUsers/admins",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"personalUsers",
+								"admins"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "corporationUser",
+			"item": [
+				{
+					"name": "getCorporationUserById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/corporationUsers/5c0b3d2e-afb9-484c-90f1-08d932c2bd03",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"corporationUsers",
+								"5c0b3d2e-afb9-484c-90f1-08d932c2bd03"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCorporationUsers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/corporationUsers",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"corporationUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCorporationUserByUsername",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/corporationUsers?username=Financial+Corporation",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"corporationUsers"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "Financial+Corporation"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCorporationUsersByCity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/corporationUsers?city=Novi+Sad",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"corporationUsers"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "Novi+Sad"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postCorporationUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"Email\":\"dotcorp@gmail.com\",\r\n\t\"Password\":\"pass123\",\r\n\t\"IsActive\": true,\r\n\t\"Telephone\": \"+38162356478\",\r\n\t\"Username\": \"DTO corp.\",\r\n\t\"CorporationName\": \"DOT corporation\",\r\n\t\"Pib\": \"947283762\",\r\n\t\"HeadquartersCity\": \"Novi Sad\",\r\n\t\"HeadquartersAddress\": \"Zorana Djindjica 5\",\r\n\t\"CityId\": \"9171f23e-adf2-4698-b73f-05c6fd7ad1be\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44332/corporationUsers",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"corporationUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "putCorporationUser",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CorporationName\": \"Financial Corporation\",\r\n    \"Pib\": \"18739892\",\r\n    \"HeadquartersCity\": \"Novi Sad\",\r\n    \"HeadquartersAddress\": \"Radnicka 2\",\r\n    \"IsActive\": true,\r\n    \"Telephone\": \"+3816228749275\",\r\n    \"Username\": \"FinancialCorporation\",\r\n    \"CityId\": \"9171f23e-adf2-4698-b73f-05c6fd7ad1be\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44332/corporationUsers/0904fb32-5914-4cea-90f2-08d932c2bd03",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"corporationUsers",
+								"0904fb32-5914-4cea-90f2-08d932c2bd03"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCorporationUser",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/corporationUsers/0904fb32-5914-4cea-90f2-08d932c2bd03",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"corporationUsers",
+								"0904fb32-5914-4cea-90f2-08d932c2bd03"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "city",
+			"item": [
+				{
+					"name": "getCities",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/cities",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"cities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCityById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/cities/9171f23e-adf2-4698-b73f-05c6fd7ad1be",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"cities",
+								"9171f23e-adf2-4698-b73f-05c6fd7ad1be"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCityByCityName",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/cities?cityName=Novi+Sad",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"cities"
+							],
+							"query": [
+								{
+									"key": "cityName",
+									"value": "Novi+Sad"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postCity",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"CityName\": \"Nis\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44332/cities",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"cities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "putCity",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"CityName\": \"Novi Sad (Vojvodina)\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44332/cities/9171f23e-adf2-4698-b73f-05c6fd7ad1be",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"cities",
+								"9171f23e-adf2-4698-b73f-05c6fd7ad1be"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCity",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/cities/9171f23e-adf2-4698-b73f-05c6fd7ad1be",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"cities",
+								"9171f23e-adf2-4698-b73f-05c6fd7ad1be"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "role",
+			"item": [
+				{
+					"name": "getRoles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/roles",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getRoleById",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/roles/194df880-d4ce-4997-96c9-878102eb6e0e",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"roles",
+								"194df880-d4ce-4997-96c9-878102eb6e0e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getRoleByRoleName",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:44200/api/roles?roleName=Admin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "44200",
+							"path": [
+								"api",
+								"roles"
+							],
+							"query": [
+								{
+									"key": "roleName",
+									"value": "Admin"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "postRole",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"RoleName\": \"Regular user v2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44332/roles",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteRole",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:44332/roles/3516083d-771d-4ad7-bb35-08d932b033d1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"roles",
+								"3516083d-771d-4ad7-bb35-08d932b033d1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "putRole",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "b2d63eed-62f3-4119-8c80-de6f8ac748b4",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"RoleName\": \"Regular user v3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44332/roles/3516083d-771d-4ad7-bb35-08d932b033d1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44332",
+							"path": [
+								"roles",
+								"3516083d-771d-4ad7-bb35-08d932b033d1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "getUsers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:50576/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "50576",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:44200/api/users/53545517-f768-4ac8-789c-08d8d8c87f70",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "44200",
+							"path": [
+								"api",
+								"users",
+								"53545517-f768-4ac8-789c-08d8d8c87f70"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsersByUserType",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:44200/api/users?userType=personalUser",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "44200",
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "userType",
+									"value": "personalUser"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserByUsername",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:44200/api/users?username=VladikaF",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "44200",
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "VladikaF"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUsersByCity",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:44200/api/users?city=Novi+Sad",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "44200",
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "Novi+Sad"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserByCityAndUsername",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:44200/api/users?city=Novi+Sad&username=VladikaF",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "44200",
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "Novi+Sad"
+								},
+								{
+									"key": "username",
+									"value": "VladikaF"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "loginWithEmail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"pass123\",\r\n    \"email\": \"nata@gmail.com\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:44386/api/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "44386",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
