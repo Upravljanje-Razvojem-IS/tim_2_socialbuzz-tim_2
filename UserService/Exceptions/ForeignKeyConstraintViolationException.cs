@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace UserService.Exceptions
 {
+    [Serializable]
     public class ForeignKeyConstraintViolationException: Exception
     {
         public ForeignKeyConstraintViolationException(string message)

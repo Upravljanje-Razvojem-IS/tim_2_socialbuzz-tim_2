@@ -94,10 +94,6 @@ namespace UserService.Controllers
         {
             try
             {
-               /* if (!HttpContext.GetUserRole().Equals("Admin") && !HttpContext.GetUserId().Equals(userId.ToString()))
-                {
-                    return StatusCode(StatusCodes.Status400BadRequest, "You do not own the resource, action is restricted to the owner of the resource");
-                }*/
                 var personalUser = _personalUsersService.GetUserByUserId(userId);
                 if (personalUser == null)
                 {

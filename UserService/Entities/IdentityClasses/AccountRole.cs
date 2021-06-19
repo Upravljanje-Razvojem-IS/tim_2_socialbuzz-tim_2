@@ -20,7 +20,7 @@ namespace UserService.Entities
         [MaxLength(500)]
         public string Description { get; set; }
 
-        private AccountRole() : base()
+        public AccountRole() : base()
         {
             Description = "no description";
         }

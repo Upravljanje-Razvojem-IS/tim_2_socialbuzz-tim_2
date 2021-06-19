@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace UserService.Exceptions
 {
+    [Serializable]
     public class UniqueValueViolationException: Exception
     {
         public UniqueValueViolationException(string message)

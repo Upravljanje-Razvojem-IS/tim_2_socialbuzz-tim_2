@@ -14,8 +14,7 @@ namespace UserService.Entities
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("UserDB"));
-           /* optionsBuilder.UseLazyLoadingProxies();
-            base.OnConfiguring(optionsBuilder);*/
+           
         }
 
         public DbSet<PersonalUser> PersonalUser { get; set; }

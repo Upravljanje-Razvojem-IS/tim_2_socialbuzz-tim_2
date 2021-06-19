@@ -5,14 +5,15 @@ using System.Threading.Tasks;
 
 namespace UserService.Exceptions
 {
-    public class ExectionException: Exception
+    [Serializable]
+    public class ExecutionException: Exception
     {
-        public ExectionException(string message)
+        public ExecutionException(string message)
 : base(message)
         {
 
         }
-        public ExectionException(string message, Exception inner)
+        public ExecutionException(string message, Exception inner)
              : base(message, inner)
         {
 

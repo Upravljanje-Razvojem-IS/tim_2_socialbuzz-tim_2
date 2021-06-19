@@ -44,7 +44,6 @@ namespace OcelotGateway.Middlewares
                
             }
 
-            //return;
             await next(context);
         }
     }
