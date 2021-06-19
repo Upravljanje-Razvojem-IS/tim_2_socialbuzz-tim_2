@@ -125,7 +125,6 @@ namespace UserService.Controllers
         /// <response code="422">Constraint violation</response>
         /// <response code="500">There was an error on the server</response>
         [HttpPost]
-        [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -136,7 +135,7 @@ namespace UserService.Controllers
             {
                 PersonalUser userEntity = _mapper.Map<PersonalUser>(personalUser);
 
-                PersonalUserCreatedConfirmation userCreated = _personalUsersService.CreateUser(userEntity, personalUser.Password).Result;
+                PersonalUserCreatedConfirmation userCreated = _personalUsersService.CreateUser(userEntity, personalUser.Password);
 
                 string location = _linkGenerator.GetPathByAction("GetUserById", "PersonalUser", new { userId = userCreated.UserId });
 
@@ -188,7 +187,6 @@ namespace UserService.Controllers
         [Authorize]
         [ServiceFilter(typeof(ResourceOwnerFilter))]
         [HttpPut("{userId}")]
-        [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -288,7 +286,6 @@ namespace UserService.Controllers
         /// <response code="500">There was an error on the server</response>
         [Authorize(Roles="Admin")]
         [HttpPost("admins")]
-        [Consumes("application/json")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -301,7 +298,7 @@ namespace UserService.Controllers
                 PersonalUser userEntity = _mapper.Map<PersonalUser>(personalUser);
 
                 //Adding to userdbcontext tables
-                PersonalUserCreatedConfirmation userCreated = _personalUsersService.CreateAdmin(userEntity, personalUser.Username).Result;
+                PersonalUserCreatedConfirmation userCreated = _personalUsersService.CreateAdmin(userEntity, personalUser.Username);
 
                 string location = _linkGenerator.GetPathByAction("GetUserById", "PersonalUser", new { userId = userCreated.UserId });
                 return Created(location, _mapper.Map<PersonalUserCreatedConfirmationDto>(userCreated));

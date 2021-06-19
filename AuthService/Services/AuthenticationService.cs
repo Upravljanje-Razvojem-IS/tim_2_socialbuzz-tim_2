@@ -99,7 +99,7 @@ namespace AuthService.Services
                     PublicToken = publicToken,
                     TimeOfIssuingPublicToken = dateIssued
                 };
-                AuthInfo created = _authInfoRepository.CreateAuthInfo(authInfo);
+                _authInfoRepository.CreateAuthInfo(authInfo);
                 return new AuthenticationResponse
                 {
                     Token = publicToken,

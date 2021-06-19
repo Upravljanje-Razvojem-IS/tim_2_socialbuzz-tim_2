@@ -33,12 +33,16 @@ namespace UserService.Services
 
         }
 
-        public async Task<PersonalUserCreatedConfirmation> CreateAdmin(PersonalUser user, string password)
+        public PersonalUserCreatedConfirmation CreateAdmin(PersonalUser user, string password)
         {
-            if (!CheckUniqueUsername(user.Username))
+            if (!CheckUniqueUsername(user.Username, false, null))
             {
                 //Unique violation
                 throw new UniqueValueViolationException("Username should be unique");
+            }
+            if (!CkeckUniqueEmail(user.Email))
+            {
+                throw new UniqueValueViolationException("Email should be unique");
             }
             if (!CheckCity(user.CityId))
             {
@@ -52,7 +56,7 @@ namespace UserService.Services
             //Adding to identityuserdbcontext tables
             string username = string.Join("", user.Username.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
             var acc = new AccountInfo(username, user.Email, userCreated.UserId);
-            IdentityResult result = await _userManager.CreateAsync(acc, password);
+            IdentityResult result = _userManager.CreateAsync(acc, password).Result;
             if (result.Succeeded)
             {
                 _userManager.AddToRoleAsync(acc, "Admin").Wait();
@@ -67,12 +71,16 @@ namespace UserService.Services
 
         }
 
-        public async Task<PersonalUserCreatedConfirmation> CreateUser(PersonalUser personalUser, string password)
+        public PersonalUserCreatedConfirmation CreateUser(PersonalUser personalUser, string password)
         {
-            if (!CheckUniqueUsername(personalUser.Username))
+            if (!CheckUniqueUsername(personalUser.Username, false, null))
             {
                 //Unique violation
                 throw new UniqueValueViolationException("Username should be unique");
+            }
+            if (!CkeckUniqueEmail(personalUser.Email))
+            {
+                throw new UniqueValueViolationException("Email should be unique");
             }
             if (!CheckCity(personalUser.CityId))
             {
@@ -86,7 +94,7 @@ namespace UserService.Services
             //Adding to identityuserdbcontext tables
             string username = string.Join("", personalUser.Username.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
             var acc = new AccountInfo(username, personalUser.Email, userCreated.UserId);
-            IdentityResult result = await _userManager.CreateAsync(acc, password);
+            IdentityResult result = _userManager.CreateAsync(acc, password).Result;
             if (result.Succeeded)
             {
                 _userManager.AddToRoleAsync(acc, "Regular user").Wait();
@@ -99,35 +107,13 @@ namespace UserService.Services
             return userCreated;
         }
 
-        private bool CheckUniqueUsername(string username)
-        {
-            var users = _corporationUserRepository.GetUsers(null, username);
-            if (users != null && users.Count > 0)
-            {
-                //Unique violation
-                return false;
-            }
-            var persUsers = _personalUserRepository.GetUsers(null, username);
-            if (persUsers != null && persUsers.Count > 0)
-            {
-                //Unique violation
-                return false;
-            }
-            return true;
-        }
-
-        private bool CheckCity(Guid cityId)
-        {
-            return (_cityRepository.GetCityByCityId(cityId) != null);
-        }
-
-        public async void DeleteUser(Guid userId)
+        public void DeleteUser(Guid userId)
         {
             _personalUserRepository.DeleteUser(userId);
             _personalUserRepository.SaveChanges();
             //Delete from identity table
-            var acc = await _userManager.FindByIdAsync(userId.ToString());
-            await _userManager.DeleteAsync(acc);
+            var acc = _userManager.FindByIdAsync(userId.ToString()).Result;
+            _userManager.DeleteAsync(acc).Wait();
         }
 
         public PersonalUser GetUserByUserId(Guid userId)
@@ -140,14 +126,14 @@ namespace UserService.Services
             return _personalUserRepository.GetUsers(city, username);
         }
 
-        public async void UpdateUser(PersonalUser updatedUser, PersonalUser userWithId)
+        public void UpdateUser(PersonalUser updatedUser, PersonalUser userWithId)
         {
 
             //TODO: Role can be changed only by admin, PATCH 
             //TODO: Cleaner code
             //TODO: Bad foreign keys, unique
             //TODO: Password change 
-            if (!CheckUniqueUsername(updatedUser.Username))
+            if (!CheckUniqueUsername(updatedUser.Username, true, userWithId.UserId))
             {
                 //Unique violation
                 throw new UniqueValueViolationException("Username should be unique");
@@ -158,7 +144,7 @@ namespace UserService.Services
             updatedUser.Email = userWithId.Email;
             updatedUser.Role = _roleRepository.GetRoleByRoleId(userWithId.RoleId);
             City city = _cityRepository.GetCityByCityId(updatedUser.CityId);
-            if (city != null)
+            if (city == null)
             {
                 throw new ForeignKeyConstraintViolationException("Foreign key constraint violated");
             }
@@ -168,10 +154,55 @@ namespace UserService.Services
             _personalUserRepository.SaveChanges();
 
             //Updating identity table
-            AccountInfo acc = await _userManager.FindByIdAsync(userWithId.UserId.ToString());
+            AccountInfo acc = _userManager.FindByIdAsync(userWithId.UserId.ToString()).Result;
             string username = string.Join("", updatedUser.Username.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
             acc.UserName = username;
-            await _userManager.UpdateAsync(acc);
+            _userManager.UpdateAsync(acc).Wait();
         }
+        private bool CheckUniqueUsername(string username, bool forUpdate, Guid? userId)
+        {
+            var users = _corporationUserRepository.GetUsers(null, username);
+            if (users != null && users.Count > 0)
+            {
+                if (!forUpdate || (forUpdate && users[0].UserId != userId))
+                {
+                    //Unique violation
+                    return false;
+                }
+            }
+            var persUsers = _personalUserRepository.GetUsers(null, username);
+            if (persUsers != null && persUsers.Count > 0)
+            {
+                if (!forUpdate || (forUpdate && persUsers[0].UserId != userId))
+                {
+                    //Unique violation
+                    return false;
+                }
+
+            }
+            return true;
+        }
+
+        private bool CheckCity(Guid cityId)
+        {
+            return (_cityRepository.GetCityByCityId(cityId) != null);
+        }
+        private bool CkeckUniqueEmail(string email)
+        {
+            var users = _corporationUserRepository.GetUserWithEmail(email);
+            if (users != null)
+            {
+                //Unique violation
+                return false;
+            }
+            var persUsers = _personalUserRepository.GetUserWithEmail(email);
+            if (persUsers != null)
+            {
+                //Unique violation
+                return false;
+            }
+            return true;
+        }
+
     }
 }

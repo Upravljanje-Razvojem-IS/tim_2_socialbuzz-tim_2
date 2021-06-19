@@ -33,7 +33,7 @@ namespace UserService.Services.Roles
                 RoleCreatedConfirmation createdRole = _roleRepository.CreateRole(role);
                 _roleRepository.SaveChanges();
                 AccountRole accRole = new AccountRole(createdRole.RoleId, role.RoleName, role.RoleName);
-                IdentityResult roleResult = _roleManager.CreateAsync(accRole).Result;
+                _roleManager.CreateAsync(accRole).Wait();
                 return createdRole;
 
             }

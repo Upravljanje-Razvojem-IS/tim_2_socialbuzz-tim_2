@@ -129,7 +129,7 @@ namespace UserService.Controllers
             {
                 
                 Corporation userEntity = _mapper.Map<Corporation>(corporationUser);
-                CorporationUserCreatedConfirmation userCreated = _corporationUsersService.CreateUser(userEntity, corporationUser.Password).Result;
+                CorporationUserCreatedConfirmation userCreated = _corporationUsersService.CreateUser(userEntity, corporationUser.Password);
                
 
                 string location = _linkGenerator.GetPathByAction("GetUserById", "CorporationUser", new { userId = userCreated.UserId });

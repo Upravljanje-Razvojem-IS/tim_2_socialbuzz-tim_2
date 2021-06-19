@@ -80,5 +80,11 @@ namespace UserService.Data
             return context.PersonalUser.Include(user => user.City).Where(city => city.CityId == id).ToList();
 
         }
+
+        public PersonalUser GetUserWithEmail(string email)
+        {
+            return context.PersonalUser.FirstOrDefault(user => user.Email == email);
+
+        }
     }
 }

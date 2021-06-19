@@ -55,6 +55,11 @@ namespace UserService.Data
 
         }
 
+        public Corporation GetUserWithEmail(string email)
+        {
+            return context.Corporation.FirstOrDefault(user => user.Email == email);
+        }
+
         public List<Corporation> GetUsersWithRole(Guid id)
         {
             return context.Corporation.Include(user => user.Role).Where(role => role.RoleId == id).ToList();

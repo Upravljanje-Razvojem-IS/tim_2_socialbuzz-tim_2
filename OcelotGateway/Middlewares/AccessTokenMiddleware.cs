@@ -18,9 +18,11 @@ namespace OcelotGateway.Middlewares
         }
 
         //UpstreamPath /cities
-        private static string[] protectedPaths = new string[] {
+        private static readonly string[] protectedPaths = new string[] {
             "/cities",
-            "/roles"
+            "/roles",
+            "/personalUsers",
+            "/corporationUsers"
         };
 
 

@@ -79,12 +79,12 @@ namespace UserService.Entities
             if (!roleManager.RoleExistsAsync("Regular user").Result)
             {
                 AccountRole role = new AccountRole(regularUserRoleId, "Role that basic level privileges", "Regular user");
-                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+                roleManager.CreateAsync(role).Wait();
             }
             if (!roleManager.RoleExistsAsync("Admin").Result)
             {
                 AccountRole role = new AccountRole(adminRoleId, "Role that enables root level privileges", "Admin");
-                IdentityResult roleResult = roleManager.CreateAsync(role).Result;
+                roleManager.CreateAsync(role).Wait();
             }
         }
     }

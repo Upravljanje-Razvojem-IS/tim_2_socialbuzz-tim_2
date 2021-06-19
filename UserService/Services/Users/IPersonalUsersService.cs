@@ -9,9 +9,10 @@ namespace UserService.Services
     public interface IPersonalUsersService
     {
         List<PersonalUser> GetUsers(string city = null, string username = null);
+
         PersonalUser GetUserByUserId(Guid userId);
-        Task<PersonalUserCreatedConfirmation> CreateUser(PersonalUser user, string password);
-        Task<PersonalUserCreatedConfirmation> CreateAdmin(PersonalUser user, string password);
+        PersonalUserCreatedConfirmation CreateUser(PersonalUser user, string password);
+        PersonalUserCreatedConfirmation CreateAdmin(PersonalUser user, string password);
         void UpdateUser(PersonalUser updatedUser, PersonalUser userWithId);
         void DeleteUser(Guid userId);
     }

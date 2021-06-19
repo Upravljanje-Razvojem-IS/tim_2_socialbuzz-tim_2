@@ -12,6 +12,8 @@ namespace UserService.Data
         List<Corporation> GetUsersWithRole(Guid id);
         List<Corporation> GetUsersWithCity(Guid id);
         Corporation GetUserByUserId(Guid userId);
+        Corporation GetUserWithEmail(string email);
+
         CorporationUserCreatedConfirmation CreateUser(Corporation user);
         void UpdateUser(Corporation user);
         void DeleteUser(Guid userId);

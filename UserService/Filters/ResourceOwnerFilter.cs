@@ -15,14 +15,14 @@ namespace UserService.Filters
         {
             try
             {
-                Guid id = Guid.Empty;
+               Guid id = Guid.Empty;
                 if (context.ActionArguments.ContainsKey("userId"))
                 {
-                    //TODO: HttpContext extension is not working
+                    //TODO: HttpContext extension not working
                     id = (Guid)context.ActionArguments["userId"];
                     string userId = context.HttpContext.User.Claims.Single(x => x.Type == "id").Value;
                     if (!userId.Equals(id.ToString())){
-                        context.Result = new BadRequestObjectResult("You do not own the resource, action is restricted to the owner of the resource");
+                        context.Result = new BadRequestObjectResult("ResourceOwnerFilter:You do not own the resource, action is restricted to the owner of the resource");
                         return;
                     }
                 }

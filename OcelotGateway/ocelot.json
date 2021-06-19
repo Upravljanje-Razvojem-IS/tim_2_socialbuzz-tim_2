@@ -1,6 +1,168 @@
 {
   "Routes": [
     {
+      "DownstreamPathTemplate": "/api/personalUsers",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/personalUsers",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/personalUsers?city={city}&&username={username}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/personalUsers?city={city}&&username={username}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/personalUsers/{userId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/personalUsers/{userId}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/personalUsers?username={username}&&city={city}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/personalUsers?username={username}&&city={city}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/personalUsers/{userId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/personalUsers/{userId}",
+      "UpstreamHttpMethod": [ "Put", "Delete"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "IdentityApiKey",
+        "AllowedScopes": []
+      },
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/personalUsers/admins",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/personalUsers/admins",
+      "UpstreamHttpMethod": [ "Post" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "IdentityApiKey",
+        "AllowedScopes": []
+      },
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/corporationUsers",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/corporationUsers",
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/corporationUsers?username={username}&&city={city}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/corporationUsers?username={username}&&city={city}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/corporationUsers/{userId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/corporationUsers/{userId}",
+      "UpstreamHttpMethod": [ "Put", "Delete" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "IdentityApiKey",
+        "AllowedScopes": []
+      },
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/corporationUsers/{userId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 44361
+        }
+      ],
+      "UpstreamPathTemplate": "/corporationUsers/{userId}",
+      "UpstreamHttpMethod": [ "Get" ],
+      "FileCacheOptions": {
+        "TltSeconds": 30
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/cities",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
