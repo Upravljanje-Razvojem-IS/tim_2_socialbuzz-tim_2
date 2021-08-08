@@ -64,7 +64,7 @@ namespace UserService.Services
             else
             {
                 _personalUserRepository.DeleteUser(userCreated.UserId);
-                throw new ExectionException("Erorr trying to create user");
+               // throw new ExectionException("Erorr trying to create user");
 
             }
             return userCreated;
@@ -102,7 +102,7 @@ namespace UserService.Services
             else
             {
                 _personalUserRepository.DeleteUser(userCreated.UserId);
-                throw new ExectionException("Erorr trying to create user");
+                //throw new ExectionException("Erorr trying to create user");
             }
             return userCreated;
         }

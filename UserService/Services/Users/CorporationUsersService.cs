@@ -61,7 +61,7 @@ namespace UserService.Services.Users
             else
             {
                 _corporationUserRepository.DeleteUser(userCreated.UserId);
-                throw new ExectionException("Erorr trying to create user");
+                //throw new ExectionException("Erorr trying to create user");
 
             }
             return userCreated;
