@@ -17,9 +17,9 @@ namespace RatingService.Services
 
         RatingDTO GetRatingByID(Guid ratingID);
 
-        void CreateRating(RatingDTO rating);
+        RatingDTO CreateRating(RatingCreationDTO rating, int userId);
 
-        void UpdateRating(RatingDTO rating);
+        void  UpdateRating(RatingModifyingDTO rating, Guid ratingID);
 
         void DeleteRating(Guid ratingID);
 

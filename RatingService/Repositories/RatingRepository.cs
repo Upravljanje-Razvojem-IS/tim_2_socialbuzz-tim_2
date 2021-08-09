@@ -37,9 +37,10 @@ namespace RatingService.Repositories
             return followingMockRepository.CheckDoIFollowUser(userID, followingID);
         }
 
-        public void CreateRating(Rating rating)
+        public Rating CreateRating(Rating rating)
         {
-            contextDB.Add(rating);
+            var rate = contextDB.Add(rating);
+            return rate.Entity;
         }
 
         public void DeleteRating(Guid ratingID)
@@ -62,7 +63,7 @@ namespace RatingService.Repositories
             return query.ToList();
         }
 
-        public List<Rating> GetAllRatingsForUser(int userID, List<int> postsIDs)
+        public List<Rating> GetAllRatingsForUser(int userID, List<int> postsIDs)//mora userid jer se proveravaju da li za tog usera koga se gledaju ocene ima ko ce blokiran
         {
             var query = from rate in contextDB.Rating
                         where rate.UserID == userID && postsIDs.Contains(rate.PostID) &&
@@ -78,7 +79,7 @@ namespace RatingService.Repositories
             return contextDB.Rating.FirstOrDefault(e => e.RatingID == ratingID);
         }
 
-        public List<Rating> GetRatingByPostID(int postID, int userID)
+        public List<Rating> GetRatingByPostID(int postID, int userID) //userid samo proverava da se prikazu ocene za post, koji su dali ljudi koje korinsik prati
         {
             var query = from rate in contextDB.Rating
                         where !(from o in blockingMockRepository.GetBlockedUsers(userID)
@@ -97,8 +98,8 @@ namespace RatingService.Repositories
 
         public void UpdateRating(Rating rating)
         {
-            contextDB.Entry(rating).State = EntityState.Modified;
-            contextDB.SaveChanges();
+            /*contextDB.Entry(rating).State = EntityState.Modified;
+            contextDB.SaveChanges();*/
         }
     }
 }

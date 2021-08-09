@@ -45,7 +45,7 @@ namespace RatingService.Services
             return _ratingRepository.CheckDoIFollowUser(userID, followingID);
         }
 
-        public void CreateRating(RatingDTO rating, int userId)//originalna metoda nema userid-vidi ovo-id onog ko ocenjuje
+        public RatingDTO CreateRating(RatingCreationDTO rating, int userId)//originalna metoda nema userid-vidi ovo-id onog ko ocenjuje
         {
             if (_postMockRepository.GetPostById(rating.PostID) == null)
             {
@@ -58,35 +58,32 @@ namespace RatingService.Services
             }
 
             Rating entity = mapper.Map<Rating>(rating);
+            entity.UserID = userId;
 
             var post = _postMockRepository.GetPostById(rating.PostID);
             var userThatPostedId = post.UserID;
 
             if (!_ratingRepository.CheckDoIFollowUser(userId, userThatPostedId))
             {
-                throw new Exception( "You are not following this user and you can not react to his posts.");
+                throw new Exception( "You are not following this user and you can not rate to his posts.");
             }
 
             if (_ratingRepository.CheckDidIAlreadyRate(userId, rating.PostID) != null)
             {
-                throw new Exception("You have already reacted to this post.");
+                throw new Exception("You have already rate to this post.");
             }
 
-            entity.UserID = userId;
             try
             {
-                _ratingRepository.CreateRating(entity);
+                var rate = _ratingRepository.CreateRating(entity);
                 _ratingRepository.SaveChanges();
+                return mapper.Map<RatingDTO>(rate);
             }
             catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }
             
-
-            //string location = linkGenerator.GetPathByAction("GetReactionsByPostID", "Reaction", new { postID = reactionEntity.PostID });
-
-            //return Created(location, mapper.Map<ReactionsDto>(reactionEntity));
 
         }
 
@@ -158,15 +155,15 @@ namespace RatingService.Services
 
             if (ratings == null || ratings.Count == 0)
             {
-                throw new Exception( "This post doesn't have any reactions yet..."); //Post 2
+                throw new Exception( "This post doesn't have any ratings yet..."); //Post 2
             }
 
             return mapper.Map<List<RatingDTO>>(ratings);
         }
 
-        public void UpdateRating(RatingDTO rating)
+        public void UpdateRating(RatingModifyingDTO rating, Guid ratingID)
         {
-            if (_ratingRepository.GetRatingByID(rating.RatingID) == null)
+            if (_ratingRepository.GetRatingByID(ratingID) == null)
             {
                 throw new Exception("Rating with that ID does not exist!");
             }
@@ -176,7 +173,7 @@ namespace RatingService.Services
                 throw new Exception("Type of rating with that ID does not exist!");
             }
 
-            var oldRate = _ratingRepository.GetRatingByID(rating.RatingID);
+            var oldRate = _ratingRepository.GetRatingByID(ratingID);
             var newRate = mapper.Map<Rating>(rating);
 
             if (oldRate.PostID != newRate.PostID)
@@ -188,7 +185,7 @@ namespace RatingService.Services
             {
                 newRate.UserID = oldRate.UserID;
 
-                mapper.Map(newRate, oldRate);
+                 mapper.Map(newRate, oldRate);
                 _ratingRepository.SaveChanges();
 
             }

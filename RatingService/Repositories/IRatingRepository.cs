@@ -16,7 +16,7 @@ namespace RatingService.Repositories
 
         public Rating GetRatingByID(Guid ratingID);
 
-        void CreateRating(Rating rating);
+        Rating CreateRating(Rating rating);
 
         public void UpdateRating(Rating rating);
 

@@ -23,7 +23,19 @@ namespace RatingService.Repositories.FollowingMock
             mock.FollowerID = 1;
             mock.FollowedID = 3;
 
+            FollowingMockDTO mock2 = new FollowingMockDTO();
+            mock2.FollowingID = 1;
+            mock2.FollowerID = 3;
+            mock2.FollowedID = 2;
+
+            FollowingMockDTO mock3 = new FollowingMockDTO();
+            mock3.FollowingID = 1;
+            mock3.FollowerID = 2;
+            mock3.FollowedID = 3;
+
             FollowingUsers.Add(mock);
+            FollowingUsers.Add(mock2);
+            FollowingUsers.Add(mock3);
         }
 
         public List<int> GetFollowedUsers(int userId)//lista svih koje korisnik prati

@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace RatingService.DTO
 {
+    /// <summary>
+    /// DTO za dodavanje nove ocene na objavu
+    /// </summary>
     public class RatingCreationDTO
     {
+
         /// <summary>
-        /// ID objave na koju se dodaje reakcija
+        /// ID objave na koju se dodaje ocena
         /// </summary>
         [Required(ErrorMessage = "Post ID is required!")]
         public int PostID { get; set; }
@@ -28,7 +32,6 @@ namespace RatingService.DTO
         /// <summary>
         /// ID korisnika koji dodaje ocenu
         /// </summary>
-        [Required(ErrorMessage = "User ID is required!")]
         public int UserID { get; set; }
     }
 }
