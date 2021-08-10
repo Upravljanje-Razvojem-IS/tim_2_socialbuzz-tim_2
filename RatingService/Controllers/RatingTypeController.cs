@@ -38,6 +38,19 @@ namespace RatingService.Controllers
             this.mapper = mapper;
         }
 
+        /// <summary>
+        /// Vraca sve postojece tipove ocena nad objavama.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Primer uspesnog zahteva Get All Types Of Reaction
+        /// GET 'http://localhost:44300/api/ratingtypes/' \
+        ///     --header 'Authorization: Bearer URIS2021' 
+        /// </remarks>
+        /// <param name="key">Authorization Header Bearer Key Value</param>
+        /// <response code="200">Uspesno vracena lista svih tipova ocena nad objavama korisnika.</response>
+        /// <response code="401">Neuspesna autorizacija korisnika.</response>
+        /// <response code="404">Nisu pronadjeni tipovi ocena ili ne postoji nijedan tip ocena korisnika.</response>
         [HttpGet]
         [HttpHead]
         public ActionResult<List<RatingTypeDTO>> GetAllRatingTypes([FromHeader] string key)
@@ -59,7 +72,24 @@ namespace RatingService.Controllers
             return Ok(types);
         }
 
-        
+        /// <summary>
+        /// Vraca tip ocene na osnovu prosledjenog ID-a.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Primer uspesnog zahteva Get RatingType By ID
+        /// GET 'http://localhost:44300/api/ratingtypes/ratingTypeID' \
+        ///     --header 'Authorization: Bearer URIS2021'  \
+        ///     --url  'ratingTypeID = 1'  
+        /// </remarks>
+        /// <param name="key">Authorization Header Bearer Key Value</param>
+        /// <param name="ratingTypeID">ID tipa reakcije</param>
+        /// <response code="200">Uspesno vracen tip ocene na osnovu ID-a.</response>
+        /// <response code="401">Neuspesna autorizacija korisnika.</response>
+        /// <response code="404">Nije pronadjen nijedan tip ocene sa zadatim ID-jem.</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{ratingTypeID}")]
         public ActionResult GetRatingTypeByID([FromHeader] string key, int ratingTypeID)
         {
@@ -86,6 +116,27 @@ namespace RatingService.Controllers
             }
         }
 
+        /// <summary>
+        /// Kreira novi tip ocene.
+        /// </summary>
+        /// <param name="key">Authorization Header Bearer Key Value</param>
+        /// <param name="type">Model ocene koja se kreira</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Primer uspesnog zahteva za dodavanje novog tipa ocene \
+        /// POST 'http://localhost:44300/api/ratingtypes/' \
+        ///      --header 'Authorization: Bearer URIS2021' \
+        /// {   \
+        ///  "RatingTypeName": "Very bad", \
+        /// }
+        /// </remarks>
+        /// <response code="201">Vraca kreirani tip ocene.</response>
+        /// <response code="401">Neuspesna autorizacija korisnika.</response>
+        /// <response code="500">Greska na serveru.</response>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Consumes("application/json")]
         [HttpPost]
         public ActionResult<RatingTypeDTO> CreateRatingType([FromHeader] string key, [FromBody] RatingTypeCreationDTO type)
         {
@@ -113,6 +164,31 @@ namespace RatingService.Controllers
 
         }
 
+        /// <summary>
+        /// Modifikacija postojeceg tipa ocene.
+        /// </summary>
+        /// <param name="key">Authorization Header Bearer Key Value</param>
+        /// <param name="updatedType">Model tipa ocene koji se modifikuje</param>
+        /// <param name="typeID">ID tipa ocene koji se modifikuje</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Primer uspesnog zahteva za azuriranje tipa ocene \
+        /// PUT  'http://localhost:44300/api/ratingtypes/typeID' \
+        ///    --header 'Authorization: Bearer URIS2021' \
+        /// { \
+        /// "RatingTypeID": 1, \
+        /// "RatingTypeName": "Updating excellent", \
+        /// }
+        /// </remarks>
+        /// <response code="200">Vraća potvrdu da je uspesno izmenjen tip ocene.</response>
+        /// <response code="401">Neuspesna autorizacija korisnika.</response>
+        /// <response code="404">Ne postoji tip ocene sa datim ID-ijem a koji korisnik pokusava da modifikuje.</response>
+        /// <response code="500">Greska na serveru.</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Consumes("application/json")]
         [HttpPut("{typeID}")]
         public IActionResult UpdateRatingType([FromHeader] string key, [FromBody] RatingTypeModifyingDTO updatedType, int typeID)
         {
@@ -141,6 +217,26 @@ namespace RatingService.Controllers
             }
         }
 
+        /// <summary>
+        /// Vrši brisanje jednog tipa ocene, na osnovu ID-ja tipa ocene
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Primer zahteva za brisanje tipa ocene
+        /// DELETE 'http://localhost:44300/api/ratingtypes/ratingTypeID' \
+        ///     --header 'Authorization: Bearer URIS2021' \
+        ///     --param  'ratingTypeID = 8'
+        /// </remarks>
+        /// <param name="key">Authorization Header Bearer Key Value</param>
+        /// <param name="ratingTypeID">ID tipa ocene koji se brise</param>
+        /// <response code="204">Uspesno obrisan tip ocene.</response>
+        /// <response code="401"> Neuspesna autorizacija korisnika.</response>
+        /// <response code="404">Korisnik pokusava da obrise nepostojeci tip ocene.</response>
+        /// <response code="500">Greska na serveru.</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpDelete("{ratingTypeID}")]
         public IActionResult DeleteTypeOfReaction( [FromHeader] string key,int ratingTypeID)
         {

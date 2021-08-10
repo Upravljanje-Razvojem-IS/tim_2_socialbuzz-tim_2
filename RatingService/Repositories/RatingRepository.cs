@@ -63,10 +63,10 @@ namespace RatingService.Repositories
             return query.ToList();
         }
 
-        public List<Rating> GetAllRatingsForUser(int userID, List<int> postsIDs)//mora userid jer se proveravaju da li za tog usera koga se gledaju ocene ima ko ce blokiran
+        public List<Rating> GetAllRatingsForUser(int userID, List<int> postsIDs)//mora userid jer se proveravaju da li za tog usera koga se gledaju ocene ima ko je blokiran
         {
             var query = from rate in contextDB.Rating
-                        where rate.UserID == userID && postsIDs.Contains(rate.PostID) &&
+                        where /*rate.UserID == userID && */ postsIDs.Contains(rate.PostID) &&
                         !(from o in blockingMockRepository.GetBlockedUsers(userID)
                           select o).Contains(rate.UserID)
                         select rate;

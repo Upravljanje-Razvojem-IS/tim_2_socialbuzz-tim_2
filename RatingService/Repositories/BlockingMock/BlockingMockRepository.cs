@@ -17,7 +17,7 @@ namespace RatingService.Repositories.BlockingMock
 
         private void FillData()
         {
-            BlockingMockDTO block = new BlockingMockDTO();
+            BlockingMockDTO block = new BlockingMockDTO();//user 1 blokirao 2
             block.BlockingID = Guid.Parse("c48dfbaf-9710-4fa6-8773-4c778ef2d885");
             block.BlockerID = 1;
             block.BlockedID = 2;

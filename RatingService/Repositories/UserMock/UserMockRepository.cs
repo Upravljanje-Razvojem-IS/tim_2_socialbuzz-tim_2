@@ -18,7 +18,7 @@ namespace RatingService.Repositories.UserMock
         {
             Users.AddRange(new List<UserMockDTO>
             {
-                new UserMockDTO
+                new UserMockDTO//prati ga user 4
                 {
                     UserID = 1,
                     Email = "milica.jovanovic.2000@gmail.com",
@@ -38,13 +38,23 @@ namespace RatingService.Repositories.UserMock
                     Role = "user",
                     City = "Kragujevac"
                 },
-                new UserMockDTO
+                new UserMockDTO //prate ga 1 i 2, a on prati 2
                 {
                     UserID = 3,
                     Email = "aleksa.mitrovic.1988@gmail.com",
                     IsActive = true,
                     Telephone = "044/3860668",
                     Username = "Aleksa Mitrovic",
+                    Role = "user",
+                    City = "Beograd"
+                },
+                 new UserMockDTO
+                {
+                    UserID = 4,
+                    Email = "sara.mikic.1999@gmail.com",
+                    IsActive = true,
+                    Telephone = "030/38245691",
+                    Username = "Sara Mikic",
                     Role = "user",
                     City = "Beograd"
                 }

@@ -48,6 +48,16 @@ namespace RatingService.Repositories.PostMock
                     ConditionID = 3,
                     PostTypeID = 3,
                     PostedOn = DateTime.Parse("2021-04-21T09:00:00")
+                },
+                   new PostMockDTO
+                {
+                    PostID = 4,
+                    PostTitle = "Gradski bicikl Carma plavi 28",
+                    PostDescription = "Prelep gradski bicikl. Udobno sedište, mekane ručkice Herrmans, kvalitetna ratan korpa",
+                    UserID = 4,
+                    ConditionID = 4,
+                    PostTypeID = 4,
+                    PostedOn = DateTime.Parse("2021-08-10T09:45:00")
                 }
             });
         }

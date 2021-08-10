@@ -59,9 +59,15 @@ namespace RatingService.Services
 
             Rating entity = mapper.Map<Rating>(rating);
             entity.UserID = userId;
+            entity.RatingDate = DateTime.Now;
 
             var post = _postMockRepository.GetPostById(rating.PostID);
             var userThatPostedId = post.UserID;
+
+            if (!_ratingRepository.CheckDidIBlockUser(userId, userThatPostedId))
+            {
+                throw new Exception("You have blocked this user and you can not rate to his posts.");
+            }
 
             if (!_ratingRepository.CheckDoIFollowUser(userId, userThatPostedId))
             {
