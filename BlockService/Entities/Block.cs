@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RatingService.Entities
+namespace BlockService.Entities
 {
     /// <summary>
     /// Model tabele blokiranja
@@ -28,11 +28,11 @@ namespace RatingService.Entities
         /// <summary>
         /// ID korisnika koji blokira
         /// </summary>
-        public int blockerID;
+        public int blockerID { get; set; }
 
         /// <summary>
         /// ID korisnika koji se blokira
         /// </summary>
-        public int blockedID;
+        public int blockedID { get; set; }
     }
 }

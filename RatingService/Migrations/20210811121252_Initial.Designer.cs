@@ -10,8 +10,8 @@ using RatingService.Entities;
 namespace RatingService.Migrations
 {
     [DbContext(typeof(ContextDB))]
-    [Migration("20210803141512_initial")]
-    partial class initial
+    [Migration("20210811121252_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

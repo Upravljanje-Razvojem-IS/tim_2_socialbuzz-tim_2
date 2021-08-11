@@ -210,9 +210,9 @@ namespace RatingService.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error updating type of reaction: " + ex.Message);
+                logger.LogError(ex, "Error updating type of rating: " + ex.Message);
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error updating type of reaction");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
 
             }
         }

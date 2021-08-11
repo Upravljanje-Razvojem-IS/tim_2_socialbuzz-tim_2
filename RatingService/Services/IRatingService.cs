@@ -11,7 +11,7 @@ namespace RatingService.Services
 
         List<RatingDTO> GetAllRatingsForUser(int userID);//sve ocene koje je korisnik dobio
 
-        List<Rating> GetAllRatingsByUser(int userID);//sve ocene koje je dao korisnik
+        List<RatingDTO> GetAllRatingsByUser(int userID);//sve ocene koje je dao korisnik
 
         List<RatingDTO> GetRatingByPostID(int postID, int userID);
 

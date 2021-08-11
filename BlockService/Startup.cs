@@ -1,28 +1,25 @@
+using BlockService.Auth;
+using BlockService.Entities;
+using BlockService.Logger;
+using BlockService.Repositories;
+using BlockService.Repositories.FollowingMock;
+using BlockService.Repositories.UserMock;
+using BlockService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RatingService.Auth;
-using RatingService.Entities;
-using RatingService.Logger;
-using RatingService.Repositories;
-using RatingService.Repositories.BlockingMock;
-using RatingService.Repositories.FollowingMock;
-using RatingService.Repositories.PostMock;
-using RatingService.Repositories.UserMock;
-using RatingService.Services;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
-namespace RatingService
+namespace BlockService
 {
     public class Startup
     {
@@ -45,26 +42,21 @@ namespace RatingService
             services.AddDbContext<ContextDB>(o => o.UseSqlServer(Configuration.GetConnectionString("Database")));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddScoped<IRatingService, RatingsService>();//svaki put kada dodje req, napravi novu instancu ovoga
-            services.AddScoped<IRatingTypeService, RatingTypeService>();
-            services.AddScoped<IRatingRepository, RatingRepository>();
-            services.AddScoped<IRatingTypeRepository, RatingTypeRepository>();
-            services.AddScoped<IBlockingMockRepository, BlockingMockRepository>();
+            services.AddScoped<IBlockingService, BlockingService>();//svaki put kada dodje req, napravi novu instancu ovoga
+            services.AddScoped<IBlockingRepository, BlockingRepository>();
             services.AddScoped<IUserMockRepository, UserMockRepository>();
             services.AddScoped<IFollowingMockRepository, FollowingMockRepository>();
-            services.AddSingleton<IPostMockRepository, PostMockRepository>();
             services.AddSingleton(typeof(ILoggerRepository<>), typeof(LoggerRepository<>));
 
             services.AddScoped<IAuthService, AuthService>();
-
             services.AddSwaggerGen(setupAction =>
             {
-                setupAction.SwaggerDoc("RatingsApiSpecification",
+                setupAction.SwaggerDoc("UserBlockingsApiSpecification",
                      new Microsoft.OpenApi.Models.OpenApiInfo() //definise kako se kreira swagger dokument
                      {
-                         Title = "Ratings to users' posts API",
+                         Title = "User blocking API",
                          Version = "1",
-                         Description = "API koji omogucava pregled ocena na objavama korisnika, dodavanje novih ocena, izmenu, kao i brisanje postojecih ocena.",
+                         Description = "API koji omogucava pregled blokiranja korisnika, nova blokiranja, izmenu i brisanje postojecih blokiranja.",
                          Contact = new Microsoft.OpenApi.Models.OpenApiContact
                          {
                              Name = "Sofija Djordjevic",
@@ -105,7 +97,7 @@ namespace RatingService
 
             app.UseSwagger();
             app.UseSwaggerUI(setupAction => {
-                setupAction.SwaggerEndpoint("/swagger/RatingsApiSpecification/swagger.json", "Ratings to users' posts API");
+                setupAction.SwaggerEndpoint("/swagger/UserBlockingsApiSpecification/swagger.json", "User blocking API");
                 setupAction.RoutePrefix = ""; //odmah mi otvori swagger dokumentaciju kada pokrenem servis u browseru
             });
 

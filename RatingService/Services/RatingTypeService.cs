@@ -61,7 +61,7 @@ namespace RatingService.Services
 
             if (oldType == null)
             {
-                throw new Exception( "There is no type of reaction with that ID");
+                throw new Exception( "There is no type of rating with that ID");
             }
 
             var newType = mapper.Map<RatingType>(ratingType);
@@ -75,7 +75,7 @@ namespace RatingService.Services
             }
             catch (Exception ex)
             {
-                throw new Exception( "Error updating type of reaction: " + ex.Message);
+                throw new Exception( "Error updating type of rating: " + ex.Message);
 
             }
         }

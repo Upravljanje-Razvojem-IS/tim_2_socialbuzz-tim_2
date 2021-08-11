@@ -47,6 +47,13 @@ namespace RatingService.Services
 
         public RatingDTO CreateRating(RatingCreationDTO rating, int userId)//originalna metoda nema userid-vidi ovo-id onog ko ocenjuje
         {
+            var user = _userMockRepository.GetUserByID(userId);
+
+            if (user == null)
+            {
+                throw new Exception("Not find user with that ID found...");
+            }
+
             if (_postMockRepository.GetPostById(rating.PostID) == null)
             {
                 throw new Exception("Post with that ID does not exist!");
@@ -64,7 +71,7 @@ namespace RatingService.Services
             var post = _postMockRepository.GetPostById(rating.PostID);
             var userThatPostedId = post.UserID;
 
-            if (!_ratingRepository.CheckDidIBlockUser(userId, userThatPostedId))
+            if (_ratingRepository.CheckDidIBlockUser(userId, userThatPostedId))
             {
                 throw new Exception("You have blocked this user and you can not rate to his posts.");
             }
@@ -127,6 +134,12 @@ namespace RatingService.Services
             var result = _postMockRepository.GetPostsByUserId(userID).Select(p => p.PostID).ToList();
             
             var ratings = _ratingRepository.GetAllRatingsForUser(userID, _postMockRepository.GetPostsByUserId(userID).Select(p=>p.PostID).ToList());
+
+            if (ratings == null || ratings.Count == 0)
+            {
+                throw new Exception("There are no ratings for this user...");
+            }
+
             return mapper.Map<List<RatingDTO>>(ratings);
         }
 
@@ -213,7 +226,7 @@ namespace RatingService.Services
             throw new NotImplementedException();
         }
 
-        public List<Rating> GetAllRatingsByUser(int userID)
+        public List<RatingDTO> GetAllRatingsByUser(int userID)
         {
             var userId = _userMockRepository.GetUserByID(userID);
 
@@ -222,7 +235,14 @@ namespace RatingService.Services
                 throw new Exception("There is no user with that ID ...");
             }
 
-            return _ratingRepository.GetAllRatingsByUser(userID);
+            var ratings = _ratingRepository.GetAllRatingsByUser(userID);
+
+            if (ratings == null || ratings.Count == 0)
+            {
+                throw new Exception("This user has not yet given any rate...");
+            }
+
+            return mapper.Map<List<RatingDTO>>(ratings);
         }
     }
 }
