@@ -55,10 +55,6 @@ namespace BlockService.Repositories
 
         public void Unblock(int blockerID, int blockedID)
         {
-            /*var query = from block in contextDB.Block
-                        where block.blockedID == blockedID && block.blockerID == blockerID
-                        select block;
-            contextDB.Remove(query);*/
             Block block = contextDB.Block.FirstOrDefault(block => block.blockedID == blockedID && block.blockerID == blockerID);
             contextDB.Remove(block);
         }

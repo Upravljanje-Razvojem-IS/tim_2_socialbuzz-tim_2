@@ -44,7 +44,7 @@ namespace RatingService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer uspesnog zahteva Get All Types Of Reaction
-        /// GET 'http://localhost:44300/api/ratingtypes/' \
+        /// GET 'https://localhost:44303/api/ratingtypes/' \
         ///     --header 'Authorization: Bearer URIS2021' 
         /// </remarks>
         /// <param name="key">Authorization Header Bearer Key Value</param>
@@ -78,7 +78,7 @@ namespace RatingService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer uspesnog zahteva Get RatingType By ID
-        /// GET 'http://localhost:44300/api/ratingtypes/ratingTypeID' \
+        /// GET 'https://localhost:44303/api/ratingtypes/ratingTypeID' \
         ///     --header 'Authorization: Bearer URIS2021'  \
         ///     --url  'ratingTypeID = 1'  
         /// </remarks>
@@ -124,7 +124,7 @@ namespace RatingService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer uspesnog zahteva za dodavanje novog tipa ocene \
-        /// POST 'http://localhost:44300/api/ratingtypes/' \
+        /// POST 'https://localhost:44303/api/ratingtypes/' \
         ///      --header 'Authorization: Bearer URIS2021' \
         /// {   \
         ///  "RatingTypeName": "Very bad", \
@@ -147,7 +147,6 @@ namespace RatingService.Controllers
 
             try
             {
-                RatingType typeEntity = mapper.Map<RatingType>(type);
                 var createdType = _ratingTypeService.CreateRatingType(type);
 
                 string location = linkGenerator.GetPathByAction("GetRatingTypeByID", "RatingType", new { ratingTypeID = createdType.RatingTypeID });
@@ -173,7 +172,7 @@ namespace RatingService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer uspesnog zahteva za azuriranje tipa ocene \
-        /// PUT  'http://localhost:44300/api/ratingtypes/typeID' \
+        /// PUT  'https://localhost:44303/api/ratingtypes/typeID' \
         ///    --header 'Authorization: Bearer URIS2021' \
         /// { \
         /// "RatingTypeID": 1, \
@@ -223,7 +222,7 @@ namespace RatingService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer zahteva za brisanje tipa ocene
-        /// DELETE 'http://localhost:44300/api/ratingtypes/ratingTypeID' \
+        /// DELETE 'https://localhost:44303/api/ratingtypes/ratingTypeID' \
         ///     --header 'Authorization: Bearer URIS2021' \
         ///     --param  'ratingTypeID = 8'
         /// </remarks>
@@ -262,6 +261,23 @@ namespace RatingService.Controllers
 
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting type of reaction!");
             }
+        }
+
+        /// <summary>
+        /// Prikaz HTTP metoda koje korisnik moze da pozove.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Primer zahteva za prikaz dostupnih HTTP metoda
+        /// OPTIONS 'https://localhost:44303/api/ratingtypes' \
+        /// </remarks>
+        /// <response code="200">Uspesno prikazane dostupne metode.</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpOptions]
+        public IActionResult GetRatingTypesOptions()
+        {
+            Response.Headers.Add("Allow", "GET, POST, PUT, DELETE");
+            return Ok();
         }
 
     }

@@ -237,11 +237,10 @@ namespace BlockService.Controllers
 
             try
             {
-                Block typeEntity = mapper.Map<Block>(block);
                 var createdType = _blockingService.Block(block,  blockerID,  blockedID);
                 
 
-                string location = linkGenerator.GetPathByAction("GetBlockByID", "Block", new { BlockID = createdType.BlockID });
+                //string location = linkGenerator.GetPathByAction("GetBlockByID", "Block", new { BlockID = createdType.BlockID });
 
                 return StatusCode(StatusCodes.Status201Created, "You have successfully blocked user");
 

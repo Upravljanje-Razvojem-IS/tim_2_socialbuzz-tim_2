@@ -9,9 +9,6 @@ using RatingService.Logger;
 using RatingService.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace RatingService.Controllers
 {
@@ -24,17 +21,15 @@ namespace RatingService.Controllers
     public class RatingController : ControllerBase
     {
         private readonly IRatingService _ratingService;
-        private readonly IRatingTypeService _ratingTypeService;
         private readonly ILoggerRepository<RatingController> logger;
         private readonly LinkGenerator linkGenerator;
         private readonly IAuthService _authService;
         private readonly IMapper mapper;
-        public RatingController(IRatingService ratingService, IRatingTypeService ratingTypeService,
+        public RatingController(IRatingService ratingService,
                                 ILoggerRepository<RatingController> logger, LinkGenerator linkGenerator,
                                 IAuthService _authService, IMapper mapper)
         {
             _ratingService = ratingService;
-            _ratingTypeService = ratingTypeService;
             this.logger = logger;
             this.linkGenerator = linkGenerator;
             this._authService = _authService;
@@ -47,7 +42,7 @@ namespace RatingService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer zahteva Get All Ratings
-        /// GET 'http://localhost:44300/api/rating/' \
+        /// GET 'https://localhost:44303/api/rating/' \
         ///     --header 'Authorization: Bearer URIS2021'
         /// </remarks>
         /// <param name="key">Authorization Header Bearer Key Value</param>
@@ -65,7 +60,7 @@ namespace RatingService.Controllers
             {
                 return StatusCode(StatusCodes.Status401Unauthorized, "User authorization failed!");
             }
-            
+
             var ratings = _ratingService.GetAllRatings();
 
             if (ratings == null || ratings.Count == 0)
@@ -84,7 +79,7 @@ namespace RatingService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer zahteva Get Rating By ID
-        /// GET 'http://localhost:44300/api/rating/ratingID/ratingID' \
+        /// GET 'https://localhost:44303/api/rating/ratingID/ratingID' \
         ///     --header 'Authorization: Bearer URIS2021'
         /// </remarks>
         /// <param name="key">Authorization Header Bearer Key Value</param>
@@ -123,7 +118,7 @@ namespace RatingService.Controllers
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// GET 'http://localhost:44300/api/rating/user/userID/posts/postsID' \
+        /// GET 'https://localhost:44303/api/rating/user/userID/posts/postsID' \
         /// Primer zahteva koji je uspesan \
         ///     --header 'Authorization: Bearer URIS2021' \
         ///     --param  'PostID = 1' \
@@ -143,7 +138,7 @@ namespace RatingService.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [HttpGet("user/{userID}/posts/{postID}")]
-        public ActionResult<List<RatingDTO>> GetRatingsByPostID([FromHeader] string key, int postID,int userID) //za nekog usera za njegov post
+        public ActionResult<List<RatingDTO>> GetRatingsByPostID([FromHeader] string key, int postID, int userID) //za nekog usera za njegov post
         {
             if (!_authService.Authorize(key))
             {
@@ -158,7 +153,7 @@ namespace RatingService.Controllers
 
                 return Ok(ratings);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
@@ -171,7 +166,7 @@ namespace RatingService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer zahteva Get Rating For User
-        /// GET 'http://localhost:44300/api/rating/user/userID' \
+        /// GET 'https://localhost:44303/api/rating/user/userID' \
         ///     --header 'Authorization: Bearer URIS2021'
         /// </remarks>
         /// <param name="key">Authorization Header Bearer Key Value</param>
@@ -211,7 +206,7 @@ namespace RatingService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer zahteva Get Rating By User
-        /// GET 'http://localhost:44300/api/rating/ratingsByUser/userID' \
+        /// GET 'https://localhost:44303/api/rating/ratingsByUser/userID' \
         ///     --header 'Authorization: Bearer URIS2021'
         /// </remarks>
         /// <param name="key">Authorization Header Bearer Key Value</param>
@@ -253,7 +248,7 @@ namespace RatingService.Controllers
         /// <param name="userID">ID korisnika koji salje zahtev za kreiranjem ocene na objavi</param>
         /// <returns></returns>
         /// <remarks>
-        /// POST 'http://localhost:44300/api/rating/user/userID' \
+        /// POST 'https://localhost:44303/api/rating/user/userID' \
         /// Primer zahteva za uspesno dodavanje nove ocene \
         ///  --header 'Authorization: Bearer URIS2021' \
         ///  --param 'userID = 2' \
@@ -298,10 +293,9 @@ namespace RatingService.Controllers
 
             try
             {
-                Rating entity = mapper.Map<Rating>(type);
+                
                 var created = _ratingService.CreateRating(type, userID);
 
-                //created.UserID = userID;
 
                 string location = linkGenerator.GetPathByAction("GetRatingID", "Rating", new { ratingID = created.RatingID });
 
@@ -326,7 +320,7 @@ namespace RatingService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer zahteva za azuriranje ocene  \
-        /// PUT 'http://localhost:44300/api/rating/ratingID' \
+        /// PUT 'https://localhost:44303/api/rating/ratingID' \
         ///     --header 'Authorization: Bearer URIS2021'  \
         ///  { \
         /// "ratingID": "7750A8CE-7BEB-457D-B189-08D95B646192", \
@@ -382,7 +376,7 @@ namespace RatingService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer zahteva za brisanje ocene
-        /// DELETE 'http://localhost:44300/api/rating/ratingID' \
+        /// DELETE 'https://localhost:44303/api/rating/ratingID' \
         ///     --header 'Authorization: Bearer URIS2021' \
         ///     --param  'ratingID = 7750A8CE-7BEB-457D-B189-08D95B646192'
         /// </remarks>
@@ -422,6 +416,23 @@ namespace RatingService.Controllers
 
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting rating!");
             }
+        }
+
+        /// <summary>
+        /// Prikaz HTTP metoda koje korisnik moze da pozove.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Primer zahteva za prikaz dostupnih HTTP metoda
+        /// OPTIONS 'https://localhost:44303/api/reactions' \
+        /// </remarks>
+        /// <response code="200">Uspesno prikazane dostupne metode.</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpOptions]
+        public IActionResult GetReactionsOpstions()
+        {
+            Response.Headers.Add("Allow", "GET, POST, PUT, DELETE");
+            return Ok();
         }
 
     }

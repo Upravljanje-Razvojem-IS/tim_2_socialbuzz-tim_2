@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BlockService.DTO;
 using BlockService.Entities;
+using BlockService.Exceptions;
 using BlockService.Repositories;
 using BlockService.Repositories.FollowingMock;
 using BlockService.Repositories.UserMock;
@@ -29,28 +30,26 @@ namespace BlockService.Services
         {
             if (_userMockRepository.GetUserByID(blockedID) == null)
             {
-                throw new Exception("User with that ID does not exist!");
+                throw new NotFoundException("User with that ID does not exist!");
             }
 
             if (_userMockRepository.GetUserByID(blockerID) == null)
             {
-                throw new Exception("User with that ID does not exist!");
+                throw new NotFoundException("User with that ID does not exist!");
             }
 
             if (!_blockingRepository.CheckDoIFollowUser(blockerID, blockedID))
             {
-                throw new Exception("You dont follow user with that ID, so you can not block him!");
+                throw new FollowingException("You dont follow user with that ID, so you can not block him!");
             }
 
             if (_blockingRepository.CheckDidIAlreadyBlockUser(blockerID, blockedID))
             {
-                throw new Exception("You already blocked this user, you are not following him!");
+                throw new BlockingException("You already blocked this user, you are not following him!");
             }
 
             Block type = mapper.Map<Block>(block);
             type.BlockDate = DateTime.Now;
-            //type.blockerID = blockerID;
-            //type.blockedID = blockedID;
 
             try
             {
@@ -76,7 +75,7 @@ namespace BlockService.Services
 
             if (type == null)
             {
-                throw new Exception("Block with that ID does not exist");
+                throw new NotFoundException("Block with that ID does not exist");
             }
 
             return mapper.Map<BlockDTO>(type);
@@ -88,7 +87,7 @@ namespace BlockService.Services
 
             if (userId == null)
             {
-                throw new Exception("There is no user with that ID ...");
+                throw new NotFoundException("There is no user with that ID ...");
             }
 
             var blocks = _blockingRepository.GetBlocksByUser(userID);
@@ -101,7 +100,7 @@ namespace BlockService.Services
 
             if (userId == null)
             {
-                throw new Exception("There is no user with that ID ...");
+                throw new NotFoundException("There is no user with that ID ...");
             }
 
             var blocks = _blockingRepository.GetBlocksForUser(userID);
@@ -112,22 +111,22 @@ namespace BlockService.Services
         {
             if (_userMockRepository.GetUserByID(blockedID) == null)
             {
-                throw new Exception("User with that ID does not exist!");
+                throw new NotFoundException("User with that ID does not exist!");
             }
 
             if (_userMockRepository.GetUserByID(blockerID) == null)
             {
-                throw new Exception("User with that ID does not exist!");
+                throw new NotFoundException("User with that ID does not exist!");
             }
 
             if (!_blockingRepository.CheckDoIFollowUser(blockerID, blockedID))
             {
-                throw new Exception("You dont follow user with that ID, so you can not unblock him!");
+                throw new FollowingException("You dont follow user with that ID, so you can not unblock him!");
             }
 
             if (_blockingRepository.CheckDidIAlreadyUnblockUser(blockerID, blockedID))
             {
-                throw new Exception("You already unblocked this user, you can not do it again!");
+                throw new BlockingException("You already unblocked this user, you can not do it again!");
             }
 
             try
@@ -138,7 +137,7 @@ namespace BlockService.Services
 
             catch (Exception ex)
             {
-                throw new Exception("Error deleting reaction: " + ex.Message);
+                throw new ErrorOccurException("Error deleting reaction: " + ex.Message);
             }
         }
 
@@ -148,7 +147,7 @@ namespace BlockService.Services
 
             if (oldType == null)
             {
-                throw new Exception("There is no block with that ID");
+                throw new NotFoundException("There is no block with that ID");
             }
 
             var newType = mapper.Map<Block>(block);
@@ -163,7 +162,7 @@ namespace BlockService.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error updating block: " + ex.Message);
+                throw new ErrorOccurException("Error updating block: " + ex.Message);
 
             }
         }

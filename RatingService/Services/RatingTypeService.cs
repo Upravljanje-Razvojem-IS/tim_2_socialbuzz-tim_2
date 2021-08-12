@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using RatingService.DTO;
 using RatingService.Entities;
+using RatingService.Exceptions;
 using RatingService.Repositories;
 using RatingService.Repositories.PostMock;
 using System;
@@ -33,7 +34,7 @@ namespace RatingService.Services
 
             if (type == null)
             {
-                throw new Exception("Rating type with that ID does not exist");
+                throw new NotFoundException("Rating type with that ID does not exist");
             }
 
             return mapper.Map<RatingTypeDTO>(type);
@@ -61,7 +62,7 @@ namespace RatingService.Services
 
             if (oldType == null)
             {
-                throw new Exception( "There is no type of rating with that ID");
+                throw new NotFoundException( "There is no type of rating with that ID");
             }
 
             var newType = mapper.Map<RatingType>(ratingType);
@@ -75,7 +76,7 @@ namespace RatingService.Services
             }
             catch (Exception ex)
             {
-                throw new Exception( "Error updating type of rating: " + ex.Message);
+                throw new ErrorOccurException( "Error updating type of rating: " + ex.Message);
 
             }
         }
@@ -86,7 +87,7 @@ namespace RatingService.Services
 
             if (type == null)
             {
-                throw new Exception("There is no rating type with that ID!");
+                throw new NotFoundException("There is no rating type with that ID!");
             }
             try
             {
@@ -96,7 +97,7 @@ namespace RatingService.Services
 
             catch (Exception ex)
             {
-                throw new Exception("Error deleting reaction: " + ex.Message);
+                throw new ErrorOccurException("Error deleting reaction: " + ex.Message);
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using RatingService.DTO;
 using RatingService.Entities;
+using RatingService.Exceptions;
 using RatingService.Repositories;
 using RatingService.Repositories.PostMock;
 using RatingService.Repositories.UserMock;
@@ -13,10 +14,10 @@ namespace RatingService.Services
 {
     public class RatingsService : IRatingService
     {
-        private IRatingRepository _ratingRepository;
-        private IPostMockRepository _postMockRepository;
-        private IRatingTypeRepository _ratingTypeRepository;
-        private IUserMockRepository _userMockRepository;
+        private readonly IRatingRepository _ratingRepository;
+        private readonly IPostMockRepository _postMockRepository;
+        private readonly IRatingTypeRepository _ratingTypeRepository;
+        private readonly IUserMockRepository _userMockRepository;
         private readonly IMapper mapper;
 
         public RatingsService(IRatingRepository ratingRepository, IPostMockRepository postMockRepository,
@@ -51,17 +52,17 @@ namespace RatingService.Services
 
             if (user == null)
             {
-                throw new Exception("Not find user with that ID found...");
+                throw new NotFoundException("Not find user with that ID found...");
             }
 
             if (_postMockRepository.GetPostById(rating.PostID) == null)
             {
-                throw new Exception("Post with that ID does not exist!");
+                throw new NotFoundException("Post with that ID does not exist!");
             }
 
             if (_ratingTypeRepository.GetRatingTypeByID(rating.RatingTypeID) == null)
             {
-                throw new Exception("Type of rating with that ID does not exist!");
+                throw new NotFoundException("Type of rating with that ID does not exist!");
             }
 
             Rating entity = mapper.Map<Rating>(rating);
@@ -73,17 +74,17 @@ namespace RatingService.Services
 
             if (_ratingRepository.CheckDidIBlockUser(userId, userThatPostedId))
             {
-                throw new Exception("You have blocked this user and you can not rate to his posts.");
+                throw new BlockingException("You have blocked this user and you can not rate to his posts.");
             }
 
             if (!_ratingRepository.CheckDoIFollowUser(userId, userThatPostedId))
             {
-                throw new Exception( "You are not following this user and you can not rate to his posts.");
+                throw new BlockingException( "You are not following this user and you can not rate to his posts.");
             }
 
             if (_ratingRepository.CheckDidIAlreadyRate(userId, rating.PostID) != null)
             {
-                throw new Exception("You have already rate to this post.");
+                throw new ErrorOccurException("You have already rate to this post.");
             }
 
             try
@@ -94,7 +95,7 @@ namespace RatingService.Services
             }
             catch(Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new ErrorOccurException(ex.Message);
             }
             
 
@@ -106,7 +107,7 @@ namespace RatingService.Services
 
             if (rate == null)
             {
-                throw new Exception( "There is no rating with that ID!");
+                throw new NotFoundException( "There is no rating with that ID!");
             }
             try
             {
@@ -116,9 +117,7 @@ namespace RatingService.Services
            
             catch (Exception ex)
             {
-                throw new Exception( "Error deleting reaction: " + ex.Message);
-
-                //return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting reaction!");
+                throw new ErrorOccurException( "Error deleting reaction: " + ex.Message);
             }
         }
 
@@ -128,16 +127,16 @@ namespace RatingService.Services
 
             if (userId == null)
             {
-                throw new Exception("Not find user with that ID found...");
+                throw new NotFoundException("Not find user with that ID found...");
             }
 
-            var result = _postMockRepository.GetPostsByUserId(userID).Select(p => p.PostID).ToList();
+           
             
             var ratings = _ratingRepository.GetAllRatingsForUser(userID, _postMockRepository.GetPostsByUserId(userID).Select(p=>p.PostID).ToList());
 
             if (ratings == null || ratings.Count == 0)
             {
-                throw new Exception("There are no ratings for this user...");
+                throw new NotFoundException("There are no ratings for this user...");
             }
 
             return mapper.Map<List<RatingDTO>>(ratings);
@@ -149,7 +148,7 @@ namespace RatingService.Services
 
             if (rateId == null)
             {
-                throw new Exception("No rating with that ID found...");
+                throw new NotFoundException("No rating with that ID found...");
             }
 
             var rating = _ratingRepository.GetRatingByID(ratingID);
@@ -162,19 +161,19 @@ namespace RatingService.Services
 
             if (postId == null)
             {
-                throw new Exception("No post with that ID found...");
+                throw new NotFoundException("No post with that ID found...");
             }
             var userThatPostedId = _postMockRepository.GetPostById(postID).UserID;
 
             if (_ratingRepository.CheckDidIBlockUser(userID, userThatPostedId))
             {
-                throw new Exception("You can not see this user's posts!"); //User 1 blokirao Usera 2
+                throw new BlockingException("You can not see this user's posts!"); //User 1 blokirao Usera 2
             }
             var ratings = _ratingRepository.GetRatingByPostID(postID, userID);
 
             if (ratings == null || ratings.Count == 0)
             {
-                throw new Exception( "This post doesn't have any ratings yet..."); //Post 2
+                throw new ErrorOccurException( "This post doesn't have any ratings yet..."); //Post 2
             }
 
             return mapper.Map<List<RatingDTO>>(ratings);
@@ -184,12 +183,12 @@ namespace RatingService.Services
         {
             if (_ratingRepository.GetRatingByID(ratingID) == null)
             {
-                throw new Exception("Rating with that ID does not exist!");
+                throw new NotFoundException("Rating with that ID does not exist!");
             }
 
             if (_ratingTypeRepository.GetRatingTypeByID(rating.RatingTypeID) == null)
             {
-                throw new Exception("Type of rating with that ID does not exist!");
+                throw new NotFoundException("Type of rating with that ID does not exist!");
             }
 
             var oldRate = _ratingRepository.GetRatingByID(ratingID);
@@ -197,7 +196,7 @@ namespace RatingService.Services
 
             if (oldRate.PostID != newRate.PostID)
             {
-                throw new Exception("Post ID can not be changed!");
+                throw new ErrorOccurException("Post ID can not be changed!");
             }
 
             try
@@ -210,7 +209,7 @@ namespace RatingService.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("Error updating reaction: " + ex.Message); 
+                throw new ErrorOccurException("Error updating reaction: " + ex.Message); 
 
             }
         }
@@ -232,14 +231,14 @@ namespace RatingService.Services
 
             if (userId == null)
             {
-                throw new Exception("There is no user with that ID ...");
+                throw new NotFoundException("There is no user with that ID ...");
             }
 
             var ratings = _ratingRepository.GetAllRatingsByUser(userID);
 
             if (ratings == null || ratings.Count == 0)
             {
-                throw new Exception("This user has not yet given any rate...");
+                throw new ErrorOccurException("This user has not yet given any rate...");
             }
 
             return mapper.Map<List<RatingDTO>>(ratings);
