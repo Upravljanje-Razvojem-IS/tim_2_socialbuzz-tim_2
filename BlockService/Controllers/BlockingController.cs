@@ -216,7 +216,7 @@ namespace BlockService.Controllers
         /// POST 'http://localhost:4207/api/block/blockerID/blockerID/blockedID/blockedID' \
         ///      --header 'Authorization: Bearer URIS2021' \
         /// {   \
-        ///  "blockerID": 1, \
+        ///  "blockerID": 3, \
         ///  "blockedID": 2 \
         /// }
         /// </remarks>
@@ -265,9 +265,10 @@ namespace BlockService.Controllers
         /// Primer uspesnog zahteva za azuriranje tipa ocene \
         /// PUT  'http://localhost:4207/api/block/BlockID' \
         ///    --header 'Authorization: Bearer URIS2021' \
+        ///    --url  'blockID = 8CA02E0F-A565-43D7-B8D1-DA0A073118FB'
         /// { \
-        /// "RatingTypeID": 1, \
-        /// "RatingTypeName": "Updating excellent", \
+        /// "blockerID": 3,\
+        /// "blockedID": 2, \
         /// }
         /// </remarks>
         /// <response code="200">Vraća potvrdu da je uspesno izmenjen blok.</response>
@@ -313,10 +314,10 @@ namespace BlockService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer zahteva za brisanje 
-        /// DELETE 'http://localhost:4207/api/ratingtypes/ratingTypeID' \
+        /// DELETE 'http://localhost:4207/api/block/blockerID/blockerID/blockedID/blockedID' \
         ///     --header 'Authorization: Bearer URIS2021' \
-        ///     --param  'blockerID = 1'
-        ///     --param  'blockedID = 3'
+        ///     --param  'blockerID = 3'
+        ///     --param  'blockedID = 2'
         /// </remarks>
         /// <param name="key">Authorization Header Bearer Key Value</param>
         /// <param name="blockerID">Korisnik koji blokira</param>
@@ -351,6 +352,24 @@ namespace BlockService.Controllers
 
                 return StatusCode(StatusCodes.Status500InternalServerError,ex.Message);
             }
+        }
+
+
+        /// <summary>
+        /// Prikaz HTTP metoda koje korisnik moze da pozove.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Primer zahteva za prikaz dostupnih HTTP metoda
+        /// OPTIONS 'http://localhost:4207/api/block' \
+        /// </remarks>
+        /// <response code="200">Uspesno prikazane dostupne metode.</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpOptions]
+        public IActionResult GetBlockOptions()
+        {
+            Response.Headers.Add("Allow", "GET, POST, PUT, DELETE");
+            return Ok();
         }
 
     }

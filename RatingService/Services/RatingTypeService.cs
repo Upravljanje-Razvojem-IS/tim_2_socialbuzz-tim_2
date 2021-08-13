@@ -52,7 +52,7 @@ namespace RatingService.Services
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new ErrorOccurException(ex.Message);
             }
         }
 

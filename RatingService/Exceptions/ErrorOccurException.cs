@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace RatingService.Exceptions
 {
+    [Serializable]
     public class ErrorOccurException: Exception
     {
         public ErrorOccurException(string message)

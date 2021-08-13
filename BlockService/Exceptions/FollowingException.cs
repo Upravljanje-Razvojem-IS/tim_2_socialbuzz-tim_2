@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlockService.Exceptions
 {
+    [Serializable]
     public class FollowingException: Exception
     {
         public FollowingException(string message)

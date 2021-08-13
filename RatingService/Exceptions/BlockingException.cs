@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace RatingService.Exceptions
 {
+    [Serializable]
     public class BlockingException: Exception
     {
         public BlockingException(string message)

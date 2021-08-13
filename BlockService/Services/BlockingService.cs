@@ -38,6 +38,11 @@ namespace BlockService.Services
                 throw new NotFoundException("User with that ID does not exist!");
             }
 
+            if (blockerID == blockedID)
+            {
+                throw new ErrorOccurException("You can not block yourself!");
+            }
+
             if (!_blockingRepository.CheckDoIFollowUser(blockerID, blockedID))
             {
                 throw new FollowingException("You dont follow user with that ID, so you can not block him!");
@@ -59,7 +64,7 @@ namespace BlockService.Services
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new ErrorOccurException(ex.Message);
             }
         }
 
@@ -91,6 +96,12 @@ namespace BlockService.Services
             }
 
             var blocks = _blockingRepository.GetBlocksByUser(userID);
+
+            if (blocks == null)
+            {
+                throw new NotFoundException("This user have not yet blocked any other user ...");
+            }
+
             return mapper.Map<List<BlockDTO>>(blocks);
         }
 
@@ -104,6 +115,12 @@ namespace BlockService.Services
             }
 
             var blocks = _blockingRepository.GetBlocksForUser(userID);
+
+            if (blocks == null)
+            {
+                throw new NotFoundException("This user is not blocked by any other user yet ...");
+            }
+
             return mapper.Map<List<BlockDTO>>(blocks);
         }
 
@@ -153,6 +170,21 @@ namespace BlockService.Services
             var newType = mapper.Map<Block>(block);
             newType.BlockID = BlockID;
             newType.BlockDate = DateTime.Now;
+
+            if (newType.blockerID == newType.blockedID)
+            {
+                throw new ErrorOccurException("You can not block yourself!");
+            }
+
+            if (!_blockingRepository.CheckDoIFollowUser(newType.blockerID, newType.blockedID))
+            {
+                throw new FollowingException("You dont follow user with that ID, so you can not block him!");
+            }
+
+            if (_blockingRepository.CheckDidIAlreadyBlockUser(newType.blockerID, newType.blockedID))
+            {
+                throw new BlockingException("You already blocked this user, you are not following him!");
+            }
 
             try
             {

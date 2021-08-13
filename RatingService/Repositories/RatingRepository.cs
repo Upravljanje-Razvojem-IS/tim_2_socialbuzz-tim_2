@@ -98,8 +98,6 @@ namespace RatingService.Repositories
 
         public void UpdateRating(Rating rating)
         {
-            /*contextDB.Entry(rating).State = EntityState.Modified;
-            contextDB.SaveChanges();*/
         }
     }
 }

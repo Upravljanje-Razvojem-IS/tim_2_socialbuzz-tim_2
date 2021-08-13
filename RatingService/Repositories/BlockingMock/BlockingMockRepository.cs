@@ -22,7 +22,7 @@ namespace RatingService.Repositories.BlockingMock
             block.BlockerID = 1;
             block.BlockedID = 2;
 
-            //BlockedUsers.Add(block);
+            BlockedUsers.Add(block);
         }
 
         public List<int> GetBlockedUsers(int userId)

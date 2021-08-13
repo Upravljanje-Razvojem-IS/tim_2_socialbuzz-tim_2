@@ -424,12 +424,12 @@ namespace RatingService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer zahteva za prikaz dostupnih HTTP metoda
-        /// OPTIONS 'https://localhost:44303/api/reactions' \
+        /// OPTIONS 'https://localhost:44303/api/rating' \
         /// </remarks>
         /// <response code="200">Uspesno prikazane dostupne metode.</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpOptions]
-        public IActionResult GetReactionsOpstions()
+        public IActionResult GetRatingsOptions()
         {
             Response.Headers.Add("Allow", "GET, POST, PUT, DELETE");
             return Ok();

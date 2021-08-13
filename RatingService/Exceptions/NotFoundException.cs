@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace RatingService.Exceptions
 {
+    [Serializable]
     public class NotFoundException: Exception
     {
         public NotFoundException(string message)
