@@ -171,10 +171,7 @@ namespace BlockService.Services
             newType.BlockID = BlockID;
             newType.BlockDate = DateTime.Now;
 
-            if (newType.blockerID == newType.blockedID)
-            {
-                throw new ErrorOccurException("You can not block yourself!");
-            }
+            
 
             if (!_blockingRepository.CheckDoIFollowUser(newType.blockerID, newType.blockedID))
             {
