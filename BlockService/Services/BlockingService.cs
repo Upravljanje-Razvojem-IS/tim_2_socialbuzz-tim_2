@@ -38,10 +38,6 @@ namespace BlockService.Services
                 throw new NotFoundException("User with that ID does not exist!");
             }
 
-            if (blockerID == blockedID)
-            {
-                throw new ErrorOccurException("You can not block yourself!");
-            }
 
             if (!_blockingRepository.CheckDoIFollowUser(blockerID, blockedID))
             {
