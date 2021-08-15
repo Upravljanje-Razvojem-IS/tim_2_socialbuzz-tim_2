@@ -81,6 +81,7 @@ namespace RatingService.Controllers
         /// Primer zahteva Get Rating By ID
         /// GET 'https://localhost:44303/api/rating/ratingID/ratingID' \
         ///     --header 'Authorization: Bearer URIS2021'
+        ///     --url  'ratingID = 8ca02e0f-a565-43d7-b8d1-da0a073118fb' 
         /// </remarks>
         /// <param name="key">Authorization Header Bearer Key Value</param>
         /// <param name="ratingID">ID tipa ocene</param>
@@ -118,15 +119,19 @@ namespace RatingService.Controllers
         /// </summary>
         /// <returns></returns>
         /// <remarks>
-        /// GET 'https://localhost:44303/api/rating/user/userID/posts/postsID' \
+        /// GET 'https://localhost:44303/api/rating/user/userID/posts/postID' \
         /// Primer zahteva koji je uspesan \
         ///     --header 'Authorization: Bearer URIS2021' \
-        ///     --param  'PostID = 1' \
-        ///     --param  'UserID = 3' \
+        ///     --param  'PostID = 3' \
+        ///     --param  'UserID = 1' \
         /// Primer zahteva koji nije uspesan jer je korisnik sa ID-jem 1 blokirao korisnika sa ID-jem 2, a koji je objavio objavu sa ID-jem 2 \
         ///     --header 'Authorization: Bearer URIS2021' \
         ///     --param  'PostID = 2' \
         ///     --param  'UserID = 1 
+        /// Primer zahteva koji ne vraca ocene, kako za post sa ID-em 4 nema jos ocena \
+        ///     --header 'Authorization: Bearer URIS2021' \
+        ///     --param  'PostID = 4' \
+        ///     --param  'UserID = 1
         /// </remarks>
         /// <param name="key">Authorization Header Bearer Key Value</param>
         /// <param name="postID">ID objave</param>
@@ -161,13 +166,14 @@ namespace RatingService.Controllers
         }
 
         /// <summary>
-        /// Vraca ocene koje je korisnik dobio od drugih.
+        /// Vraca ocene koje je korisnik dobio od drugih, za svoju objavu.
         /// </summary>
         /// <returns></returns>
         /// <remarks>
         /// Primer zahteva Get Rating For User
         /// GET 'https://localhost:44303/api/rating/user/userID' \
         ///     --header 'Authorization: Bearer URIS2021'
+        ///     --url  'userID = 1' 
         /// </remarks>
         /// <param name="key">Authorization Header Bearer Key Value</param>
         /// <param name="userID">ID korisnika za koga se vracaju ocene</param>
@@ -208,6 +214,7 @@ namespace RatingService.Controllers
         /// Primer zahteva Get Rating By User
         /// GET 'https://localhost:44303/api/rating/ratingsByUser/userID' \
         ///     --header 'Authorization: Bearer URIS2021'
+        ///     --url  'userID = 1' 
         /// </remarks>
         /// <param name="key">Authorization Header Bearer Key Value</param>
         /// <param name="userID">ID korisnika za koga se vracaju ocene</param>
@@ -251,11 +258,12 @@ namespace RatingService.Controllers
         /// POST 'https://localhost:44303/api/rating/user/userID' \
         /// Primer zahteva za uspesno dodavanje nove ocene \
         ///  --header 'Authorization: Bearer URIS2021' \
-        ///  --param 'userID = 2' \
+        ///  --param 'userID = 3' \
         /// {     \
-        ///  "PostID": 3, \
+        ///  "PostID": 2, \
         ///  "ratingTypeID": 2 \
-        ///  "ratingDescription": "Very well" \
+        ///  "ratingDescription": "7/10 stars" \
+        ///  "userID": 3 \
         /// } \
         /// Primer zahteva za neuspesno dodavanje ocene jer je korisnik vec reagovao na ovu objavu \
         ///  --header 'Authorization: Bearer URIS2021' \
@@ -264,14 +272,16 @@ namespace RatingService.Controllers
         ///  "PostID": 1, \
         ///  "ratingTypeID": 7 \
         ///  "ratingDescription": "Only one star" \
+        ///  "userID": 4 \
         /// }  \
         ///  Primer zahteva za neuspesno dodavanje ocene jer je korisnik sa ID-jem 2 ne prati korisnika sa ID-jem 4, a koji je objavio objavu sa ID-ijem 4 \
         ///  --header 'Authorization: Bearer URIS2021' \
-        ///  --param 'UserID = 2' \
+        ///  --param 'UserID = 4' \
         /// {     \
-        ///  "PostID": 4, \
-        ///  "ratingTypeID": 7 \
-        ///  "ratingDescription": "Only one star" \
+        ///  "PostID": 3, \
+        ///  "ratingTypeID": 3 \
+        ///  "ratingDescription": "5/10 stars" \
+        ///  "userID": 4 \
         /// } 
         /// </remarks>
         /// <response code="201">Vraca kreiranu ocenu na objavi.</response>
@@ -322,13 +332,14 @@ namespace RatingService.Controllers
         /// Primer zahteva za azuriranje ocene  \
         /// PUT 'https://localhost:44303/api/rating/ratingID' \
         ///     --header 'Authorization: Bearer URIS2021'  \
+        ///     --param  'ratingID = 8ca02e0f-a565-43d7-b8d1-da0a073118fb' \
         ///  { \
-        /// "ratingID": "7750A8CE-7BEB-457D-B189-08D95B646192", \
-        /// "postID": 3, \
+        /// "ratingID": "8ca02e0f-a565-43d7-b8d1-da0a073118fb", \
+        /// "postID": 1, \
         /// "ratingTypeID": 5       \
         /// "ratingDate": "0001-02-03T00:00:00" \
-        /// "ratingDescription": "5 zvezdica" \
-        /// "userID": 2 \
+        /// "ratingDescription": "2/10 stars" \
+        /// "userID": 1 \
         ///  }
         /// </remarks>
         /// <response code="200">Vraća potvrdu da je uspesno izmenjena ocena.</response>
@@ -378,7 +389,7 @@ namespace RatingService.Controllers
         /// Primer zahteva za brisanje ocene
         /// DELETE 'https://localhost:44303/api/rating/ratingID' \
         ///     --header 'Authorization: Bearer URIS2021' \
-        ///     --param  'ratingID = 7750A8CE-7BEB-457D-B189-08D95B646192'
+        ///     --param  'ratingID = bf777d5a-be8c-492e-1cee-08d95ff6a000'
         /// </remarks>
         /// <param name="key">Authorization Header Bearer Key Value</param>
         /// <param name="ratingID">ID ocene koja se brise</param>

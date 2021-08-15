@@ -174,7 +174,7 @@ namespace BlockService.Services
 
             if (newType.blockerID == newType.blockedID)
             {
-                throw new ErrorOccurException("You can not block yourself!");
+                throw new ErrorOccurException("Error! You can not block yourself!");
             }
 
             if (!_blockingRepository.CheckDoIFollowUser(newType.blockerID, newType.blockedID))

@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace BlockService.Controllers
 {
     /// <summary>
-    /// Block Kontroler izvrsava CRUD operacije nad podacima />.
+    /// Blocking Kontroler izvrsava CRUD operacije nad podacima />.
     /// </summary>
     [Produces("application/json", "application/xml")]
     [Route("api/block")]

@@ -127,7 +127,7 @@ namespace RatingService.Services
 
             if (userId == null)
             {
-                throw new NotFoundException("Not find user with that ID found...");
+                throw new NotFoundException("User with that ID does not exist...");
             }
 
            

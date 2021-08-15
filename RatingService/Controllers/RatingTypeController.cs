@@ -224,7 +224,7 @@ namespace RatingService.Controllers
         /// Primer zahteva za brisanje tipa ocene
         /// DELETE 'https://localhost:44303/api/ratingtypes/ratingTypeID' \
         ///     --header 'Authorization: Bearer URIS2021' \
-        ///     --param  'ratingTypeID = 8'
+        ///     --param  'ratingTypeID = 8' ili 'ratingTypeID = 1'
         /// </remarks>
         /// <param name="key">Authorization Header Bearer Key Value</param>
         /// <param name="ratingTypeID">ID tipa ocene koji se brise</param>
