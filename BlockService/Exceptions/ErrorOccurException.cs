@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlockService.Exceptions
 {
-    [Serializable]
+    
     public class ErrorOccurException: Exception
     {
         public ErrorOccurException(string message)
