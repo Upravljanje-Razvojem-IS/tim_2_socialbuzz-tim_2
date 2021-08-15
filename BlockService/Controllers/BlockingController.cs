@@ -255,7 +255,7 @@ namespace BlockService.Controllers
         }
 
         /// <summary>
-        /// Modifikacija postojeceg bloka.
+        /// Modifikacija postojeceg blokiranja.
         /// </summary>
         /// <param name="key">Authorization Header Bearer Key Value</param>
         /// <param name="updated">Model blokiranja koji se modifikuje</param>

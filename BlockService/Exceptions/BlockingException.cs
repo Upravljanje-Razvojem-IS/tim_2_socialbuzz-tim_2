@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlockService.Exceptions
 {
-   
+    [Serializable]
     public class BlockingException: Exception
     {
         public BlockingException(string message)

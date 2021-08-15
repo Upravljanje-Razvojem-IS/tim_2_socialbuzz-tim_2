@@ -38,6 +38,10 @@ namespace BlockService.Services
                 throw new NotFoundException("User with that ID does not exist!");
             }
 
+            if (blockedID == blockerID)
+            {
+                throw new ErrorOccurException("Can not block yourself!");
+            }
 
             if (!_blockingRepository.CheckDoIFollowUser(blockerID, blockedID))
             {
@@ -132,6 +136,7 @@ namespace BlockService.Services
                 throw new NotFoundException("User with that ID does not exist!");
             }
 
+
             if (!_blockingRepository.CheckDoIFollowUser(blockerID, blockedID))
             {
                 throw new FollowingException("You dont follow user with that ID, so you can not unblock him!");
@@ -167,7 +172,10 @@ namespace BlockService.Services
             newType.BlockID = BlockID;
             newType.BlockDate = DateTime.Now;
 
-            
+            if (newType.blockerID == newType.blockedID)
+            {
+                throw new ErrorOccurException("You can not block yourself!");
+            }
 
             if (!_blockingRepository.CheckDoIFollowUser(newType.blockerID, newType.blockedID))
             {

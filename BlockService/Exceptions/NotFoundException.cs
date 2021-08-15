@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlockService.Exceptions
 {
-    
+    [Serializable]
     public class NotFoundException: Exception
     {
         public NotFoundException(string message)
