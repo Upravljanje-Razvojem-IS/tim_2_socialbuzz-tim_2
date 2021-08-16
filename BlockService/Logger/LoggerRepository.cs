@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlockService.Logger
 {
+
     public class LoggerRepository<T> : ILoggerRepository<T>
     {
         private readonly ILogger<T> logger;

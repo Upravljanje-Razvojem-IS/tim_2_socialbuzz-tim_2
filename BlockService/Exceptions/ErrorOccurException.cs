@@ -9,12 +9,12 @@ namespace BlockService.Exceptions
     public class ErrorOccurException: Exception
     {
         public ErrorOccurException(string message)
-            : base(message)
+               : base(message)
         {
 
         }
         public ErrorOccurException(string message, Exception inner)
-            : base(message, inner)
+               : base(message, inner)
         {
 
         }

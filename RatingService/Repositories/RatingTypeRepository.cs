@@ -43,7 +43,7 @@ namespace RatingService.Repositories
 
         public void UpdateRatingType(RatingType ratingType)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(); // kasnije se implementira
         }
     }
 }

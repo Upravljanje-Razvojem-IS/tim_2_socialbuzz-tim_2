@@ -10,7 +10,7 @@ namespace RatingService.Repositories.FollowingMock
         List<int> GetFollowedUsers(int userId);
 
         /// <summary>
-        /// Provera da li pratim korisnika
+        /// Provera da li pratim nekog korisnika
         /// </summary>
         /// <param name="userId">Moj Id</param>
         /// <param name="followingId">Id korisnika za kog proveravam da li ga pratim</param>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace BlockService.DTO
 {
     /// <summary>
-    /// DTO modify model blokiranja korisnika
+    /// DTO modify model za blokiranje korisnika
     /// </summary>
     public class BlockModifyingDTO
     {

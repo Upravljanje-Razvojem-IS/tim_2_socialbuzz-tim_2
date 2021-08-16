@@ -7,6 +7,6 @@ namespace BlockService.Auth
 {
     public interface IAuthService
     {
-        public bool Authorize(string key);
+      public bool Authorize(string key);
     }
 }

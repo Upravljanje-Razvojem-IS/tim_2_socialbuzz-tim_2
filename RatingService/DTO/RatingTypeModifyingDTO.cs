@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace RatingService.DTO
 {
     /// <summary>
-    /// DTO za modifikaciju tipa ocene
+    /// DTO  modifikacija tipa ocene
     /// </summary>
     public class RatingTypeModifyingDTO
     {

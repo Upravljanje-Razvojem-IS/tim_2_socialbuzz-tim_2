@@ -18,7 +18,7 @@ namespace RatingService.Repositories.FollowingMock
         private void FillData()
         {
 
-            FollowingMockDTO mock = new FollowingMockDTO();
+            FollowingMockDTO mock = new FollowingMockDTO(); // usera 3 prati user 1
             mock.FollowingID = 1;
             mock.FollowerID = 1;
             mock.FollowedID = 3;

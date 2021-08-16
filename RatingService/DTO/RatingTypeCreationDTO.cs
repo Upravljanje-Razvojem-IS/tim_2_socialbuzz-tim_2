@@ -12,7 +12,7 @@ namespace RatingService.DTO
     public class RatingTypeCreationDTO
     {
         /// <summary>
-        /// Naziv tipa ocene koja se kreira
+        /// Naziv tipa ocene koji se kreira
         /// </summary>
         [Required(ErrorMessage = "Rating type is required!")]
         public String RatingTypeName { get; set; }

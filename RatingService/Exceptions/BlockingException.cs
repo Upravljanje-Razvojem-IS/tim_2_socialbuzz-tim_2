@@ -9,12 +9,12 @@ namespace RatingService.Exceptions
     public class BlockingException: Exception
     {
         public BlockingException(string message)
-            : base(message)
+               : base(message)
         {
 
         }
         public BlockingException(string message, Exception inner)
-            : base(message, inner)
+               : base(message, inner)
         {
 
         }

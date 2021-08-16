@@ -17,7 +17,7 @@ namespace RatingService.DTO
         public Guid RatingID { get; set; }
 
         /// <summary>
-        /// ID objave na kojoj se nalazi ocena koja se modifikuje
+        /// ID objave za kojoj se nalazi ocena koja se modifikuje
         /// </summary>
         public int PostID { get; set; }
 

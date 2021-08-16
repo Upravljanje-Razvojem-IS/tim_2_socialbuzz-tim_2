@@ -3,11 +3,8 @@ using RatingService.DTO;
 using RatingService.Entities;
 using RatingService.Exceptions;
 using RatingService.Repositories;
-using RatingService.Repositories.PostMock;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RatingService.Services
 {

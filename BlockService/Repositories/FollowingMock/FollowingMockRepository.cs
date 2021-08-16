@@ -19,22 +19,22 @@ namespace BlockService.Repositories.FollowingMock
         private void FillData()
         {
 
-            FollowingMockDTO mock = new FollowingMockDTO();
+            FollowingMockDTO mock = new FollowingMockDTO(); //1 prati 3
             mock.FollowingID = 1;
             mock.FollowerID = 1;
             mock.FollowedID = 3;
 
-            FollowingMockDTO mock2 = new FollowingMockDTO();
+            FollowingMockDTO mock2 = new FollowingMockDTO(); //3 prati 2
             mock2.FollowingID = 2;
             mock2.FollowerID = 3;
             mock2.FollowedID = 2;
 
-            FollowingMockDTO mock3 = new FollowingMockDTO();
+            FollowingMockDTO mock3 = new FollowingMockDTO(); //2 prati 3
             mock3.FollowingID = 3;
             mock3.FollowerID = 2;
             mock3.FollowedID = 3;
 
-            FollowingMockDTO mock4 = new FollowingMockDTO();
+            FollowingMockDTO mock4 = new FollowingMockDTO(); //1 prati 4
             mock4.FollowingID = 4;
             mock4.FollowerID = 4;
             mock4.FollowedID = 1;

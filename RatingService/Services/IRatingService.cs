@@ -23,7 +23,7 @@ namespace RatingService.Services
 
         void DeleteRating(Guid ratingID);
 
-        RatingDTO CheckDidIAlreadyRate(int userID, int postID);
+        RatingDTO CheckDidIAlreadyRate(int userID, int postID); //ako je vec data ocene ne moze 2 puta
 
         bool CheckDoIFollowUser(int userID, int followingID);
 

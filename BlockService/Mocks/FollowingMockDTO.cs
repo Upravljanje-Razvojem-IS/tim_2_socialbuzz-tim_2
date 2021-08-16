@@ -34,7 +34,7 @@ namespace BlockService.Mocks
         }
 
         /// <summary>
-        /// ID korisnika koji je zapracen
+        /// ID korisnika koji je zapracen od strane korisnika
         /// </summary>
         private int followedID;
 

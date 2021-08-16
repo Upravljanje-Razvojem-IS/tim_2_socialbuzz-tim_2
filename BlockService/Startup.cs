@@ -52,7 +52,7 @@ namespace BlockService
             services.AddSwaggerGen(setupAction =>
             {
                 setupAction.SwaggerDoc("UserBlockingsApiSpecification",
-                     new Microsoft.OpenApi.Models.OpenApiInfo() //definise kako se kreira swagger dokument
+                     new Microsoft.OpenApi.Models.OpenApiInfo() 
                      {
                          Title = "User blocking API",
                          Version = "1",

@@ -10,6 +10,7 @@ namespace BlockService.Profiles
 {
     public class BlockingProfile: Profile
     {
+
         public BlockingProfile()
         {
             CreateMap<BlockModifyingDTO, Block>();

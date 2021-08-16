@@ -8,6 +8,7 @@ namespace RatingService.Logger
 {
     public class LoggerRepository<T> : ILoggerRepository<T>
     {
+       
         private readonly ILogger<T> logger;
 
         public LoggerRepository(ILogger<T> logger)

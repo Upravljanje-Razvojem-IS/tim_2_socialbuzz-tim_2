@@ -13,7 +13,7 @@ namespace RatingService.Repositories.BlockingMock
         /// Provera da li samm blokirala korisnika
         /// </summary>
         /// <param name="userId">Moj Id</param>
-        /// <param name="blockedId">Id korisnika za kog proveravam da li mi je blokiran</param>
+        /// <param name="blockedId">Id korisnika za kog proveravam da li sam ga blokirala</param>
         /// <returns></returns>
         public bool CheckDidIBlockUser(int userId, int blockedId);
     }

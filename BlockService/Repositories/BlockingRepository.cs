@@ -11,7 +11,7 @@ namespace BlockService.Repositories
     public class BlockingRepository : IBlockingRepository
     {
         private readonly ContextDB contextDB;
-        private readonly IFollowingMockRepository followingMockRepository;
+        private readonly IFollowingMockRepository followingMockRepository; 
 
         public BlockingRepository(ContextDB contextDB, IFollowingMockRepository followingMockRepository)
         {

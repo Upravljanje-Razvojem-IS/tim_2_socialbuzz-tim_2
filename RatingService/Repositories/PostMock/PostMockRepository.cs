@@ -27,7 +27,7 @@ namespace RatingService.Repositories.PostMock
                     UserID = 1,
                     ConditionID = 1,
                     PostTypeID = 1,
-                    PostedOn = DateTime.Parse("2021-04-21T09:00:00")
+                    PostedOn = DateTime.Parse("2021-05-19T09:00:00")
                 },
                 new PostMockDTO
                 {
@@ -37,7 +37,7 @@ namespace RatingService.Repositories.PostMock
                    UserID = 2,
                    ConditionID = 2,
                    PostTypeID = 2,
-                   PostedOn = DateTime.Parse("2021-04-21T09:00:00")
+                   PostedOn = DateTime.Parse("2021-04-10T09:00:00")
                 },
                  new PostMockDTO
                 {
@@ -47,7 +47,7 @@ namespace RatingService.Repositories.PostMock
                     UserID = 3,
                     ConditionID = 3,
                     PostTypeID = 3,
-                    PostedOn = DateTime.Parse("2021-04-21T09:00:00")
+                    PostedOn = DateTime.Parse("2021-06-11T09:00:00")
                 },
                    new PostMockDTO
                 {

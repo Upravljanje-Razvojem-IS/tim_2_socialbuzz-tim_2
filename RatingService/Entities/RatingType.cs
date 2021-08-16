@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace RatingService.Entities
 {
     /// <summary>
-    /// Model tipa ocene na objavu
+    /// Model tipa ocene za objavu
     /// </summary>
     [Table("RatingType")]
     public class RatingType

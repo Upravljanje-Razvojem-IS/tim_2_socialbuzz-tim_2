@@ -77,7 +77,7 @@ namespace BlockService.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Primer uspesnog zahteva Get Block By ID
-        /// GET 'http://localhost:4207/api/block/blockID' \
+        /// GET 'http://localhost:4207/api/block/blockID/{BlockID}' \
         ///     --header 'Authorization: Bearer URIS2021'  \
         ///     --url  'blockID = 8CA02E0F-A565-43D7-B8D1-DA0A073118FB'  
         /// </remarks>

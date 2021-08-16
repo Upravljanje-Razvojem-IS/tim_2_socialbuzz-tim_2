@@ -9,7 +9,6 @@ namespace RatingService.Repositories.UserMock
     public interface IUserMockRepository
     {
         List<UserMockDTO> GetAllUsers();
-
         UserMockDTO GetUserByID(int userID);
     }
 }

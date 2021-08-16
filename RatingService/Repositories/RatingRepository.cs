@@ -97,7 +97,7 @@ namespace RatingService.Repositories
         }
 
         public void UpdateRating(Rating rating)
-        {
+        {//kasnije se implementira
         }
     }
 }

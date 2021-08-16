@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace BlockService.Entities
 {
     /// <summary>
-    /// Model tabele blokiranja
+    /// Model tabele blokiranja korisnika
     /// </summary>
     [Table("Block")]
     public class Block

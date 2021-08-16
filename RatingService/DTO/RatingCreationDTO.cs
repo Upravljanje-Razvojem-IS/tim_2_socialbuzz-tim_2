@@ -13,7 +13,7 @@ namespace RatingService.DTO
     {
 
         /// <summary>
-        /// ID objave na koju se dodaje ocena
+        /// ID objave za koju se dodaje ocena
         /// </summary>
         [Required(ErrorMessage = "Post ID is required!")]
         public int PostID { get; set; }
@@ -32,6 +32,6 @@ namespace RatingService.DTO
         /// <summary>
         /// ID korisnika koji dodaje ocenu
         /// </summary>
-        public int UserID { get; set; }
+        public int UserID { get; set; } 
     }
 }

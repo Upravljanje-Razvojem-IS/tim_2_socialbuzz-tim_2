@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace RatingService.Controllers
 {
     /// <summary>
-    /// RatingType Kontroler izvrsava CRUD operacije nad podacima />.
+    /// RatingType Controller izvrsava CRUD operacije nad podacima />.
     /// </summary>
     [Produces("application/json", "application/xml")]
     [Route("api/ratingtypes")]

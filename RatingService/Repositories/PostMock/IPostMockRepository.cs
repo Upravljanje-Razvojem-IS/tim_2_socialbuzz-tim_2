@@ -9,7 +9,6 @@ namespace RatingService.Repositories.PostMock
     public interface IPostMockRepository
     {
         PostMockDTO GetPostById(int postId);
-
         List<PostMockDTO> GetPostsByUserId(int userID);
     }
 }

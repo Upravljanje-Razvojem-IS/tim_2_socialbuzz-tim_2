@@ -41,7 +41,7 @@ namespace RatingService.Mocks
         public String Role { get; set; }
 
         /// <summary>
-        /// Grad odakle je korisnik
+        /// Grad korisnika
         /// </summary>
         public String City { get; set; }
     }

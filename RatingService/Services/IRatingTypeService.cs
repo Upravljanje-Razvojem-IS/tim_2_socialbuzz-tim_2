@@ -14,5 +14,6 @@ namespace RatingService.Services
         void UpdateRatingType(RatingTypeModifyingDTO ratingType, int typeID);
 
         void DeleteRatingType(int ratingTypeID);
+
     }
 }

@@ -23,6 +23,7 @@ namespace BlockService.Auth
             }
 
             var keyOnly = key.Substring(key.IndexOf("Bearer") + 7);
+
             var storedKey = configuration.GetValue<string>("Authorization:Secret");
 
             if (storedKey != keyOnly)

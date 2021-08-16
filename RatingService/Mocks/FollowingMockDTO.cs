@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace RatingService.Mocks
 {
     /// <summary>
-    /// DTO za model pracenja korisnika
+    /// DTO  model za pracenje korisnika
     /// </summary>
     public class FollowingMockDTO
     {

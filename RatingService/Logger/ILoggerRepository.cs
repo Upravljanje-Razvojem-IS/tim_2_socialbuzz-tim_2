@@ -10,5 +10,6 @@ namespace RatingService.Logger
         public void LogError(Exception ex, string message, params object[] args);
 
         public void LogInformation(string message);
+
     }
 }

@@ -9,12 +9,12 @@ namespace BlockService.Exceptions
     public class FollowingException: Exception
     {
         public FollowingException(string message)
-           : base(message)
+              : base(message)
         {
 
         }
         public FollowingException(string message, Exception inner)
-            : base(message, inner)
+               : base(message, inner)
         {
 
         }

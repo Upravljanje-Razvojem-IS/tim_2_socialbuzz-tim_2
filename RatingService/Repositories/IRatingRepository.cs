@@ -10,7 +10,7 @@ namespace RatingService.Repositories
     {
         List<Rating> GetAllRatings();//samo vraca sve ocene
         List<Rating> GetAllRatingsForUser(int userID, List<int> postsIDs);//sve ocene koje je korisnik dobio
-        List<Rating> GetAllRatingsByUser(int userID);//koje je ocene sve dao korisnik
+        List<Rating> GetAllRatingsByUser(int userID);//sve ocene koje je neki korisnik dao
 
         List<Rating> GetRatingByPostID(int postID, int userID);
 

@@ -8,7 +8,6 @@ using RatingService.Repositories.UserMock;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace RatingService.Services
 {
@@ -46,7 +45,7 @@ namespace RatingService.Services
             return _ratingRepository.CheckDoIFollowUser(userID, followingID);
         }
 
-        public RatingDTO CreateRating(RatingCreationDTO rating, int userId)//originalna metoda nema userid-vidi ovo-id onog ko ocenjuje
+        public RatingDTO CreateRating(RatingCreationDTO rating, int userId) 
         {
             var user = _userMockRepository.GetUserByID(userId);
 

@@ -10,6 +10,7 @@ namespace BlockService.Entities
 {
     public class ContextDB : DbContext
     {
+
         private readonly IConfiguration configuration;
 
         public ContextDB(DbContextOptions options, IConfiguration configuration) : base(options)

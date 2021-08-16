@@ -13,7 +13,7 @@ using System.Collections.Generic;
 namespace RatingService.Controllers
 {
     /// <summary>
-    /// Rating Kontroler izvrsava CRUD operacije nad podacima />.
+    /// Rating Controller izvrsava CRUD operacije nad podacima />.
     /// </summary>
     [Produces("application/json", "application/xml")]
     [Route("api/rating")]

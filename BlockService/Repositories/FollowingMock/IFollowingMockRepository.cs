@@ -15,6 +15,6 @@ namespace BlockService.Repositories.FollowingMock
         /// <param name="userId">Moj Id</param>
         /// <param name="followingId">Id korisnika za kog proveravam da li ga pratim</param>
         /// <returns></returns>
-        public bool CheckDoIFollowUser(int userId, int followingId);
+        public bool CheckDoIFollowUser(int userId, int followingId); 
     }
 }

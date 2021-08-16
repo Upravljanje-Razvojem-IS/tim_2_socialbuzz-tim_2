@@ -20,7 +20,7 @@ namespace RatingService.Entities
         [Required]
         public Guid RatingID { get; set; }
         /// <summary>
-        /// ID objave na koju se dodaje ocena
+        /// ID objave za koju se dodaje ocena
         /// </summary>
         public int PostID { get; set; }
 

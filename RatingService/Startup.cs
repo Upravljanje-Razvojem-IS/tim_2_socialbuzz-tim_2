@@ -16,11 +16,6 @@ using RatingService.Repositories.PostMock;
 using RatingService.Repositories.UserMock;
 using RatingService.Services;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace RatingService
 {
@@ -98,7 +93,7 @@ namespace RatingService
                     appBuilder.Run(async context =>
                     {
                         context.Response.StatusCode = 500;
-                        await context.Response.WriteAsync("There has been error. Please try later!");
+                        await context.Response.WriteAsync("There has been error. Please try again later!");
                     });
                 });
             }

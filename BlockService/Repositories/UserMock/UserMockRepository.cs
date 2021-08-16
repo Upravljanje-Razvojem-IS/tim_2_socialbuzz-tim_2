@@ -18,7 +18,7 @@ namespace BlockService.Repositories.UserMock
         {
             Users.AddRange(new List<UserMockDTO>
             {
-                new UserMockDTO//prati ga user 4
+                new UserMockDTO //prati ga user 4
                 {
                     UserID = 1,
                     Email = "milica.jovanovic.2000@gmail.com",
