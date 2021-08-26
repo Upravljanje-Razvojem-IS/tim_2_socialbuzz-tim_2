@@ -51,6 +51,7 @@ namespace PostService.Controllers
         /// </remarks>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Consumes("application/json")]
@@ -67,6 +68,10 @@ namespace PostService.Controllers
                 }
                 catch (Exception ex)
                 {
+                    if(ex.Message == "User not found!" || ex.Message == "Type not found!")
+                    {
+                        return StatusCode(404, ex.Message);
+                    } 
                     return StatusCode(500, ex.Message);
                 }
             }

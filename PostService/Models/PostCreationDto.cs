@@ -37,5 +37,7 @@ namespace PostService.Models
         /// </summary>
         [Required(ErrorMessage = "User Id is required!")]
         public int UserId { get; set; }
+        [Required(ErrorMessage = "Type Id is required!")]
+        public string Type { get; set; }
     }
 }

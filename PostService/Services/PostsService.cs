@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PostService.Exceptions;
+using PostService.Data.TypeOfPostRepository;
 
 namespace PostService.Services
 {
@@ -18,24 +19,31 @@ namespace PostService.Services
         private readonly IUserMockRepository userMockRepository;
         private readonly IMapper autoMapper;
         private readonly IBlockMockRepository blockMockRepository;
-        public PostsService(IPostRepository postRepository, IUserMockRepository userMockRepository, IMapper autoMapper, IBlockMockRepository blockMockRepository)
+        private readonly ITypeOfPostRepository typeRepository;
+        public PostsService(IPostRepository postRepository, IUserMockRepository userMockRepository, IMapper autoMapper, IBlockMockRepository blockMockRepository, ITypeOfPostRepository typeRepository)
         {
             this.postRepository = postRepository;
             this.userMockRepository = userMockRepository;
             this.autoMapper = autoMapper;
             this.blockMockRepository = blockMockRepository;
+            this.typeRepository = typeRepository;
         }
 
         public PostDto CreatePost(PostCreationDto post)
         {
             if(userMockRepository.GetUserByID(post.UserId) == null)
             {
-                throw new Exception("User not found!");
+                throw new _404Exception("User not found!");
+            }
+            if(!typeRepository.ContainsType(post.Type))
+            {
+                throw new _404Exception("Type not found!");
             }
 
             var newPost = autoMapper.Map<Post>(post);
             newPost.PostPublishingDateTime = DateTime.Now;
             newPost.LastModified = DateTime.Now;
+            newPost.PostTypeId = typeRepository.GetIdByType(post.Type);
             try
             {
                 var addedPost = postRepository.CreatePost(newPost);
@@ -163,6 +171,7 @@ namespace PostService.Services
                 newPost.LastModified = DateTime.Now;
                 newPost.UserId = oldPost.UserId;
                 newPost.PostPublishingDateTime = oldPost.PostPublishingDateTime;
+                newPost.PostTypeId = oldPost.PostTypeId;
                 autoMapper.Map(newPost, oldPost);
                 postRepository.UpdatePost();
                 return autoMapper.Map<PostDto>(newPost);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using PostService.Entities.Type;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace PostService.Entities
         }
 
         public DbSet<Post> Post{ get; set; }
+        public DbSet<TypeOfPost> TypeOfPost { get; set; }
 
     }
 }
