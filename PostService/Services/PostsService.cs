@@ -171,6 +171,7 @@ namespace PostService.Services
                 newPost.LastModified = DateTime.Now;
                 newPost.UserId = oldPost.UserId;
                 newPost.PostPublishingDateTime = oldPost.PostPublishingDateTime;
+                newPost.PostTypeId = oldPost.PostTypeId;
                 autoMapper.Map(newPost, oldPost);
                 postRepository.UpdatePost();
                 return autoMapper.Map<PostDto>(newPost);
