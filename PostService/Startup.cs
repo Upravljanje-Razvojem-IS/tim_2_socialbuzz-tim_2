@@ -12,10 +12,12 @@ using PostService.AuthorizationMock;
 using PostService.Data;
 using PostService.Data.BlockMockRepository;
 using PostService.Data.FollowingMockRepository;
+using PostService.Data.TypeOfPostRepository;
 using PostService.Data.UserMockRepository;
 using PostService.Entities;
 using PostService.Logger;
 using PostService.Services;
+using PostService.Services.TypeService;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -46,6 +48,8 @@ namespace PostService
             services.AddDbContext<DatabaseContext>(o => o.UseSqlServer(Configuration.GetConnectionString("Database")));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            services.AddScoped<ITypeOfPostRepository, TypeOfPostRepository>();
+            services.AddScoped<ITypeOfPostService, TypeOfPostService>();
             services.AddScoped<IPostService, PostsService>();
             services.AddScoped<IAuthorizationMockService, AuthorizationMockService>();
             services.AddScoped<IUserMockRepository, UserMockRepository>();

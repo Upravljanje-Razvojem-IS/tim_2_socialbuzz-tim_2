@@ -35,6 +35,7 @@ namespace PostService.Data
 
         public void DeletePostsByUserId(int UserId);
 
+        public bool ContainsType(Guid TypeId);
 
     }
 }

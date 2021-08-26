@@ -109,5 +109,14 @@ namespace PostService.Data
         {
             dbContext.SaveChanges();
         }
+
+        public bool ContainsType(Guid TypeId)
+        {
+            if(dbContext.Post.FirstOrDefault(c => c.PostTypeId == TypeId)!=null)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
