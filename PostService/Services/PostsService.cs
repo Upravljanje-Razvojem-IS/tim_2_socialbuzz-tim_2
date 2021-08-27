@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PostService.Exceptions;
 using PostService.Data.TypeOfPostRepository;
+using PostService.Data.FollowingMockRepository;
 
 namespace PostService.Services
 {
@@ -20,13 +21,15 @@ namespace PostService.Services
         private readonly IMapper autoMapper;
         private readonly IBlockMockRepository blockMockRepository;
         private readonly ITypeOfPostRepository typeRepository;
-        public PostsService(IPostRepository postRepository, IUserMockRepository userMockRepository, IMapper autoMapper, IBlockMockRepository blockMockRepository, ITypeOfPostRepository typeRepository)
+        private readonly IFollowingMockRepository followingMockRepository;
+        public PostsService(IFollowingMockRepository followingMockRepository, IPostRepository postRepository, IUserMockRepository userMockRepository, IMapper autoMapper, IBlockMockRepository blockMockRepository, ITypeOfPostRepository typeRepository)
         {
             this.postRepository = postRepository;
             this.userMockRepository = userMockRepository;
             this.autoMapper = autoMapper;
             this.blockMockRepository = blockMockRepository;
             this.typeRepository = typeRepository;
+            this.followingMockRepository = followingMockRepository;
         }
 
         public PostDto CreatePost(PostCreationDto post)
@@ -50,23 +53,24 @@ namespace PostService.Services
                 return autoMapper.Map<PostDto>(addedPost);
             } catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new GeneralException(ex.Message);
             }
         }
 
         public void DeletePost(Guid PostId)
         {
+            Console.WriteLine(PostId);
             var toBeDeleted = postRepository.GetPostById(PostId);
             if(toBeDeleted == null)
             {
-                throw new _404Exception("Post not found!");
-            }
+               throw new _404Exception("Post not found!");
+           }
             try
             {
                 postRepository.DeletePost(PostId);
             } catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new GeneralException(ex.Message);
             }
         }
 
@@ -114,7 +118,7 @@ namespace PostService.Services
         public List<PostDto> GetPostsByCity(string City)
         {
             var fetchedPosts = postRepository.GetPostsByCity(1,City);
-            if(fetchedPosts.Count() == 0)
+            if(fetchedPosts.Count == 0)
             {
                 throw new _404Exception("No posts found in city : " + City);
             }
@@ -125,7 +129,7 @@ namespace PostService.Services
         public List<PostDto> GetPostsByTitle(string PostTitle)
         {
             var fetchedPosts = postRepository.GetPostsByTitle(1,PostTitle);
-            if (fetchedPosts == null)
+            if (fetchedPosts.Count == 0)
             {
                 throw new _404Exception("No posts found with title : " + PostTitle);
             }
@@ -143,10 +147,15 @@ namespace PostService.Services
             {
                 throw new BlockException("User blocked!");
             }
-            var fetchedPosts = postRepository.GetPostsFromWall(UserId, SubjectId);
-            if (fetchedPosts == null)
+           
+            if (followingMockRepository.CheckFollowing(UserId, SubjectId) == false)
             {
                 throw new FollowingException("You are not following that user!");
+            }
+            var fetchedPosts = postRepository.GetPostsFromWall(UserId, SubjectId);
+            if(fetchedPosts.Count == 0)
+            {
+                throw new GeneralException("This user does not have any posts yet!");
             }
             return autoMapper.Map<List<PostDto>>(fetchedPosts);
         }
@@ -163,7 +172,7 @@ namespace PostService.Services
 
             if(oldPost.PostId != newPost.PostId)
             {
-                throw new Exception("Changing of the post Id is not permitted!");
+                throw new GeneralException("Changing of the post Id is not permitted!");
             }
 
             try
@@ -177,7 +186,7 @@ namespace PostService.Services
                 return autoMapper.Map<PostDto>(newPost);
             } catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new GeneralException(ex.Message);
             }
         }
     }

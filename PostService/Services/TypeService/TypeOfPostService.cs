@@ -34,14 +34,14 @@ namespace PostService.Services.TypeService
             }
             if(postRepository.ContainsType(TypeId))
             {
-                throw new Exception("Foreign key constraint violated!");
+                throw new GeneralException("Foreign key constraint violated!");
             }
             try
             {
                 typeRepository.DeleteType(TypeId);
             } catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new GeneralException(ex.Message);
             }
         }
 
@@ -56,7 +56,7 @@ namespace PostService.Services.TypeService
                 return typeRepository.GetTypeById(TypeId);
             } catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new GeneralException(ex.Message);
             }
         }
 

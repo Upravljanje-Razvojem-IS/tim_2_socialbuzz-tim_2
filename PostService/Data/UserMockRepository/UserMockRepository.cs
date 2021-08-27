@@ -15,7 +15,7 @@ namespace PostService.Data.UserMockRepository
             FillData();
         }
 
-        private void FillData()
+        private static void FillData()
         {
             Users.AddRange(new List<UserMockDto>
             {

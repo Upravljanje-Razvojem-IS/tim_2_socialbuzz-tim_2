@@ -20,7 +20,7 @@ namespace PostService.Data.TypeOfPostRepository
 
         public TypeOfPostCreatedConfirmation CreateType(TypeOfPost Type)
         {
-            var newType = dbContext.Add(Type);
+            dbContext.TypeOfPost.Add(Type);
             dbContext.SaveChanges();
             return autoMapper.Map<TypeOfPostCreatedConfirmation>(Type);
         }
@@ -47,15 +47,15 @@ namespace PostService.Data.TypeOfPostRepository
             throw new NotImplementedException();
         }
 
-        public Guid GetIdByType(string type)
+        public Guid GetIdByType(string Type)
         {
-            var typeOfPost = dbContext.TypeOfPost.FirstOrDefault(t => t.Type == type);
+            var typeOfPost = dbContext.TypeOfPost.FirstOrDefault(t => t.Type == Type);
             return typeOfPost.TypeOfPostId;
         }
 
-        public bool ContainsType(string type)
+        public bool ContainsType(string Type)
         {
-            if(dbContext.TypeOfPost.FirstOrDefault(t => t.Type == type) != null)
+            if(dbContext.TypeOfPost.FirstOrDefault(t => t.Type == Type) != null)
             {
                 return true;
             }

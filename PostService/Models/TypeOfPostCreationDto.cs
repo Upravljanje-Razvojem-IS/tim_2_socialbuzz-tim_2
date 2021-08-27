@@ -7,6 +7,6 @@ namespace PostService.Models
 {
     public class TypeOfPostCreationDto
     {
-        public string type { get; set; }
+        public string Type { get; set; }
     }
 }

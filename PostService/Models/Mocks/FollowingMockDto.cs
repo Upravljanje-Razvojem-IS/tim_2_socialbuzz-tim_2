@@ -7,8 +7,8 @@ namespace PostService.Models.Mocks
 {
     public class FollowingMockDto
     {
-        public int FollowerId;
+        public int FollowerId { get; set; }
 
-        public int FollowedId;
+        public int FollowedId { get; set; }
     }
 }

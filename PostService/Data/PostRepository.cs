@@ -11,9 +11,9 @@ namespace PostService.Data
     public class PostRepository : IPostRepository
     {
 
-        private DatabaseContext dbContext;
-        private IBlockMockRepository blockMockRepository;
-        private IFollowingMockRepository followingMockRepository;
+        private readonly DatabaseContext dbContext;
+        private readonly IBlockMockRepository blockMockRepository;
+        private readonly IFollowingMockRepository followingMockRepository;
         public PostRepository(DatabaseContext context, IBlockMockRepository blockMockRepository, IFollowingMockRepository followingMockRepository)
         {
             dbContext = context;
@@ -92,17 +92,10 @@ namespace PostService.Data
 
         public List<Post> GetPostsFromWall(int UserId, int SubjectId)
         {
-            Console.WriteLine(followingMockRepository.CheckFollowing(UserId, SubjectId));
-            if(followingMockRepository.CheckFollowing(UserId, SubjectId))
-            {
                 var query = from post in dbContext.Post
                             where post.UserId == SubjectId
                             select post;
                 return query.ToList();
-            } else
-            {
-                return null;
-            }
         }
 
         public void UpdatePost()

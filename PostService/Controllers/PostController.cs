@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using PostService.AuthorizationMock;
@@ -8,8 +7,6 @@ using PostService.Models;
 using PostService.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PostService.Controllers
 {
@@ -19,20 +16,21 @@ namespace PostService.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostService postService;
-        private readonly IMapper autoMapper;
-        private readonly LinkGenerator linkGenerator;
         private readonly IAuthorizationMockService authorizationMockService;
         private readonly ILoggerRepository<PostController> loggerRepository;
-        public PostController(IPostService postService, IMapper autoMapper, LinkGenerator linkGenerator, IAuthorizationMockService authorizationMockService, ILoggerRepository<PostController> loggerRepository)
+
+        /// <summary>
+        /// Kontroler koji upravlja Post tabelom.
+        /// </summary>
+        /// <param name="postService">Post servis.</param>
+        /// <param name="authorizationMockService">Mock autorizacionog servisa.</param>
+        /// <param name="loggerRepository">Logger</param>
+        public PostController(IPostService postService, IAuthorizationMockService authorizationMockService, ILoggerRepository<PostController> loggerRepository)
         {
             this.postService = postService;
-            this.autoMapper = autoMapper;
-            this.linkGenerator = linkGenerator;
             this.authorizationMockService = authorizationMockService;
             this.loggerRepository = loggerRepository;
         }
-
-
 
         /// <summary>
         /// Kreira novi post.
@@ -41,6 +39,12 @@ namespace PostService.Controllers
         /// <param name="newPost">Novi post tipa PostCreationDto.</param>
         /// <returns>Potvrdu o kreiranju posta.</returns>
         /// <remarks>
+        /// 
+        /// GET 'https://localhost:44200/api/post'
+        /// 
+        /// Authorization header: 
+        /// secretToken : Bearer Secret
+        /// 
         /// Primer zahteva za kreiranje novog posta.
         /// {
         /// "postTitle" : "Asus VivoBook",
@@ -49,8 +53,11 @@ namespace PostService.Controllers
         /// "UserId" : 2
         /// }
         /// </remarks>
+        /// <response code="201">Post je uspešno kreiran.</response>
+        /// <response code="401">Neuspešna autorizacija.</response>
+        /// <response code="404">Korisnik ili tip ne postoji.</response>
+        /// <response code="500">Serverska greška.</response>
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -85,17 +92,25 @@ namespace PostService.Controllers
         /// <param name="PostId">Id posta koji želimo da obrišemo.</param>
         /// <returns>Potvrdu o brisanju.</returns>
         /// <remarks>
+        /// 
+        /// DELETE 'https://localhost:44200/api/?PostId=PostId'
+        /// 
+        /// Authorization header: 
+        /// secretToken : Bearer Secret
+        /// 
         /// Primer zahteva za brisanje posta.
         /// Id posta se čita iz query parametra.
-        /// DELETE localhost:44200/api/c4cb6501-d98d-4297-2fab-08d9665f8d17?PostId=51db2a5e-5b2c-4724-1e99-08d96662d1cd
+        /// DELETE localhost:44200/api/PostId=51db2a5e-5b2c-4724-1e99-08d96662d1cd
         /// </remarks>
         /// <response code="204">Post je uspešno obrisan.</response>
         /// <response code="401">Neuspešna autorizacija.</response>
+        /// <response code="404">Post sa prosledjenim id-jem ne postoji.</response>
+        /// <response code="500">Serverska greška.</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [HttpDelete("{postId}")]
+        [HttpDelete]
         public IActionResult DeletePost([FromHeader] string secretToken, [FromQuery] Guid PostId)
         {
             if (authorizationMockService.AuthorizeToken(secretToken))
@@ -126,10 +141,20 @@ namespace PostService.Controllers
         /// <param name="PostId">Id posta koji želimo da vratimo.</param>
         /// <returns>PostDto reprezentaciju posta.</returns>
         /// <remarks>
+        /// 
+        /// GET 'https://localhost:44200/api/post/?PostId=PostId'
+        /// 
+        /// Authorization header: 
+        /// secretToken : Bearer Secret
+        /// 
         /// Primer zahteva za vraćanje posta po Id-ju.
         /// Id posta se čita iz query parametra.
         /// GET localhost:44200/api/post/?PostId=a39e1850-1ca6-4805-270b-08d96663b948
         /// </remarks>
+        /// <response code="401">Neuspešna autorizacija.</response>
+        /// <response code="200">Postovi uspešno vraćeni.</response>
+        /// <response code="404">Post nije pronađen.</response>
+        /// <response code="500">Serverska greška.</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -165,10 +190,21 @@ namespace PostService.Controllers
         /// <param name="UserId">Id korisnika čije postove želimo da vidimo.</param>
         /// <returns>Listu postova određenog korisnika.</returns>
         /// <remarks>
+        /// 
+        /// GET 'https://localhost:44200/api/postsByUserId/?UserId=UserId'
+        /// 
+        /// Authorization header: 
+        /// secretToken : Bearer Secret
+        /// 
         /// Primer zahteva za vraćanje posta po Id-ju korisnika.
         /// Id se čita iz query parametra.
         /// GET localhost:44200/api/postsByUserId/?UserId=2
         /// </remarks>
+        /// <response code="401">Neuspešna autorizacija.</response>
+        /// <response code="200">Postovi uspešno vraćeni.</response>
+        /// <response code="404">Korisnik nije pronađen.</response>
+        /// <response code="400">Prosleđen je id korisnika koji je blokiran ili je blokirao korisnika sa id-jem 1.</response>
+        /// <response code="500">Serverska greška.</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -205,6 +241,12 @@ namespace PostService.Controllers
         /// osim tokena za autorizaciju. Token je tu pod pretpostavkom da ovoj ruti može da
         /// pristupi samo ulogovani korisnik.
         /// </summary>
+        /// 
+        /// GET 'https://localhost:44200/api/posts'
+        /// 
+        /// Authorization header: 
+        /// secretToken : Bearer Secret
+        /// 
         /// <param name="secretToken">Token za autorizaciju. U realnoj situaciji JWT Token generisan na osnovu 
         /// korisničkih podataka.</param>
         /// <returns>Listu objekata tipa PostDto, odnosno listu svih postova.</returns>
@@ -212,6 +254,9 @@ namespace PostService.Controllers
         /// Primer zahteva za vraćanje svih postova.
         /// GET localhost:44200/api/posts
         /// </remarks>
+        /// <response code="200">Postovi uspešno vraćeni.</response>
+        /// <response code="401">Neuspešna autorizacija.</response>
+        /// <response code="500">Serverska greška.</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -244,10 +289,20 @@ namespace PostService.Controllers
         /// <param name="City">Grad po kojem vršimo filtriranje.</param>
         /// <returns>Listu postova u određenom gradu.</returns>
         /// <remarks>
+        /// 
+        /// GET 'https://localhost:44200/api/postsByCity?City=City'
+        /// 
+        /// Authorization header: 
+        /// secretToken : Bearer Secret
+        /// 
         /// Primer zahteva za vraćanje postova po gradu.
         /// Grad se čita iz query parametra.
         /// GET localhost:44200/api/postsByCity?City=Beograd
         /// </remarks>
+        /// <response code="200">Postovi uspešno vraćeni.</response>
+        /// <response code="401">Neuspešna autorizacija.</response>
+        /// <response code="500">Serverska greška.</response>
+        /// <response code="404">Nisu pronađeni postovi u gradu.</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -283,10 +338,20 @@ namespace PostService.Controllers
         /// <param name="Title">Naslov posta.</param>
         /// <returns>Listu postova sa zajedničkim naslovom.</returns>
         /// <remarks>
+        /// 
+        /// GET 'https://localhost:44200/api/postsByTitle?Title=Title'
+        /// 
+        /// Authorization header: 
+        /// secretToken : Bearer Secret
+        /// 
         /// Primer zahteva za vraćanje postova po naslovu.
         /// Naslov se čita iz query parametra.
         /// GET localhost:44200/api/postsByTitle?Title=Asus Vivobook
         /// </remarks>
+        /// <response code="200">Postovi uspešno vraćeni.</response>
+        /// <response code="401">Neuspešna autorizacija.</response>
+        /// <response code="500">Serverska greška.</response>
+        /// <response code="404">Nisu pronađeni postovi sa prosleđenim naslovom.</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -322,6 +387,12 @@ namespace PostService.Controllers
         /// <param name="UserId">Id korisnika čije postove želimo da obrišemo.</param>
         /// <returns>Potvrdu o uspešnom brisanju postova.</returns>
         /// <remarks>
+        /// 
+        /// DELETE 'https://localhost:44200/api/deleteByUserId?UserId=UserId'
+        /// 
+        /// Authorization header: 
+        /// secretToken : Bearer Secret
+        /// 
         /// Ovaj zahtev služi u slučaju da želimo da obrišemo korisnika. Ako ne postoji korisnik u bazi ne smeju da postoje
         /// postovi koje je taj korisnik namestio. 
         /// 
@@ -329,6 +400,10 @@ namespace PostService.Controllers
         /// Id korisnika se čita iz query parametra.
         /// DELETE localhost:44200/api/deleteByUserId?UserId=2
         /// </remarks>
+        /// <response code="204">Postovi uspešno obrisani.</response>
+        /// <response code="401">Neuspešna autorizacija.</response>
+        /// <response code="500">Serverska greška.</response>
+        /// <response code="404">Korisnik nije pronađen.</response>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -365,6 +440,12 @@ namespace PostService.Controllers
         /// <param name="SubjectId">Id korisnika čije postove želimo da vratimo.</param>
         /// <returns>Listu postova.</returns>
         /// <remarks>
+        /// 
+        /// GET 'https://localhost:44200/api/getPostsFromWall?UserId=UserId&SubjectId=SubjectId'
+        /// 
+        /// Authorization header: 
+        /// secretToken : Bearer Secret
+        /// 
         /// Da bi ovaj zahtev bio uspešan prvo moramo da pratimo korisnika čije postove želimo da vratimo. 
         /// User Id i Subject Id nam služe za proveru praćenja i blokiranja pre vraćanja podataka.
         /// 
@@ -373,6 +454,11 @@ namespace PostService.Controllers
         /// UserId i SubjectId se čitaju iz query parametara.
         /// GET localhost:44200/api/getPostsFromWall?UserId=1&SubjectId=2
         /// </remarks>
+        /// <response code="200">Postovi uspešno vraćeni.</response>
+        /// <response code="401">Neuspešna autorizacija.</response>
+        /// <response code="500">Serverska greška.</response>
+        /// <response code="404">Korisnik nije pronađen ili korisnik nema postove.</response>
+        /// <response code="400">Korisnik je blokiran ili ne prati korisnika čije postove želi da vrati.</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -397,6 +483,9 @@ namespace PostService.Controllers
                     } else if (ex.Message == "User blocked!" || ex.Message == "You are not following that user!")
                     {
                         return StatusCode(StatusCodes.Status400BadRequest, "Error fetching posts : " + ex.Message);
+                    } else if (ex.Message == "This user does not have any posts yet!")
+                    {
+                        return StatusCode(StatusCodes.Status404NotFound, "Error fetching posts : " + ex.Message);
                     }
                     return StatusCode(StatusCodes.Status500InternalServerError, "Error fetching posts : " + ex.Message);
                 }
@@ -411,6 +500,12 @@ namespace PostService.Controllers
         /// <param name="post">Nova verzija posta.</param>
         /// <returns>Potvrdu o ažuriranju posta.</returns>
         /// <remarks>
+        /// 
+        /// PUT 'https://localhost:44200/api/PostId'
+        /// 
+        /// Authorization header: 
+        /// secretToken : Bearer Secret
+        /// 
         /// Primer zahteva za ažuriranje posta.
         /// 
         /// PUT localhost:44200/api/c814e683-5d07-4d35-16cd-08d967e4050a
@@ -421,6 +516,11 @@ namespace PostService.Controllers
         /// "city": "Novi Sad"
         ///}
         /// </remarks>
+        /// <response code="200">Post je ažuriran.</response>
+        /// <response code="404">Post sa prosleđenim id-jem ne postoji.</response>
+        /// <response code="401">Neuspešna autorizacija.</response>
+        /// <response code="500">Serverska greška</response>
+        /// <response code="400">Korisnik je pokušao da promeni id posta.</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

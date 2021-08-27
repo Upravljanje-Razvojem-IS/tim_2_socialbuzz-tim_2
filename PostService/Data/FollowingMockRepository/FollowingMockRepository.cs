@@ -9,7 +9,7 @@ namespace PostService.Data.FollowingMockRepository
     public class FollowingMockRepository : IFollowingMockRepository
     {
 
-        public static List<FollowingMockDto> FollowingInstances = new List<FollowingMockDto>();
+        public static List<FollowingMockDto> FollowingInstances { get; set; } = new List<FollowingMockDto>();
 
         public void FillData()
         {

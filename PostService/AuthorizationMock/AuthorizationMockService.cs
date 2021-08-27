@@ -8,7 +8,7 @@ namespace PostService.AuthorizationMock
 {
     public class AuthorizationMockService : IAuthorizationMockService
     {
-        private IConfiguration configuration;
+        private readonly IConfiguration configuration;
 
         public AuthorizationMockService(IConfiguration configuration)
         {
@@ -21,7 +21,7 @@ namespace PostService.AuthorizationMock
             {
                 return false;
             }
-            if (!token.StartsWith("Bearer") || token == null)
+            if (!token.StartsWith("Bearer"))
             {
                 return false;
             }
