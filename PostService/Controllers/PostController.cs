@@ -40,7 +40,7 @@ namespace PostService.Controllers
         /// <returns>Potvrdu o kreiranju posta.</returns>
         /// <remarks>
         /// 
-        /// GET 'https://localhost:44200/api/post'
+        /// POST 'https://localhost:44200/api/post'
         /// 
         /// Authorization header: 
         /// secretToken : Bearer Secret
@@ -198,7 +198,19 @@ namespace PostService.Controllers
         /// 
         /// Primer zahteva za vraćanje posta po Id-ju korisnika.
         /// Id se čita iz query parametra.
-        /// GET localhost:44200/api/postsByUserId/?UserId=2
+        /// GET localhost:44200/api/postsByUserId/?UserId=3
+        /// 
+        /// Primer neuspešnog zahteva : 
+        /// GET localhost:44200/api/postsByUserId/?UserId=1&SubjectId=2
+        /// 
+        /// Korisnik sa id-jem 2 je blokirao korisnika sa id-jem 1, u ovom slučaju 
+        /// korisniku će se prikazati poruka "User blocked!"
+        /// 
+        /// GET localhost:44200/api/postsByUserId/?UserId=1&SubjectId=22
+        /// 
+        /// Korisnik sa id-jem 22 ne postoji, korisniku se prikazuje poruka
+        /// "User not found!"
+        /// 
         /// </remarks>
         /// <response code="401">Neuspešna autorizacija.</response>
         /// <response code="200">Postovi uspešno vraćeni.</response>
@@ -211,13 +223,13 @@ namespace PostService.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("postsByUserId")]
-        public ActionResult<List<PostDto>> GetPostsByUserId([FromHeader] string secretToken, [FromQuery] int UserId)
+        public ActionResult<List<PostDto>> GetPostsByUserId([FromHeader] string secretToken, [FromQuery] int UserId, [FromQuery] int SubjectId)
         {
             if (authorizationMockService.AuthorizeToken(secretToken))
             {
                 try
                 {
-                    var fetchedPosts = postService.GetPostsByUserId(UserId);
+                    var fetchedPosts = postService.GetPostsByUserId(UserId,SubjectId);
                     loggerRepository.LogInformation("Posts successfully fetched!");
                     return StatusCode(StatusCodes.Status200OK, fetchedPosts);
                 }
@@ -286,18 +298,29 @@ namespace PostService.Controllers
         /// </summary>
         /// <param name="secretToken">Token za autorizaciju. U realnoj situaciji JWT Token generisan na osnovu 
         /// korisničkih podataka.</param>
+        /// <param name="UserId">Id korisnika koji šalje zahtev.</param>
         /// <param name="City">Grad po kojem vršimo filtriranje.</param>
         /// <returns>Listu postova u određenom gradu.</returns>
         /// <remarks>
         /// 
-        /// GET 'https://localhost:44200/api/postsByCity?City=City'
+        /// GET 'https://localhost:44200/api/postsByCity?City=City&UserId=UserId'
         /// 
         /// Authorization header: 
         /// secretToken : Bearer Secret
         /// 
         /// Primer zahteva za vraćanje postova po gradu.
         /// Grad se čita iz query parametra.
-        /// GET localhost:44200/api/postsByCity?City=Beograd
+        /// GET localhost:44200/api/postsByCity?City=Beograd&UserId=3
+        /// 
+        /// Primer blokiranog zahteva: 
+        /// 
+        /// localhost:44200/api/postsByCity?City=Novi Sad&UserId=1
+        /// 
+        /// Sistem će filtrirati postove koje je postavio korisnik sa id-jem 2 i koje za grad imaju postavljeno Novi Sad
+        /// s obzirom da je korisnik sa id-jem 1 blokiran od strane korisnika sa id-jem 2.
+        /// 
+        /// Vratiće se poruka "No posts found in Novi Sad!"
+        /// 
         /// </remarks>
         /// <response code="200">Postovi uspešno vraćeni.</response>
         /// <response code="401">Neuspešna autorizacija.</response>
@@ -307,14 +330,15 @@ namespace PostService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("postsByCity")]
-        public ActionResult<List<PostDto>> GetPostsByCity([FromHeader] string secretToken, [FromQuery] string City)
+        public ActionResult<List<PostDto>> GetPostsByCity([FromHeader] string secretToken, [FromQuery] int UserId, [FromQuery] string City)
         {
             if (authorizationMockService.AuthorizeToken(secretToken))
             {
                 try
                 {
-                    var fetchedPosts = postService.GetPostsByCity(City);
+                    var fetchedPosts = postService.GetPostsByCity(UserId,City);
                     loggerRepository.LogInformation("Posts successfully fetched!");
                     return StatusCode(StatusCodes.Status200OK, fetchedPosts);
                 }
@@ -335,18 +359,19 @@ namespace PostService.Controllers
         /// </summary>
         /// <param name="secretToken">Token za autorizaciju. U realnoj situaciji JWT Token generisan na osnovu 
         /// korisničkih podataka.</param>
+        /// <param name="UserId">Id korisnika koji šalje zahtev.</param>
         /// <param name="Title">Naslov posta.</param>
         /// <returns>Listu postova sa zajedničkim naslovom.</returns>
         /// <remarks>
         /// 
-        /// GET 'https://localhost:44200/api/postsByTitle?Title=Title'
+        /// GET 'https://localhost:44200/api/postsByTitle?Title=Naslov&UserId=UserId'
         /// 
         /// Authorization header: 
         /// secretToken : Bearer Secret
         /// 
         /// Primer zahteva za vraćanje postova po naslovu.
         /// Naslov se čita iz query parametra.
-        /// GET localhost:44200/api/postsByTitle?Title=Asus Vivobook
+        /// GET localhost:44200/api/postsByTitle?Title=Asus Vivobook&Userid=1
         /// </remarks>
         /// <response code="200">Postovi uspešno vraćeni.</response>
         /// <response code="401">Neuspešna autorizacija.</response>
@@ -356,14 +381,15 @@ namespace PostService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("postsByTitle")]
-        public ActionResult<List<PostDto>> GetPostsByTitle([FromHeader] string secretToken, [FromQuery] string Title)
+        public ActionResult<List<PostDto>> GetPostsByTitle([FromHeader] string secretToken, [FromQuery] int UserId, [FromQuery] string Title)
         {
             if (authorizationMockService.AuthorizeToken(secretToken))
             {
                 try
                 {
-                    var fetchedPosts = postService.GetPostsByTitle(Title);
+                    var fetchedPosts = postService.GetPostsByTitle(UserId,Title);
                     loggerRepository.LogInformation("Posts successfully fetched!");
                     return StatusCode(StatusCodes.Status200OK, fetchedPosts);
                 }
@@ -372,7 +398,10 @@ namespace PostService.Controllers
                     if(ex.Message == "No posts found with title : " + Title)
                     {
                         return StatusCode(StatusCodes.Status404NotFound, ex.Message);
-                    }
+                    } else if (ex.Message == "User not found!")
+                    {
+                        return StatusCode(StatusCodes.Status404NotFound, ex.Message);
+                    } 
                     return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 }
             }
@@ -408,6 +437,7 @@ namespace PostService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("deleteByUserId")]
         public IActionResult DeletePostsByUserId([FromHeader] string secretToken, [FromQuery] int UserId)
         {
@@ -449,10 +479,22 @@ namespace PostService.Controllers
         /// Da bi ovaj zahtev bio uspešan prvo moramo da pratimo korisnika čije postove želimo da vratimo. 
         /// User Id i Subject Id nam služe za proveru praćenja i blokiranja pre vraćanja podataka.
         /// 
-        /// Primer zahteva za vraćanje postova.
+        /// Primer uspešnog zahteva :
         /// 
-        /// UserId i SubjectId se čitaju iz query parametara.
-        /// GET localhost:44200/api/getPostsFromWall?UserId=1&SubjectId=2
+        /// GET localhost:44200/api/getPostsFromWall?UserId=3&SubjectId=2
+        /// 
+        /// Primer neuspešnih zahteva :
+        /// 
+        /// GET localhost:44200/api/getPostsFromWall?UserId=2&SubjectId=3
+        /// 
+        /// Korisnik sa id-jem 2 ne prati korisnika sa id-jem 3 i njemu se prikazuje poruka :
+        /// "Error fetching posts : You are not following that user!"
+        /// 
+        /// GET localhost:44200/api/getPostsFromWall?UserId=2&SubjectId=1
+        /// Korisnik sa id-jem 1 je blokirao korisnika sa id-jem 2. U ovom slučaju korisniku sa id-jem 2 se prikazuje poruka :
+        /// 
+        /// "Error fetching posts : User blocked!"
+        /// 
         /// </remarks>
         /// <response code="200">Postovi uspešno vraćeni.</response>
         /// <response code="401">Neuspešna autorizacija.</response>
@@ -497,24 +539,28 @@ namespace PostService.Controllers
         /// Ažurira post.
         /// </summary>
         /// <param name="secretToken">Token za autorizaciju.</param>
+        /// <param name="UserId"></param>
         /// <param name="post">Nova verzija posta.</param>
         /// <returns>Potvrdu o ažuriranju posta.</returns>
         /// <remarks>
         /// 
-        /// PUT 'https://localhost:44200/api/PostId'
+        /// PUT 'https://localhost:44200/api/?UserId=UserId'
         /// 
         /// Authorization header: 
         /// secretToken : Bearer Secret
         /// 
         /// Primer zahteva za ažuriranje posta.
         /// 
-        /// PUT localhost:44200/api/c814e683-5d07-4d35-16cd-08d967e4050a
+        /// PUT localhost:44200/api/?UserId=2
         /// {
-        /// "postId": "c814e683-5d07-4d35-16cd-08d967e4050a",
+        /// "postId": "3ce2f994-ec2f-4488-a977-08d96a18253c",
         /// "postDescription": "Laptop",
         /// "postTitle": "Asus",
         /// "city": "Novi Sad"
         ///}
+        ///
+        /// Zahtev će biti neuspešsan ukoliko korisnik pokuša da ažurira post koji nije on postavio.
+        /// 
         /// </remarks>
         /// <response code="200">Post je ažuriran.</response>
         /// <response code="404">Post sa prosleđenim id-jem ne postoji.</response>
@@ -527,14 +573,14 @@ namespace PostService.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Consumes("application/json")]
-        [HttpPut("{PostId}")]
-        public IActionResult UpdatePost([FromHeader] string secretToken, [FromBody] PostModificationDto post)
+        [HttpPut]
+        public IActionResult UpdatePost([FromHeader] string secretToken, [FromQuery] int UserId, [FromBody] PostModificationDto post)
         {
             if(authorizationMockService.AuthorizeToken(secretToken))
             {
                 try
                 {
-                    var updatedPost = postService.UpdatePost(post);
+                    var updatedPost = postService.UpdatePost(UserId,post);
                     loggerRepository.LogInformation("Post successfully updated!");
                     return StatusCode(StatusCodes.Status200OK, updatedPost);
 
@@ -546,6 +592,9 @@ namespace PostService.Controllers
                     } else if (ex.Message == "Changing of the post Id is not permitted!")
                     {
                         return StatusCode(StatusCodes.Status400BadRequest, "Error updating posts : " + ex.Message);
+                    } else if (ex.Message == "You are not the author of this post!")
+                    {
+                        return StatusCode(StatusCodes.Status400BadRequest, "Authorization failed : Unknown author!");
                     }
                     return StatusCode(StatusCodes.Status500InternalServerError, "Error updating posts : " + ex.Message);
                 }

@@ -14,15 +14,15 @@ namespace PostService.Services
 
         PostDto GetPostById(Guid PostId);
 
-        List<PostDto> GetPostsByUserId(int UserId);
+        List<PostDto> GetPostsByUserId(int UserId, int SubjectId);
 
-        List<PostDto> GetPostsByTitle(string PostTitle);
+        List<PostDto> GetPostsByTitle(int UserId, string PostTitle);
 
-        List<PostDto> GetPostsByCity(string City);
+        List<PostDto> GetPostsByCity(int UserId,string City);
 
         public PostDto CreatePost(PostCreationDto post);
 
-        public PostDto UpdatePost(PostModificationDto post);
+        public PostDto UpdatePost(int UserId, PostModificationDto post);
 
         public void DeletePost(Guid PostId);
 

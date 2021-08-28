@@ -4,6 +4,14 @@
         <name>PostService</name>
     </assembly>
     <members>
+        <member name="M:PostService.Controllers.PostController.#ctor(PostService.Services.IPostService,PostService.AuthorizationMock.IAuthorizationMockService,PostService.Logger.ILoggerRepository{PostService.Controllers.PostController})">
+            <summary>
+            Kontroler koji upravlja Post tabelom.
+            </summary>
+            <param name="postService">Post servis.</param>
+            <param name="authorizationMockService">Mock autorizacionog servisa.</param>
+            <param name="loggerRepository">Logger</param>
+        </member>
         <member name="M:PostService.Controllers.PostController.CreateNewPost(System.String,PostService.Models.PostCreationDto)">
             <summary>
             Kreira novi post.
@@ -12,6 +20,12 @@
             <param name="newPost">Novi post tipa PostCreationDto.</param>
             <returns>Potvrdu o kreiranju posta.</returns>
             <remarks>
+            
+            POST 'https://localhost:44200/api/post'
+            
+            Authorization header: 
+            secretToken : Bearer Secret
+            
             Primer zahteva za kreiranje novog posta.
             {
             "postTitle" : "Asus VivoBook",
@@ -20,6 +34,10 @@
             "UserId" : 2
             }
             </remarks>
+            <response code="201">Post je uspešno kreiran.</response>
+            <response code="401">Neuspešna autorizacija.</response>
+            <response code="404">Korisnik ili tip ne postoji.</response>
+            <response code="500">Serverska greška.</response>
         </member>
         <member name="M:PostService.Controllers.PostController.DeletePost(System.String,System.Guid)">
             <summary>
@@ -29,12 +47,20 @@
             <param name="PostId">Id posta koji želimo da obrišemo.</param>
             <returns>Potvrdu o brisanju.</returns>
             <remarks>
+            
+            DELETE 'https://localhost:44200/api/?PostId=PostId'
+            
+            Authorization header: 
+            secretToken : Bearer Secret
+            
             Primer zahteva za brisanje posta.
             Id posta se čita iz query parametra.
-            DELETE localhost:44200/api/c4cb6501-d98d-4297-2fab-08d9665f8d17?PostId=51db2a5e-5b2c-4724-1e99-08d96662d1cd
+            DELETE localhost:44200/api/PostId=51db2a5e-5b2c-4724-1e99-08d96662d1cd
             </remarks>
             <response code="204">Post je uspešno obrisan.</response>
             <response code="401">Neuspešna autorizacija.</response>
+            <response code="404">Post sa prosledjenim id-jem ne postoji.</response>
+            <response code="500">Serverska greška.</response>
         </member>
         <member name="M:PostService.Controllers.PostController.GetPostById(System.String,System.Guid)">
             <summary>
@@ -44,30 +70,34 @@
             <param name="PostId">Id posta koji želimo da vratimo.</param>
             <returns>PostDto reprezentaciju posta.</returns>
             <remarks>
+            
+            GET 'https://localhost:44200/api/post/?PostId=PostId'
+            
+            Authorization header: 
+            secretToken : Bearer Secret
+            
             Primer zahteva za vraćanje posta po Id-ju.
             Id posta se čita iz query parametra.
             GET localhost:44200/api/post/?PostId=a39e1850-1ca6-4805-270b-08d96663b948
             </remarks>
+            <response code="401">Neuspešna autorizacija.</response>
+            <response code="200">Postovi uspešno vraćeni.</response>
+            <response code="404">Post nije pronađen.</response>
+            <response code="500">Serverska greška.</response>
         </member>
-        <member name="M:PostService.Controllers.PostController.GetPostsByUserId(System.String,System.Int32)">
-            <summary>
-            Vraća postove po Id-ju korisnika.
-            </summary>
-            <param name="secretToken">Token za autorizaciju.</param>
-            <param name="UserId">Id korisnika čije postove želimo da vidimo.</param>
-            <returns>Listu postova određenog korisnika.</returns>
-            <remarks>
-            Primer zahteva za vraćanje posta po Id-ju korisnika.
-            Id se čita iz query parametra.
-            GET localhost:44200/api/postsByUserId/?UserId=2
-            </remarks>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:PostService.Controllers.PostController.GetPostsByUserId(System.String,System.Int32,System.Int32)" -->
         <member name="M:PostService.Controllers.PostController.GetAllPosts(System.String)">
             <summary>
             Vraća sve postove koji se trenutno nalaze u bazi. Ne uzima u obzir bilo kakve parametre
             osim tokena za autorizaciju. Token je tu pod pretpostavkom da ovoj ruti može da
             pristupi samo ulogovani korisnik.
             </summary>
+            
+            GET 'https://localhost:44200/api/posts'
+            
+            Authorization header: 
+            secretToken : Bearer Secret
+            
             <param name="secretToken">Token za autorizaciju. U realnoj situaciji JWT Token generisan na osnovu 
             korisničkih podataka.</param>
             <returns>Listu objekata tipa PostDto, odnosno listu svih postova.</returns>
@@ -75,35 +105,12 @@
             Primer zahteva za vraćanje svih postova.
             GET localhost:44200/api/posts
             </remarks>
+            <response code="200">Postovi uspešno vraćeni.</response>
+            <response code="401">Neuspešna autorizacija.</response>
+            <response code="500">Serverska greška.</response>
         </member>
-        <member name="M:PostService.Controllers.PostController.GetPostsByCity(System.String,System.String)">
-            <summary>
-            Vraća postove po gradovima.
-            </summary>
-            <param name="secretToken">Token za autorizaciju. U realnoj situaciji JWT Token generisan na osnovu 
-            korisničkih podataka.</param>
-            <param name="City">Grad po kojem vršimo filtriranje.</param>
-            <returns>Listu postova u određenom gradu.</returns>
-            <remarks>
-            Primer zahteva za vraćanje postova po gradu.
-            Grad se čita iz query parametra.
-            GET localhost:44200/api/postsByCity?City=Beograd
-            </remarks>
-        </member>
-        <member name="M:PostService.Controllers.PostController.GetPostsByTitle(System.String,System.String)">
-            <summary>
-            Vraća postove po naslovu.
-            </summary>
-            <param name="secretToken">Token za autorizaciju. U realnoj situaciji JWT Token generisan na osnovu 
-            korisničkih podataka.</param>
-            <param name="Title">Naslov posta.</param>
-            <returns>Listu postova sa zajedničkim naslovom.</returns>
-            <remarks>
-            Primer zahteva za vraćanje postova po naslovu.
-            Naslov se čita iz query parametra.
-            GET localhost:44200/api/postsByTitle?Title=Asus Vivobook
-            </remarks>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:PostService.Controllers.PostController.GetPostsByCity(System.String,System.Int32,System.String)" -->
+        <!-- Badly formed XML comment ignored for member "M:PostService.Controllers.PostController.GetPostsByTitle(System.String,System.Int32,System.String)" -->
         <member name="M:PostService.Controllers.PostController.DeletePostsByUserId(System.String,System.Int32)">
             <summary>
             Briše postove po Id-ju korisnika.
@@ -113,6 +120,12 @@
             <param name="UserId">Id korisnika čije postove želimo da obrišemo.</param>
             <returns>Potvrdu o uspešnom brisanju postova.</returns>
             <remarks>
+            
+            DELETE 'https://localhost:44200/api/deleteByUserId?UserId=UserId'
+            
+            Authorization header: 
+            secretToken : Bearer Secret
+            
             Ovaj zahtev služi u slučaju da želimo da obrišemo korisnika. Ako ne postoji korisnik u bazi ne smeju da postoje
             postovi koje je taj korisnik namestio. 
             
@@ -120,26 +133,90 @@
             Id korisnika se čita iz query parametra.
             DELETE localhost:44200/api/deleteByUserId?UserId=2
             </remarks>
+            <response code="204">Postovi uspešno obrisani.</response>
+            <response code="401">Neuspešna autorizacija.</response>
+            <response code="500">Serverska greška.</response>
+            <response code="404">Korisnik nije pronađen.</response>
         </member>
         <!-- Badly formed XML comment ignored for member "M:PostService.Controllers.PostController.GetPostsFromWall(System.String,System.Int32,System.Int32)" -->
-        <member name="M:PostService.Controllers.PostController.UpdatePost(System.String,PostService.Models.PostModificationDto)">
+        <member name="M:PostService.Controllers.PostController.UpdatePost(System.String,System.Int32,PostService.Models.PostModificationDto)">
              <summary>
              Ažurira post.
              </summary>
              <param name="secretToken">Token za autorizaciju.</param>
+             <param name="UserId"></param>
              <param name="post">Nova verzija posta.</param>
              <returns>Potvrdu o ažuriranju posta.</returns>
              <remarks>
+             
+             PUT 'https://localhost:44200/api/PostId?UserId=UserId'
+             
+             Authorization header: 
+             secretToken : Bearer Secret
+             
              Primer zahteva za ažuriranje posta.
              
-             PUT localhost:44200/api/c814e683-5d07-4d35-16cd-08d967e4050a
+             PUT localhost:44200/api/3ce2f994-ec2f-4488-a977-08d96a18253c?UserId=2
              {
-             "postId": "c814e683-5d07-4d35-16cd-08d967e4050a",
+             "postId": "3ce2f994-ec2f-4488-a977-08d96a18253c",
              "postDescription": "Laptop",
              "postTitle": "Asus",
              "city": "Novi Sad"
             }
+            
+             
              </remarks>
+             <response code="200">Post je ažuriran.</response>
+             <response code="404">Post sa prosleđenim id-jem ne postoji.</response>
+             <response code="401">Neuspešna autorizacija.</response>
+             <response code="500">Serverska greška</response>
+             <response code="400">Korisnik je pokušao da promeni id posta.</response>
+        </member>
+        <member name="M:PostService.Controllers.TypeOfPostController.#ctor(AutoMapper.IMapper,PostService.Services.TypeService.ITypeOfPostService)">
+            <summary>
+            Kontroler koji upravlja TypeOfPost tabelom i vrši ubacivanje podataka, brisanje podataka i vraćanje podataka.
+            </summary>
+            <param name="autoMapper">Maper za mapiranje različitih oblika TypeOfPost podataka.</param>
+            <param name="typeService">TypeOfPost servis.</param>
+        </member>
+        <member name="M:PostService.Controllers.TypeOfPostController.CreateType(PostService.Models.TypeOfPostCreationDto)">
+            <summary>
+            Dodaje novi tip u bazu.
+            </summary>
+            <param name="type">Tip koji želimo da dodamo.</param>
+            <returns>Potvrdu o uspešnom kreiranju tipa.</returns>
+            <remarks>
+            DELETE 'https://localhost:44200/api/typeOfPost/PostId'
+            </remarks>
+            <response code="201">Tip je uspešno kreiran.</response>
+            <response code="500">Serverska greška.</response>
+        </member>
+        <member name="M:PostService.Controllers.TypeOfPostController.DeleteType(System.Guid)">
+            <summary>
+            Briše tip posta iz baze.
+            </summary>
+            <param name="TypeId">Id tipa koji želimo da obrišemo.</param>
+            <returns>Potvrdu o uspešnom brisanju.</returns>
+            <remarks>
+            DELETE 'https://localhost:44200/api/typeOfPost/PostId'
+            </remarks>
+            <response code="409">Konflikt stranog ključa. Pokušali smo da obrišemo tip koji je referenciran u tabeli Post.</response>
+            <response code="404">Tip posta ne postoji.</response>
+            <response code="500">Serverska greška.</response>
+            <response code="204">Post uspešno obrisan.</response>
+        </member>
+        <member name="M:PostService.Controllers.TypeOfPostController.GetTypeById(System.Guid)">
+            <summary>
+            Vraća tip posta po id-ju.
+            </summary>
+            <param name="TypeId">Id tipa koji želimo da vratimo.</param>
+            <returns>Potvrdu o uspešnom brisanju.</returns>
+            <remarks>
+            DELETE 'https://localhost:44200/api/typeOfPost/PostId'
+            </remarks>
+            <response code="200">Tip posta uspešno vraćen.</response>
+            <response code="404">Tip posta ne postoji.</response>
+            <response code="500">Serverska greška.</response>
         </member>
         <member name="T:PostService.Models.PostCreationDto">
             <summary>

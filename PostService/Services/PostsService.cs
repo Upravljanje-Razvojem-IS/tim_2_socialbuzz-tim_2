@@ -93,13 +93,13 @@ namespace PostService.Services
             return autoMapper.Map<PostDto>(fetchedPost);
         }
 
-        public List<PostDto> GetPostsByUserId(int UserId)
+        public List<PostDto> GetPostsByUserId(int UserId, int SubjectId)
         {
-            if(userMockRepository.GetUserByID(UserId) == null)
+            if(userMockRepository.GetUserByID(SubjectId) == null)
             {
                 throw new _404Exception("User not found!");
             }
-            if(blockMockRepository.CheckIfBlocked(1,UserId))
+            if(blockMockRepository.CheckIfBlocked(UserId, SubjectId))
             {
                 throw new BlockException("User blocked!");
             }
@@ -115,9 +115,9 @@ namespace PostService.Services
         }
 
 
-        public List<PostDto> GetPostsByCity(string City)
+        public List<PostDto> GetPostsByCity(int UserId, string City)
         {
-            var fetchedPosts = postRepository.GetPostsByCity(1,City);
+            var fetchedPosts = postRepository.GetPostsByCity(UserId, City);
             if(fetchedPosts.Count == 0)
             {
                 throw new _404Exception("No posts found in city : " + City);
@@ -126,14 +126,25 @@ namespace PostService.Services
             return autoMapper.Map<List<PostDto>>(fetchedPosts);
         }
 
-        public List<PostDto> GetPostsByTitle(string PostTitle)
+        public List<PostDto> GetPostsByTitle(int UserId,string PostTitle)
         {
-            var fetchedPosts = postRepository.GetPostsByTitle(1,PostTitle);
-            if (fetchedPosts.Count == 0)
+
+            if(userMockRepository.GetUserByID(UserId) == null)
             {
-                throw new _404Exception("No posts found with title : " + PostTitle);
+                throw new _404Exception("User not found!");
             }
-            return autoMapper.Map<List<PostDto>>(fetchedPosts);
+            try
+            {
+                var fetchedPosts = postRepository.GetPostsByTitle(UserId, PostTitle);
+                if (fetchedPosts.Count == 0)
+                {
+                    throw new _404Exception("No posts found with title : " + PostTitle);
+                }
+                return autoMapper.Map<List<PostDto>>(fetchedPosts);
+            } catch (Exception ex)
+            {
+                throw new GeneralException(ex.Message);
+            }
         }
         /*Prvo proveravamo blokiranje kako ne bismo slali zahtev za dzabe.*/
         public List<PostDto> GetPostsFromWall(int UserId, int SubjectId)
@@ -160,9 +171,12 @@ namespace PostService.Services
             return autoMapper.Map<List<PostDto>>(fetchedPosts);
         }
 
-        public PostDto UpdatePost(PostModificationDto post)
+        public PostDto UpdatePost(int UserId, PostModificationDto post)
         {
-
+            if(UserId != postRepository.GetPostById(post.PostId).UserId)
+            {
+                throw new GeneralException("You are not the author of this post!");
+            }
             if(postRepository.GetPostById(post.PostId) == null)
             {
                 throw new _404Exception("Post with that Id does not exist!");
