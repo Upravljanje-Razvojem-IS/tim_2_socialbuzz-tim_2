@@ -50,7 +50,8 @@ namespace PostService.Controllers
         /// "postTitle" : "Asus VivoBook",
         /// "postDescription" : "Asus VivoBook Max nov, jednom koriscen za majnovanje bitkoina ali nista strasno. Radi kao sat."
         /// "City" : "Novi Sad",
-        /// "UserId" : 2
+        /// "UserId" : 2,
+        /// "Type": "Oglas"
         /// }
         /// </remarks>
         /// <response code="201">Post je uspešno kreiran.</response>

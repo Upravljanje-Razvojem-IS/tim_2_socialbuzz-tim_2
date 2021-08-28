@@ -59,7 +59,20 @@ namespace PostService
             services.AddSingleton(typeof(ILoggerRepository<>), typeof(LoggerRepository<>));
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PostService", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PostService", Version = "v1",
+                    Description = "This API allows CRUD operations on the post database. It also filters get requests and returns posts in accordance to the filter",
+                    Contact = new Microsoft.OpenApi.Models.OpenApiContact
+                    {
+                        Name = "Filip Vujovic",
+                        Email = "f.vujovic998@gmail.com",
+                        Url = new Uri("http://www.ftn.uns.ac.rs/")
+                    },
+                    License = new Microsoft.OpenApi.Models.OpenApiLicense
+                    {
+                        Name = "FTN licence",
+                        Url = new Uri("http://www.ftn.uns.ac.rs/")
+                    },
+                });
 
                 var xmlComments = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlCommentsPath = Path.Combine(AppContext.BaseDirectory, xmlComments);

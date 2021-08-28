@@ -31,7 +31,8 @@
             "postTitle" : "Asus VivoBook",
             "postDescription" : "Asus VivoBook Max nov, jednom koriscen za majnovanje bitkoina ali nista strasno. Radi kao sat."
             "City" : "Novi Sad",
-            "UserId" : 2
+            "UserId" : 2,
+            "Type": "Oglas"
             }
             </remarks>
             <response code="201">Post je uspešno kreiran.</response>
@@ -149,14 +150,14 @@
              <returns>Potvrdu o ažuriranju posta.</returns>
              <remarks>
              
-             PUT 'https://localhost:44200/api/PostId?UserId=UserId'
+             PUT 'https://localhost:44200/api/?UserId=UserId'
              
              Authorization header: 
              secretToken : Bearer Secret
              
              Primer zahteva za ažuriranje posta.
              
-             PUT localhost:44200/api/3ce2f994-ec2f-4488-a977-08d96a18253c?UserId=2
+             PUT localhost:44200/api/?UserId=2
              {
              "postId": "3ce2f994-ec2f-4488-a977-08d96a18253c",
              "postDescription": "Laptop",
@@ -164,6 +165,7 @@
              "city": "Novi Sad"
             }
             
+             Zahtev će biti neuspešsan ukoliko korisnik pokuša da ažurira post koji nije on postavio.
              
              </remarks>
              <response code="200">Post je ažuriran.</response>
