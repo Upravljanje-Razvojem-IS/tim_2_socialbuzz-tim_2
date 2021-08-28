@@ -53,6 +53,8 @@ namespace PostService.Controllers
         /// "UserId" : 2,
         /// "Type": "Oglas"
         /// }
+        /// 
+        /// Da bi ovaj zahtev bio uspešan potrebno je da Type obeležje postoji u bazi s obzirom da je to strani ključ u tabeli Post.
         /// </remarks>
         /// <response code="201">Post je uspešno kreiran.</response>
         /// <response code="401">Neuspešna autorizacija.</response>
