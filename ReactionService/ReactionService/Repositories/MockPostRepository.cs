@@ -7,7 +7,7 @@ namespace ReactionService.Repositories
 {
     public class MockPostRepository : IPostRepository
     {
-        private List<Post> _entities;
+        private readonly List<Post> _entities;
 
         public MockPostRepository()
         {
