@@ -7,7 +7,7 @@ namespace MessagingService.Repositories
 {
     public class MockUserRepository : IUserRepository
     {
-        private List<User> _entities;
+        private readonly List<User> _entities;
 
         public MockUserRepository()
         {
