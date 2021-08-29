@@ -94,7 +94,7 @@ namespace CommentingService.Controllers
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public ActionResult DeleteCommentReplay(Guid id)
         {
             _repository.Delete(id);
