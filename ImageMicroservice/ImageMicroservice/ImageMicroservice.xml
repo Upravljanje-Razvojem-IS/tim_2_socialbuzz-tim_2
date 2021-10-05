@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ImageMicroservice</name>
+    </assembly>
+    <members>
+        <member name="M:ImageMicroservice.Controllers.AuthController.Login(ImageMicroservice.Dto.LoginDto)">
+            <summary>
+            Logovanje korisnika
+            </summary>
+            <param name="login">Podaci korisnika.</param>
+            <returns>Potvrdu o kreiranju i token</returns>
+            <remarks>
+            POST http://localhost:44315/user/id
+            </remarks>
+            <response code="400">Neispravan zahtev.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.ImageController.GetImagesForPost(System.Int64)">
+            <summary>
+            Vraca slike za odredjeni post.
+            </summary>
+            <param name="postID">ID posta</param>
+            <returns>Fajl sa slikama posta.</returns>
+            <remarks>
+            
+            POST 'http://localhost:44315/post/postId'
+            
+            </remarks>
+            <response code="400">Neispravan zahtev.</response>
+            <response code="200">Slike su uspesno vracene</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.ImageController.GetImagesForUser(System.Int64)">
+            <summary>
+            Vraca slike za odredjenog korisnika.
+            </summary>
+            <param name="userID">ID korisnika.</param>
+            <returns>Fajl sa slikama korisnika.</returns>
+            <remarks>
+            GET http://localhost:44315/user/userId'
+            </remarks>
+            <response code="400">Neispravan zahtev.</response>
+            <response code="200">Slike su uspesno vracene</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.ImageController.GetByID(System.Int64)">
+            <summary>
+            Vraca sliku po id-ju.
+            </summary>
+            <param name="id">ID slike.</param>
+            <returns>Fajl sa slikom.</returns>7
+            <remarks>
+            GET  http://localhost:44315/id
+            </remarks>
+            <response code="404">Slika nije pronadjena.</response>
+            <response code="400">Neispravan zahtev.</response>
+            <response code="200">Slika je uspesno vracena.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.ImageController.CreateImage(ImageMicroservice.Dto.ImageUploadDto)">
+            <summary>
+            Kreira novu sliku.
+            </summary>
+            <param name="image">Slika koja treba da se kreira.</param>
+            <returns>Potvrdu o kreiranju.</returns>
+            <remarks>
+            POST http://localhost:44315/
+            </remarks>
+            <response code="400">Neispravan zahtev.</response>
+            <response code="200">Slika je uspesno kreirana.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.ImageController.DeleteByid(System.Int64)">
+            <summary>
+            Brise sliku
+            </summary>
+            <param name="id">Id slike.</param>
+            <returns>Potvrdu o brisanju.</returns>
+            DELETE http://localhost:44315/id
+            <response code="404">Slika nije pronadjena.</response>
+            <response code="400">Neispravan zahtev.</response>
+            <response code="200">Slika je uspesno obrisana.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.ImageController.DeleteImageByPost(System.Int64)">
+            <summary>
+            Brise slike za post.
+            </summary>
+            <param name="id">Id posta</param>
+            <remarks>
+            DELETE http://localhost:44315/post/id
+            </remarks>
+            <returns>Potvrdu o brisanju.</returns>
+            <response code="400">Neispravan zahtev.</response>
+            <response code="200">Slika je uspesno obrisane.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.ImageController.DeleteImageByUser(System.Int64)">
+            <summary>
+            Brise slike po korisniku.
+            </summary>
+            <param name="id">Id korisnika</param>
+            <returns>Potvrdu o brisanju.</returns>
+            <remarks>
+            DELETE http://localhost:44315/user/id
+            </remarks>
+            <response code="400">Neispravan zahtev.</response>
+            <response code="200">Slika je uspesno obrisane.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.PostsController.GetAllFromWall">
+            <summary>
+            Vraca postove sa zida.
+            </summary>
+            <returns>Listu postova.</returns>
+            <remarks>
+            GET http://localhost:44315/
+            </remarks>
+            <response code="200">Post je uspesno vracen.</response>
+            <response code="204">Ne postoje postovi.</response>
+            <response code="400">Neispravan zahtev.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.PostsController.GetById(System.Int64)">
+            <summary>
+            Vraca postove po ID-ju.
+            </summary>
+            <param name="id">Id posta.</param>
+            <returns>Listu postova</returns>
+            <remarks>
+            GET http://localhost:44315/id
+            </remarks>
+            <response code="200">Post je uspesno vracen.</response>
+            <response code="204">No content.</response>
+            <response code="400">Neispravan zahtev.</response>
+            <response code="404">Ne postoji id posta.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.PostsController.GetByTitle(System.String)">
+            <summary>
+            Vraca postove po naslovu.
+            </summary>
+            <param name="title">Naslov posta.</param>
+            <returns>Listu postova.</returns>
+            <remarks>
+            GET http://localhost:44315/title/title
+            </remarks>
+            <response code="200">Post je uspesno vracen.</response>
+            <response code="204">No content.</response>
+            <response code="400">Neispravan zahtev.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.PostsController.GetByUserID(System.Int64)">
+            <summary>
+            Vraca postove po korisniku.
+            </summary>
+            <param name="userID">Id korisnika</param>
+            <returns>Listu postova.</returns>
+            <remarks>
+            GET http://localhost:44315/user/userID
+            </remarks>
+            <response code="200">Post je uspesno vracen.</response>
+            <response code="204">No content.</response>
+            <response code="400">Neispravan zahtev.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.PostsController.GetByCity(System.String)">
+            <summary>
+            Vraca postove po gradu.
+            </summary>
+            <param name="city">Grad posta.</param>
+            <returns>Listu postova.</returns>
+            <remarks>
+            GET http://localhost:44315/city/city
+            </remarks>
+            <response code="200">Post je uspesno vracen.</response>
+            <response code="204">No content.</response>
+            <response code="400">Neispravan zahtev.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.PostsController.CreatePost(ImageMicroservice.Dto.PostDto)">
+            <summary>
+            Dodaje novi post.
+            </summary>
+            <param name="post">Post koji je poterbno dodati.</param>
+            <returns>Potvrdu o kreiranju.</returns>
+            <remarks>
+            POST http://localhost:44315/
+            </remarks>
+            <response code="201">Post je kreiran.</response>
+            <response code="400">Neispravan zahtev.</response> 
+        </member>
+        <member name="M:ImageMicroservice.Controllers.PostsController.UpdatePost(System.Int64,ImageMicroservice.Dto.PostDto)">
+            <summary>
+            Azurira post.
+            </summary>
+            <param name="id">Id posta</param>
+            <param name="post">Post</param>
+            <returns>Potvrdu o kreiranju posta.</returns>
+            <remarks>
+            PUT http://localhost:44315/id
+            </remarks>
+            <response code="200">Post je uspesno azuriran.</response>
+            <response code="404">Post nije pronadjen.</response>
+            <response code="400">Neispravan zahtev.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.PostsController.DeletePost(System.Int64)">
+            <summary>
+            Brise post.
+            </summary>
+            <param name="id">Id posta</param>
+            <returns>Potvrdu o brisanju.</returns>
+            <remarks>
+            DELETE http://localhost:44315/id
+            </remarks>
+            <response code="204">Post je uspesno obrisan.</response>
+            <response code="404">Post nije pronadjen.</response>
+            <response code="400">Neispravan zahtev.</response>
+        </member>
+        <member name="M:ImageMicroservice.Controllers.PostsController.DeletePostsByUserID(System.Int64)">
+            <summary>
+            Brisanje postova po korisniku
+            </summary>
+            <param name="id">Id korisnika</param>
+            <returns>Potvrdu o brisanju</returns>
+            <remarks>
+            DELETE http://localhost:44315/user/id
+            </remarks>
+            <response code="204">Post je uspesno obrisan.</response>
+            <response code="400">Neispravan zahtev.</response>
+        </member>
+        <member name="T:ImageMicroservice.Models.Image">
+            <summary>
+            predstavlja model slike
+            </summary>
+        </member>
+        <member name="P:ImageMicroservice.Models.Image.ImageID">
+            <summary>
+            id slike
+            </summary>
+        </member>
+        <member name="P:ImageMicroservice.Models.Image.ImagePath">
+            <summary>
+            putanja slike
+            </summary>
+        </member>
+        <member name="P:ImageMicroservice.Models.Image.PostID">
+            <summary>
+            id posta
+            </summary>
+        </member>
+        <member name="P:ImageMicroservice.Models.Image.Post">
+            <summary>
+            post
+            </summary>
+        </member>
+        <member name="P:ImageMicroservice.Models.Image.UserID">
+            <summary>
+            id usera
+            </summary>
+        </member>
+        <member name="P:ImageMicroservice.Models.Image.User">
+            <summary>
+            user
+            </summary>
+        </member>
+    </members>
+</doc>
